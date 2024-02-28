@@ -20,10 +20,14 @@ userRoute.post('/otpVerification', userAuth.isLogOut, userController.verifyOtp)
 userRoute.get('/resendOtp', userController.resendOtp);
 userRoute.get('/forgotPassword',userAuth.isLogOut , userController.forgotPassword)
 userRoute.post('/forgotPassword',userAuth.isLogOut , userController.PostForgotpass);
-userRoute.get('/productDetails', userController.productDetails)
+userRoute.get('/productDetails', userAuth.isBlocked, userController.productDetails)
+userRoute.get('/accountDetails', userController.accountDetails)
+userRoute.get('/addAddress', userController.addAddress)
 
                 
 // userRoute.post('/otpPost',userAuth.isLogOut ,userController.getOtp)
+
+userRoute.get('/orders', userController.orders)
 
 
 module.exports = userRoute;         

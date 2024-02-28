@@ -268,26 +268,54 @@
                                                         <span class="badge rounded-pill alert-success">Unlist</span>
                                                     </td>
                                                     <td class="text-start">
-                                                        <a href="/admin/cat-edit?id=<%= element._id %>" class="btn btn-sm btn-success rounded font-sm mt-1">Edit</a>
+                                                        <a href="/admin/cat-edit?id=<%= element._id %>" class="btn btn-sm  rounded font-sm mt-2" style="background-color: black;color: white;">Edit</a>
                                                     </td>
                                                     
                                                         <td class="text-end">
-                                                        <button type="button" class="btn btn-danger mt-1" onclick="list('<%= element._id %>')">List</button>
+                                                        <button type="button" class="btn btn-sm  rounded font-sm mt-2" onclick="list('<%= element._id %>')" style="background-color: black;color: white;">List</button>
                                                     </td>
                                                 <% } else { %>
                                                     <td>
                                                         <span class="badge rounded-pill alert-danger">List</span>
                                                     </td>
                                                     <td class="text-start">
-                                                        <a href="/admin/cat-edit?id=<%= element._id %>" class="btn btn-sm btn-success rounded font-sm mt-1">Edit</a>
+                                                        <a href="/admin/cat-edit?id=<%= element._id %>" class="btn btn-sm  rounded font-sm mt-2" style="background-color: black;color: white;">Edit</a>
                                                     </td>
                                                     <td class="text-end">
-                                                        <button type="button" class="btn btn-danger mt-1" onclick="list('<%= element._id %>')">Unlist</button>
+                                                        <button type="button" class="btn btn-sm  rounded font-sm mt-2" onclick="list('<%= element._id %>')" style="background-color: black;color: white;">Unlist</button>
                                                     </td>
                                                 <% } %>
                                             </tr>
                                         <% }) %>
                                     </tbody>
+                                    <style>
+.btn-brand,
+.btn-light,
+.btn-danger,
+.btn-edit {
+    background-color: black;
+    color: white;
+    width: 100px; /* Adjust the width as needed */
+}
+
+/* Style to remove rounded corners */
+.btn-brand,
+.btn-light,
+.btn-danger,
+.btn-edit {
+    border-radius: 5;
+}
+
+/* Style for button on hover */
+.btn-brand:hover,
+.btn-light:hover,
+.btn-danger:hover,
+.btn-edit:hover {
+    background-color: darkgrey; /* Change to the color you prefer on hover */
+    color: white;
+}
+
+                                    </style>
                                     
                                     
                                 </table>

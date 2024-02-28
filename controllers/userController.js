@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
+const Address = require("../models/addressModel")
 
 //********   setting of nodemailer  *************************************** */
 
@@ -180,46 +181,6 @@ const verifyOtp = async (req, res) => {
 }
 
 
-//     try {
-//         if (!req.session || !req.session.email) {
-//             return res.status(400).send('Session or email not available');
-//         }
-//         const email = req.session.userData.email;
-
-//         // // Ensure req.session.Data is initialized
-//         // req.session.Data = req.session.Data || {};
-
-//         const newOtp = otpGnerator();
-//         req.session.userData.otp = newOtp;
-//         console.log(newOtp);
-
-//         console.log(`my email in resend otp ${email}`);
-
-
-//         const mailOptions = {
-//             from: 'ashiktk85@gmail.com',
-//             to: email,
-//             subject: 'Your OTP for Verification',
-//             text: `Your OTP is ${newOtp}`,
-//         };
-
-//         if (mailOptions) {
-//             transporter.sendMail(mailOptions, (err) => {
-//                 if (err) {
-//                     console.log(err.message);
-//                 } else {
-//                     console.log('Mail sent successfully');
-//                 }
-//             });
-//         }
-
-//         res.status(200).send('OTP resent successfully');
-//     } catch (error) {
-//         console.error(`Error in resending OTP: ${error}`);
-//         res.status(500).send('Internal Server Error');
-//     }
-// };
-
 const resendOtp = async (req, res) => {
     try {
         console.log("hello");
@@ -286,6 +247,7 @@ const verifyLogin = async (req, res) => {
                 } else {
                     res.render('login', { passErr: 'Incorrect password. Please try again.' });
                 }
+                
 
             } else {
                 console.log('user is blocked');
@@ -401,8 +363,35 @@ const productDetails = async (req, res) => {
 };
 
 
+const accountDetails = async ( req, res) => {
+    try {
+        const id = req.session.userId;
+        
+        
+        const userData = await User.findById({_id : id})
+        console.log(userData);
+        res.render('accountDetails',{userData});
+    } catch (error) {
+        console.log(`error in rendring account details page ${error}`);
+    }
+}
 
 
+const addAddress = async(req , res ) => {
+    try {
+        res.render('addAddress')
+    } catch (error) {
+        console.log(`error in rendring add address page ${error}`) 
+    }
+}
+
+const orders = async(req , res ) => {
+    try {
+        res.render('order')
+    } catch (error) {
+        console.log(`error in rendring orders page ${error}`) 
+    }
+}
 
 
 
@@ -420,5 +409,8 @@ module.exports = {
     forgotPassword,
     PostForgotpass,
     productDetails,
-    verifyOtp
+    verifyOtp,
+    accountDetails,
+    addAddress,
+    orders
 };

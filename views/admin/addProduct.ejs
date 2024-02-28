@@ -196,7 +196,7 @@
                 </ul>
             </div>
         </header>
-        <section class="content-main">
+        <!-- <section class="content-main">
             <form action="/admin/addProduct" method="post" enctype="multipart/form-data" id="submitId">
                 <div class="row">
                     <div class="col-lg-9" style="width: 60%;">
@@ -237,36 +237,8 @@
                                             <p id="opErr" class="text-danger"></p>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mt-4">
-                        <div class="card mb-4" style="width: 290px;">
-                            <div class="card-header">
-                                <h4>Media</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="input-upload">
-                                  
-                                        <div>
-                                            <label for="Pro_img" class="form-label">Upload Images</label>
-                                            <input class="form-control" name="image" type="file" id="Pro_img" multiple onkeyup="imageValidation()">
-                                            <p class="text-danger text-center mb-15 mt-15" id="imageError"></p>
-                                        </div>
-                                   
-                                    
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card mb-4" style="width: 290px;">
-                            <div class="card-header">
-                                <h4>Inventory</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row gx-2">
-                                    <div class="col-sm-6 mb-3">
+                                    <div class="col-lg-4">
+                                    <div class="mb-4">
                                         <label class="form-label">Category</label>
                                         <select class="form-select" name="catName">
                                             <% if(locals.catData){%>
@@ -278,6 +250,43 @@
                                                  <%}%>
                                         </select>
                                     </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mt-4">
+                        <div class="card mb-4" style="width: 290px;">
+                            <div class="card-header">
+                                <h4>Media</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <label for="Pro_img" class="form-label">Upload Images</label>
+                                    <input class="form-control" name="image" type="file" id="Pro_img" multiple onchange="previewImages()">
+                                    <div id="imagePreviewContainer" class="image-preview-container"></div>
+                                    <p class="text-danger text-center mb-15 mt-15" id="imageError"></p>
+                                </div>
+                            </div>
+                            <style>
+                                .image-preview-container {
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                }
+                        
+                                .image-preview {
+                                    width: 100px;
+                                    height: 100px;
+                                    margin: 5px;
+                                }
+                            </style>
+                        <div class="card mb-4" style="width: 290px;">
+                            <div class="card-header">
+                                <h4>Inventory</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row gx-2">
+                                   
                                 </div>
                                 <div class="mb-4">
                                     <label for="sizeSmall" class="form-label">Small Size</label>
@@ -307,7 +316,154 @@
                     </div>
                 </div>
             </form>
+        </section> -->
+        <section class="content-main">
+            <form action="/admin/addProduct" method="post" enctype="multipart/form-data" id="submitId">
+                <div class="row">
+                    <div class="col-lg-9" style="width: 60%;">
+                        <div class="content-header">
+                            <h2 class="content-title">Add New Product</h2>
+                        </div>
+                        <!-- Basic Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Basic</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Product title</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_name"
+                                        name="product_name" onblur="nameFun()"
+                                        value="<%= typeof product_name !== 'undefined' ? product_name : '' %>">
+                                    <p id="nameErr" class="text-danger"></p>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Full description</label>
+                                    <textarea placeholder="Type here" class="form-control" name="product_dis" rows="4"
+                                        id="product_dis" onblur="disFun()"></textarea>
+                                    <p id="disErr" class="text-danger"></p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Regular price</label>
+                                            <input placeholder="$" type="text" class="form-control" name="regprice"
+                                                id="regprice" onblur="rpFun()">
+                                            <p id="rpErr" class="text-danger"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Offer price</label>
+                                            <input placeholder="$" type="text" class="form-control" name="offprice"
+                                                id="offprice" onblur="opFun()">
+                                            <p id="opErr" class="text-danger"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Category</label>
+                                            <select class="form-select" name="catName">
+                                                <% if(locals.catData){%>
+                                                <% catData.forEach(element =>{%>
+                                                <option value="<%=element._id%>"> <%= element.name %></option>
+                                                <%})%>
+                                                <%}%>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mt-4">
+                        <!-- Media Section -->
+                        <div class="card mb-4" style="width: 290px;">
+                            <div class="card-header">
+                                <h4>Media</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <label for="Pro_img" class="form-label">Upload Images</label>
+                                    <input class="form-control" name="image" type="file" id="Pro_img" multiple
+                                        onchange="previewImages()">
+                                    <div id="imagePreviewContainer" class="image-preview-container"></div>
+                                    <p class="text-danger text-center mb-15 mt-15" id="imageError"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Inventory Section -->
+                        <div class="card mb-4" style="width: 290px;">
+                            <div class="card-header">
+                                <h4>Inventory</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row gx-2">
+                                    <!-- <div class="col-sm-6 mb-3">
+                                        <label class="form-label">Category</label>
+                                        <select class="form-select" name="catName">
+                                            <% if(locals.catData){%>
+                                            <% catData.forEach(element =>{%>
+                                            <option value="<%=element._id%>"> <%= element.name %></option>
+                                            <%})%>
+                                            <%}%>
+                                        </select>
+                                    </div> -->
+                                </div>
+                                <div class="mb-4">
+                                    <label for="sizeSmall" class="form-label">Small Size</label>
+                                    <input type="text" class="form-control" name="small" id="quantitySmall" onblur="coFun()"
+                                        placeholder="Quantity">
+                                    <p id="sizeSmallErr" class="text-danger"></p>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="sizeMedium" class="form-label">Medium Size</label>
+                                    <input type="text" class="form-control" name="medium" id="quantityMedium" onblur="coFun()"
+                                        placeholder="Quantity">
+                                    <p id="sizeMediumErr" class="text-danger"></p>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="sizeLarge" class="form-label">Large Size</label>
+                                    <input type="text" class="form-control" name="large" id="quantityLarge" onblur="coFun()"
+                                        placeholder="Quantity">
+                                    <p id="sizeLargeErr" class="text-danger"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Submit Buttons -->
+                <div class="row justify-content-end">
+                    <div class="col-lg-9">
+                        <div>
+                            <input type="button" class="btn btn-outline-secondary" onclick="cancel()" value="Cancel">
+                            <input type="submit" class="btn btn-primary" onclick="validateForm()" value="Add"></input>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </section>
+        <style>
+            /* Add this style for the outlined black line and white background */
+            .card.mb-4 {
+                border: 1px solid black;
+                border-radius: 10px;
+                background-color: white;
+            }
+
+            .card.mb-4 input[type="text"],
+    .card.mb-4 textarea,
+    .card.mb-4 select {
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: white;
+        margin-bottom: 10px; /* Adjust as needed */
+    }
+        </style>
+        
+       
+        
          <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
@@ -440,6 +596,28 @@ function validateImage() {
         }
     }
 }
+
+function previewImages() {
+            const input = document.getElementById('Pro_img');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const files = input.files;
+
+            // Clear previous previews
+            previewContainer.innerHTML = '';
+
+            for (const file of files) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const preview = document.createElement('img');
+                    preview.src = e.target.result;
+                    preview.classList.add('image-preview');
+                    previewContainer.appendChild(preview);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
 
 function validateForm() {
     nameFun();

@@ -343,31 +343,9 @@
                                             <p id="opErr" class="text-danger"></p>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mt-4">
-                        <div class="card mb-4" style="width: 290px;">
-                            <div class="card-header">
-                                <h4>Media</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="input-upload">
-                                    <img src="/admin_assets/imgs/theme/upload.svg" alt="">
-                                    <input class="form-control" name="image" type="file" id="Pro_img" multiple id="Pro_img" onkeyup="imageValidation()">
-                                    <p class="text-danger text-center mb-15 mt-15" id="imageError"></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card mb-4" style="width: 290px;">
-                            <div class="card-header">
-                                <h4>Inventory</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row gx-2">
-                                    <div class="col-sm-6 mb-3">
-                                        <label class="form-label">Category</label>
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Category</label>
                                         <select class="form-select" name="catName">
                                             <% if(locals.catData){%>
                                                 
@@ -377,8 +355,102 @@
                                                  <%})%>
                                                  <%}%>
                                         </select>
-                                    </div>
+                                        </div>
+                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mt-4">
+                        
+                        
+                        <div class="card mb-4" style="width: 290px;">
+                            <div class="card-header">
+                                <h4>Media</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <div id="imagePreviewContainer">
+                                        <% if (proData && proData.image && proData.image.length > 0) { %>
+                                            <% proData.image.slice(0, 5).forEach(image => { %>
+                                                <img src="/uploads/<%= image %>" alt="product image">
+                                            <% }); %>
+                                        <% } else { %>
+                                            <img id="defaultImage" src="/uploads/<%= image %>" alt="default product image">
+                                        <% } %>
+                                    </div>
+                                    <input class="form-control" name="image" type="file" id="Pro_img" multiple onchange="previewImages()">
+                                    <p class="text-danger text-center mb-15 mt-15" id="imageError"></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- <div class="card mb-4" style="width: 290px;">
+                            <div class="card-header">
+                                <h4>Media</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <div id="imagePreviewContainer">
+                                        <% if (proData && proData.image && proData.image.length > 0) { %>
+                                            <% proData.image.forEach(image => { %>
+                                                <img src="/uploads/<%= image %>" alt="product image">
+                                            <% }); %>
+                                        <% } else { %>
+                                            <img id="defaultImage" src="/admin_assets/imgs/theme/default-product-image.jpg" alt="default product image">
+                                        <% } %>
+                                    </div>
+                                    <input class="form-control" name="image" type="file" id="Pro_img" multiple onchange="previewImages()">
+                                    <p class="text-danger text-center mb-15 mt-15" id="imageError"></p>
+                                </div>
+                            </div>
+                        </div> -->
+                        
+                        <script>
+                            function previewImages() {
+                                var input = document.getElementById('Pro_img');
+                                var previewContainer = document.getElementById('imagePreviewContainer');
+                                var defaultImage = document.getElementById('defaultImage');
+                        
+                                previewContainer.innerHTML = ''; // Clear previous preview
+                        
+                                if (input.files && input.files.length > 0) {
+                                    Array.from(input.files).forEach(file => {
+                                        var reader = new FileReader();
+                        
+                                        reader.onload = function (e) {
+                                            var img = document.createElement('img');
+                                            img.src = e.target.result;
+                                            img.alt = 'product image';
+                                            img.style.width = '100px'; // Set width as needed
+                                            img.style.height = '100px'; // Set height as needed
+                                            previewContainer.appendChild(img);
+                                        };
+                        
+                                        reader.readAsDataURL(file);
+                                    });
+                                } else {
+                                    // If no file selected, show default image
+                                    var img = document.createElement('img');
+                                    img.src = defaultImage.src;
+                                    img.alt = 'default product image';
+                                    img.style.width = '100px'; // Set width as needed
+                                    img.style.height = '100px'; // Set height as needed
+                                    img.style.marginRight = '5px';
+                                    previewContainer.appendChild(img);
+                                }
+                            }
+                        </script>
+                        
+                        
+                        <div class="card mb-4" style="width: 290px;">
+                            <div class="card-header">
+                                <h4>Inventory</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row gx-2">
+                                   
+                                
                                 <div class="mb-4">
                                     <label for="sizeSmall" class="form-label">Small Size</label>
                                     <input type="text" class="form-control" name="small" id="quantitySmall" onblur="coFun()" placeholder="Quantity" value="<%= proData.size.s.quantity %>">
@@ -407,9 +479,24 @@
                     </div>
                 </div>
             </form>
-        
-            
-        </section>
+            </section>
+            <style>
+                /* Add this style for the outlined black line and white background */
+                .card.mb-4 {
+                    border: 1px solid black;
+                    border-radius: 10px;
+                    background-color: white;
+                }
+    
+                .card.mb-4 input[type="text"],
+        .card.mb-4 textarea,
+        .card.mb-4 select {
+            border: 1px solid black;
+            border-radius: 5px;
+            background-color: white;
+            margin-bottom: 10px; /* Adjust as needed */
+        }
+            </style>
 
  <!-- content-main end// -->
         <footer class="main-footer font-xs">

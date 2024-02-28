@@ -21,6 +21,7 @@ const loadAddpro = async (req, res) => {
     try {
         
         const proData  =await Product.find({})
+        console.log(proData);
         const catData = await Category.find({is_blocked:false})
         res.render('addProduct',{catData})
         console.log("jfckdgfjcvhj");

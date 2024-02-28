@@ -254,6 +254,29 @@
                                             </a>
                                         <% } %>
                                     </div>
+                                    <style>
+                                        /* Edit button style */
+a.btn-brand:hover {
+    background-color: black;
+    color: white;
+}
+
+/* Unlist button style */
+a.unlist-btn:hover {
+    background-color: black;
+    color: white;
+}
+a.btn-brand {
+    background-color: black;
+    color: white;
+}
+
+/* Unlist button style */
+a.unlist-btn {
+    background-color: black;
+    color: white;
+}
+                                    </style>
                                 </div>
                                 
                             </div> 
@@ -304,36 +327,7 @@
 
 
 
-    <script>
-        // Wait for the document to be ready
-        document.addEventListener('DOMContentLoaded', function () {
-            // Add click event listener to the Unlist button
-            document.querySelectorAll('.unlist-btn').forEach(function (button) {
-                button.addEventListener('click', function (event) {
-                    event.preventDefault();
     
-                    // Get the professional ID from the data-id attribute
-                    var professionalId = this.getAttribute('data-id');
-    
-                    // Display SweetAlert confirmation
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: 'You won\'t be able to revert this!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, unlist it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // If user clicks "Yes", redirect to the unlist URL
-                            window.location.href = '/admin/block-pro?id=' + professionalId;
-                        }
-                    });
-                });
-            });
-        });
-    </script>
   
 </body>
 
