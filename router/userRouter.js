@@ -21,13 +21,26 @@ userRoute.get('/resendOtp', userController.resendOtp);
 userRoute.get('/forgotPassword',userAuth.isLogOut , userController.forgotPassword)
 userRoute.post('/forgotPassword',userAuth.isLogOut , userController.PostForgotpass);
 userRoute.get('/productDetails', userAuth.isBlocked, userController.productDetails)
-userRoute.get('/accountDetails', userController.accountDetails)
-userRoute.get('/addAddress', userController.addAddress)
+
 
                 
 // userRoute.post('/otpPost',userAuth.isLogOut ,userController.getOtp)
 
+
+//  Account- Dashboard routes
+
 userRoute.get('/orders', userController.orders)
+userRoute.get('/accountDetails', userController.accountDetails)
+userRoute.get('/addAddress', userController.addAddress)
+userRoute.get('/userAddress', userController.userAddress)
+userRoute.post('/postAddress', userController.postAddress)
+userRoute.get('/deleteAddress', userController.deleteAddress)
+userRoute.get('/editAddress', userController.editAddress)
+userRoute.post('/postEditaddress', userController.postEditaddress)
+userRoute.get('/changePassword', userController.changePassword)
+userRoute.get('/viewAccount', userController.viewAccount)
+userRoute.get('/editAccount', userController.editAccount)
+userRoute.post('/postEditAccount', userController.postEditAccount)
 
 
 module.exports = userRoute;         

@@ -548,60 +548,69 @@
                             </div> 
                             <div class="col-lg-6 col-md-6" style="margin-left: 350px; ">
                                 <div class="login-register-wrap register-wrap" style="margin-top: 80px;">
-                                    <h3> <i class="fa fa-user-o" style="margin-left: 150px;"></i>Add Adress</h3>
+                                    <h3> <i class="fa fa-user-o" style="margin-left: 150px;"></i>Edit your Adress</h3>
+                                    <% if (typeof sameNme !== 'undefined') { %>
+                                        <p style="color: red;"><%= sameNme %></p>
+                                    <% } %>
+                                    
+                                     
+                                   
                                     <div class="login-register-form">
-                                        <form action="/postAddress" method="post" onsubmit="return validateForm()">
+                                        <form action="/postEditaddress" method="post" onsubmit="return validateForm()">
                                             <div class="sin-login-register">
                                                 <label>Name <span>*</span></label>
-                                                <input type="text" name="name" id="name" placeholder="Enter your Name" pattern="[A-Za-z][A-Za-z\s]*">
+                                                <input type="text" name="name" id="name" value="<%= userAddress.name %>" pattern="[A-Za-z][A-Za-z\s]*" >
                                                 <p id="nameError" class="text-danger"></p>
                                             </div>
                                             <div class="sin-login-register">
                                                 <label>Phone Number <span>*</span></label>
-                                                <input type="tel" name="number" id="number" placeholder="Enter your Mobile Number" pattern="[0-9]{10}">
+                                                <input type="tel" name="number" id="number"  pattern="[0-9]{10}" value="<%= userAddress.mobile %>">
                                                 <p id="numberError" class="text-danger"></p>
                                             </div>
                                 
                                             <div class="sin-login-register">
                                                 <label>Pincode <span>*</span></label>
-                                                <input type="text" name="pincode" id="pincode" placeholder="Enter Pincode" pattern="[0-9]{6}">
+                                                <input type="text" name="pincode" id="pincode" value="<%= userAddress.pincode %>" pattern="[0-9]{6}">
                                                 <p id="pincodeError" class="text-danger"></p>
                                             </div>
                                 
                                             <div class="sin-login-register">
                                                 <label>Locality <span>*</span></label>
-                                                <input type="text" name="locality" id="locality" placeholder="Enter Locality" pattern="[A-Za-z][A-Za-z\s]*">
+                                                <input type="text" name="locality" id="locality" value="<%= userAddress.locality %>" pattern="[A-Za-z][A-Za-z\s]*">
                                                 <p id="localityError" class="text-danger"></p>
                                             </div>
                                             <div class="mb-4">
+                                               
                                                 <label class="form-label">Address</label>
-                                                <textarea placeholder="Enter your Address" class="form-control" name="address" id="address" rows="4" onblur="addressValidation()"></textarea>
+                                                <textarea class="form-control" name="address" id="address" rows="4" onblur="addressValidation()"><%= userAddress.address %></textarea>
                                                 <p id="disErr" class="text-danger"></p>
+
                                             </div>
                                             <div class="sin-login-register">
                                                 <label>City <span>*</span></label>
-                                                <input type="text" name="city" id="city" pattern="[A-Za-z][A-Za-z\s]*">
+                                                <input type="text" name="city" id="city" value="<%= userAddress.city %>" pattern="[A-Za-z][A-Za-z\s]*">
                                                 <p id="cityError" class="text-danger"></p>
                                             </div>
                                             <div class="sin-login-register">
                                                 <label>State <span>*</span></label>
-                                                <input type="text" name="state" id="state" pattern="[A-Za-z][A-Za-z\s]*">
+                                                <input type="text" name="state" id="state" value="<%= userAddress.state %>" pattern="[A-Za-z][A-Za-z\s]*">
                                                 <p id="stateError" class="text-danger"></p>
                                             </div>
                                             <div class="sin-login-register">
                                                 <label>Country <span>*</span></label>
                                                 <!-- Add a dropdown for country -->
-                                                <input type="text" name="country" id="country" pattern="[A-Za-z][A-Za-z\s]*">
+                                                <input type="text" name="country" id="country" value="<%= userAddress.country %>" pattern="[A-Za-z][A-Za-z\s]*">
                                                 <p id="countryError" class="text-danger"></p>
                                             </div>
                                             <p>Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our <a href="#">privacy policy</a></p>
                                             <div class="login-register-btn">
-                                                <a href="/userAddress"> <button type="submit" style="margin-left: 120px;">Save</button></a>
+                                                <a href="/userAddress"> <button type="submit" style="margin-left: 120px;">Update</button></a>
                                                 <button type="button" style="margin-left: 30px;" onclick="cancelForm()">Cancel</button>
                                             </div>
                                         </form>
                                     </div>
-                                
+                                 
+                                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                     <script>
                                       function validateForm() {
     var nameRegex = /^[A-Z][a-z\s]*([A-Z][a-z\s]*)?$/;
@@ -699,6 +708,7 @@ function addressValidation() {
         document.getElementById('disErr').innerText = "";
     }
 }
+
 
                                     </script>
                                 

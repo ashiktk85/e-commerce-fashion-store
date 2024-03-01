@@ -247,7 +247,7 @@ const verifyLogin = async (req, res) => {
                 } else {
                     res.render('login', { passErr: 'Incorrect password. Please try again.' });
                 }
-                
+
 
             } else {
                 console.log('user is blocked');
@@ -363,35 +363,249 @@ const productDetails = async (req, res) => {
 };
 
 
-const accountDetails = async ( req, res) => {
+//  **************  Account - Dashboard *****************
+
+//DASHBOARD
+
+const accountDetails = async (req, res) => {
     try {
         const id = req.session.userId;
-        
-        
-        const userData = await User.findById({_id : id})
+
+        console.log('accound details page');
+        const userData = await User.findById({ _id: id })
         console.log(userData);
-        res.render('accountDetails',{userData});
+        res.render('accountDetails', { userData });
     } catch (error) {
         console.log(`error in rendring account details page ${error}`);
     }
 }
 
+// VIEW ADDRESS PAGE
 
-const addAddress = async(req , res ) => {
+const userAddress = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        console.log(userId);
+        const email = req.session.email;
+        console.log(email);
+        const userAddress = await Address.find({ userId })
+
+        res.render('userAddress', { userAddress })
+    } catch (error) {
+        console.log(`error in rendring user address page : ${error}`);
+    }
+}
+
+
+
+
+
+// ADD ADDRESS PAGE
+
+const addAddress = async (req, res) => {
     try {
         res.render('addAddress')
     } catch (error) {
-        console.log(`error in rendring add address page ${error}`) 
+        console.log(`error in rendring add address page ${error}`)
     }
 }
 
-const orders = async(req , res ) => {
+
+// VIEW ORDERS PAGE
+
+const orders = async (req, res) => {
     try {
         res.render('order')
     } catch (error) {
-        console.log(`error in rendring orders page ${error}`) 
+        console.log(`error in rendring orders page ${error}`)
     }
 }
+
+
+// Address POST DATA 
+
+
+const postAddress = async (req, res) => {
+    try {
+        const { name, number, pincode, locality, address, city, state, country } = req.body;
+        const userId = req.session.userId;
+
+        // Count the number of addresses for the user
+        const existingAddressesCount = await Address.countDocuments({ userId });
+
+        if (existingAddressesCount >= 3) {
+
+            return res.redirect('/userAddress?limitReached=true');
+        }
+
+        // Assuming you have a UserAddress model
+        const userAddress = new Address({
+            userId,
+            name,
+            mobile: number,
+            pincode,
+            locality,
+            address,
+            city,
+            state,
+            country
+        });
+
+        await userAddress.save();
+
+        res.redirect('/userAddress');
+    } catch (error) {
+        console.log(`error in getting address data post: ${error}`);
+    }
+};
+
+const deleteAddress = async (req, res) => {
+    try {
+        console.log("itsugcvkgcfkgdfdjsdr");
+        const id = req.query.id;
+
+        const dele = await Address.findByIdAndDelete({ _id: id })
+        console.log(id);
+        res.redirect('/userAddress')
+    } catch (error) {
+        console.log(`error in post delete address : ${error}`)
+    }
+}
+
+const editAddress = async (req, res) => {
+    try {
+        const id = req.query.id;
+        console.log(id);
+        const userAddress = await Address.findById({ _id: id })
+        console.log(`itds lsdnlsndojsjdnffojsdn`, userAddress);
+
+        req.session.Address = userAddress;
+
+        res.render('editAddress', { userAddress })
+    } catch (error) {
+        console.log(`error in geting edit address : ${error}`)
+    }
+}
+
+// POST EDIT ADDRESS
+
+
+
+const postEditaddress = async (req, res) => {
+    try {
+        console.log("postyy address");
+
+        const { name, number, pincode, locality, address, city, state, country } = req.body;
+        const userAddress = req.session.Address;
+
+        if (
+            name === userAddress.name &&
+            number === userAddress.number &&
+            pincode === userAddress.pincode &&
+            locality === userAddress.locality &&
+            address === userAddress.address &&
+            city === userAddress.city &&
+            state === userAddress.state &&
+            country === userAddress.country
+        ) {
+            const sameNme = "No changes made, Make changes to update."
+            res.render('editAddress', { sameNme, userAddress });
+        } else {
+            const updatedAddress = await Address.findOneAndUpdate(
+                { _id: userAddress._id },
+                {
+                    $set: {
+                        name,
+                        mobile: number,
+                        pincode,
+                        locality,
+                        address,
+                        city,
+                        state,
+                        country
+                    }
+                },
+                { new: true } // Return the modified document
+            );
+
+            // Redirect to user's address page with the updated address
+            res.redirect('/userAddress');
+        }
+    } catch (error) {
+        console.log(`error in post edit address : ${error}`);
+        // Handle errors and send an appropriate response
+        res.redirect('/userAddress?message=Error updating address. Please try again.'); // Redirect to the user's address page with an error message
+    }
+};
+
+//  CHANGE PASSWORD 
+
+
+const changePassword = async (req, res) => {
+    try {
+        res.render('changePassword')
+    } catch (error) {
+        console.log(`error in rnder change password : ${error}`);
+    }
+}
+
+
+//            VIEW ACCOUNT
+
+const viewAccount = async (req, res) => {
+    try {
+        const email = req.session.email;
+        const userData = await User.findOne({ email: email })
+        res.render('viewAccount', { userData })
+    } catch (error) {
+        console.log(`error in view account : ${error}`);
+    }
+}
+
+// POST EDIT ACCOUNT
+
+const editAccount = async (req, res) => {
+    try {
+        const email = req.session.email;
+        const userData = await User.findOne({ email : email})
+        res.render('editAccount', { userData })
+    } catch (error) {
+        console.log(`error in rendering edit account : ${error}`);
+    }
+}
+
+const postEditAccount = async (req, res) => {
+    try {
+        console.log("4rrrrrrrrrrrrrrrrrrr");
+        const email = req.session.email;
+        const userData = await User.findOne({ email: email });
+        console.log(userData);
+
+        const { name, phone } = req.body;
+
+        // if (name === userData.name && phone === userData.mobile) {
+        //     const message = "No changes made, change to save.";
+        //     res.render('editAccount', { userData, message });
+        // } else {
+           const Data =  await User.findOneAndUpdate(
+                { email: email },
+                {
+                    $set: {
+                        name: name,
+                        mobile: phone
+                    }
+                }
+            );
+            console.log(Data);
+            res.redirect('/viewAccount');
+        
+    } catch (error) {
+        console.error(`Error in getting post data from edit account: ${error}`);
+        // Handle the error response or redirect to an error page
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 
 
 
@@ -412,5 +626,15 @@ module.exports = {
     verifyOtp,
     accountDetails,
     addAddress,
-    orders
+    orders,
+    userAddress,
+    postAddress,
+    deleteAddress,
+    editAddress,
+    postEditaddress,
+    changePassword,
+    viewAccount,
+    editAccount,
+    postEditAccount
+
 };

@@ -508,7 +508,7 @@
                                 </div>
                                 <ul>
                                     <li>
-                                        <a href="index.html">Home 01 </a>
+                                        <a href="/" style="font-family: poppins;color: white;">Home Page</a>
                                     </li>
                                     <li><span> &gt; </span></li>
                                     <li class="active" style="font-family: poppins;color: white;"> My Account </li>
@@ -541,179 +541,117 @@
                             /* Your styles here */
                         }
                     </style>
-                     <div class="container">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                              
-                            </div> 
-                            <div class="col-lg-6 col-md-6" style="margin-left: 350px; ">
-                                <div class="login-register-wrap register-wrap" style="margin-top: 80px;">
-                                    <h3> <i class="fa fa-user-o" style="margin-left: 150px;"></i>Add Adress</h3>
-                                    <div class="login-register-form">
-                                        <form action="/postAddress" method="post" onsubmit="return validateForm()">
-                                            <div class="sin-login-register">
-                                                <label>Name <span>*</span></label>
-                                                <input type="text" name="name" id="name" placeholder="Enter your Name" pattern="[A-Za-z][A-Za-z\s]*">
-                                                <p id="nameError" class="text-danger"></p>
-                                            </div>
-                                            <div class="sin-login-register">
-                                                <label>Phone Number <span>*</span></label>
-                                                <input type="tel" name="number" id="number" placeholder="Enter your Mobile Number" pattern="[0-9]{10}">
-                                                <p id="numberError" class="text-danger"></p>
-                                            </div>
-                                
-                                            <div class="sin-login-register">
-                                                <label>Pincode <span>*</span></label>
-                                                <input type="text" name="pincode" id="pincode" placeholder="Enter Pincode" pattern="[0-9]{6}">
-                                                <p id="pincodeError" class="text-danger"></p>
-                                            </div>
-                                
-                                            <div class="sin-login-register">
-                                                <label>Locality <span>*</span></label>
-                                                <input type="text" name="locality" id="locality" placeholder="Enter Locality" pattern="[A-Za-z][A-Za-z\s]*">
-                                                <p id="localityError" class="text-danger"></p>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label class="form-label">Address</label>
-                                                <textarea placeholder="Enter your Address" class="form-control" name="address" id="address" rows="4" onblur="addressValidation()"></textarea>
-                                                <p id="disErr" class="text-danger"></p>
-                                            </div>
-                                            <div class="sin-login-register">
-                                                <label>City <span>*</span></label>
-                                                <input type="text" name="city" id="city" pattern="[A-Za-z][A-Za-z\s]*">
-                                                <p id="cityError" class="text-danger"></p>
-                                            </div>
-                                            <div class="sin-login-register">
-                                                <label>State <span>*</span></label>
-                                                <input type="text" name="state" id="state" pattern="[A-Za-z][A-Za-z\s]*">
-                                                <p id="stateError" class="text-danger"></p>
-                                            </div>
-                                            <div class="sin-login-register">
-                                                <label>Country <span>*</span></label>
-                                                <!-- Add a dropdown for country -->
-                                                <input type="text" name="country" id="country" pattern="[A-Za-z][A-Za-z\s]*">
-                                                <p id="countryError" class="text-danger"></p>
-                                            </div>
-                                            <p>Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our <a href="#">privacy policy</a></p>
-                                            <div class="login-register-btn">
-                                                <a href="/userAddress"> <button type="submit" style="margin-left: 120px;">Save</button></a>
-                                                <button type="button" style="margin-left: 30px;" onclick="cancelForm()">Cancel</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                
-                                    <script>
-                                      function validateForm() {
-    var nameRegex = /^[A-Z][a-z\s]*([A-Z][a-z\s]*)?$/;
-    var numberRegex = /^[0-9]{10}$/;
-    var pincodeRegex = /^[0-9]{6}$/;
-
-    var name = document.getElementById('name').value.trim(); // Trim removes leading and trailing spaces
-    var number = document.getElementById('number').value;
-    var pincode = document.getElementById('pincode').value;
-    var locality = document.getElementById('locality').value.trim();
-    var address = document.getElementById('address').value.trim();
-    var city = document.getElementById('city').value.trim();
-    var state = document.getElementById('state').value.trim();
-    var country = document.getElementById('country').value;
-
-    var isValid = true;
-
-    // Name validation
-    if (!nameRegex.test(name)) {
-        document.getElementById('nameError').innerText = 'Name should start with a capital letter and contain only letters and spaces.';
-        isValid = false;
-    } else {
-        document.getElementById('nameError').innerText = '';
-    }
-
-    // Phone number validation
-    if (!numberRegex.test(number)) {
-        document.getElementById('numberError').innerText = 'Invalid phone number. Please enter a 10-digit number.';
-        isValid = false;
-    } else {
-        document.getElementById('numberError').innerText = '';
-    }
-
-    // Pincode validation
-    if (!pincodeRegex.test(pincode)) {
-        document.getElementById('pincodeError').innerText = 'Invalid pincode. Please enter a 6-digit number.';
-        isValid = false;
-    } else {
-        document.getElementById('pincodeError').innerText = '';
-    }
-
-    // Locality validation
-    if (!nameRegex.test(locality)) {
-        document.getElementById('localityError').innerText = 'Locality should start with a capital letter and contain only letters and spaces.';
-        isValid = false;
-    } else {
-        document.getElementById('localityError').innerText = '';
-    }
-
-    // Address validation
-    if (address.length < 20) {
-        document.getElementById('disErr').innerText = 'Address should be at least 20 characters long.';
-        isValid = false;
-    } else {
-        document.getElementById('disErr').innerText = '';
-    }
-
-    // City validation
-    if (!nameRegex.test(city)) {
-        document.getElementById('cityError').innerText = 'City should start with a capital letter and contain only letters and spaces.';
-        isValid = false;
-    } else {
-        document.getElementById('cityError').innerText = '';
-    }
-
-    // State validation
-    if (!nameRegex.test(state)) {
-        document.getElementById('stateError').innerText = 'State should start with a capital letter and contain only letters and spaces.';
-        isValid = false;
-    } else {
-        document.getElementById('stateError').innerText = '';
-    }
-
-    // Country validation
-    if (country === "") {
-        document.getElementById('countryError').innerText = 'Please select a country.';
-        isValid = false;
-    } else {
-        document.getElementById('countryError').innerText = '';
-    }
-
-    return isValid;
-}
-
-function cancelForm() {
-    console.log("Cancelled");
-}
-
-function addressValidation() {
-    var address = document.getElementById('address').value.trim();
-
-    if (address.length < 20) {
-        document.getElementById('disErr').innerText = "Address should be at least 20 characters long.";
-    } else {
-        document.getElementById('disErr').innerText = "";
-    }
-}
-
-                                    </script>
-                                
+                  <div class="my-account-area pt-10 pb-95">
+                    <div class="container" style="margin-left: 0;">
+                        <div class="row flex-row-reverse">
+                            <div class="col-lg-12">
+                                <div class="myaccount-tab-menu nav" role="tablist">
+                                    <a href="accountDetails" data-bs-toggle="">Dashboard</a>
+                                    <a href="orders" data-bs-toggle="">Orders</a>
+                                    <a href="#" class="active" data-bs-toggle="">Address</a>
+                                    <a href="changePassword" data-bs-toggle="">Change Password</a>
+                                    <a href="#account-info" data-bs-toggle="tab">Account Details</a>
+                                    <a href="login-register.html">Logout</a>
+                                </div>
+                                <!-- My Account Tab Menu End -->
+                                <!-- My Account Tab Content Start -->
+                                <div class="tab-content" id="myaccountContent">
+                                    <!-- Single Tab Content Start -->
+                                    <!-- Single Tab Content End -->
+                                    <!-- Single Tab Content Start -->
+                                    <div class="tab-pane fade show active" id="address-edit" role="tabpanel">
+                                        <% if(userAddress && userAddress.length > 0) { %>
+                                            <div class="myaccount-content">
+                                                <table class="table table-bordered border-dark">
+                                                    <% for(let i = 0; i < Math.min(userAddress.length, 3); i++) { %>
+                                                        <tr>
+                                                            <td>
+                                                                <p><strong> <%= userAddress[i].name %></strong></p>
+                                                                <p>Address: <%= userAddress[i].address %><br>
+                                                                    <%= userAddress[i].city %>, <%= userAddress[i].state %> <%= userAddress[i].pincode %></p>
+                                                                <p>Mobile: <%= userAddress[i].mobile %></p>
+                                                            </td>
+                                                            <td>
+                                                                <div style="display: flex; align-items: center;">
+                                                                    <a href="/editAddress?id=<%= userAddress[i]._id %>" class="check-btn sqr-btn-sm" style="margin-right: 10px;">
+                                                                        <i class="fa fa-edit"></i> Edit Address
+                                                                    </a>
+                                                                    <button onclick="confirmDelete('<%= userAddress[i]._id %>')" class="btn btn-primary btn-sm"
+                                                                            style="font-size: 14px; text-transform: uppercase; background-color: #000000; border-color: #000000;">
+                                                                        Delete
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <% } %>
+                                                </table>
                                     
-                                    
-                                    
-                                    
+                                                <% if (userAddress.length >= 3) { %>
+                                                    <div class="mt-4">
+                                                        <p style="color: red;">You have reached the maximum limit of 3 addresses. To add a new address, please delete an existing one.</p>
+                                                    </div>
+                                                <% } %>
+                                                <% } %>
                                         
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                
+                                            </div>
+                                            <div class="col-md-6 text-md-end">
+                                                <a href="addAddress">
+                                                    <div class="login-register-btn-remember">
+                                                        <div class="login-register-btn">
+                                                            
+                                                    <button type="submit">Add Address</button>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                
+                                        <!-- Additional content related to the Address tab can be added here -->
+                
                                         
+                                       
+                                    
+                
                                     </div>
+                                    <!-- Single Tab Content End -->
+                                    <!-- Single Tab Content Start -->
+                                    <!-- Single Tab Content End -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                
+                </div>
+                </div>
+                </div>
+                </div>
+                <script>
+                    function confirmDelete(addressId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#000000',
+            cancelButtonColor: '#d33',
+            color : '#ffffff',
+            confirmButtonText: 'Yes, delete it!',
+            background: '#1e1e1e',
+            customClass: {
+                confirmButton: 'no-border'  // Add a custom class for the confirm button
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user clicks "Yes", redirect to the delete route
+                window.location.href = `/deleteAddress?id=${addressId}`;
+            }
+        });
+    }
+                </script>
+                
         <%- include('../partials/footer') %>

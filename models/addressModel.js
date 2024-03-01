@@ -2,9 +2,10 @@
 const mongoose  = require("mongoose");
 
 const addressSchema = new mongoose.Schema({
-    user : {
+    userId : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : 'User'
+        ref : 'users',
+        required : true
     },
     name : {
         type : String,
@@ -21,7 +22,7 @@ const addressSchema = new mongoose.Schema({
     locality : {
         type : String
     },
-    Address : {
+    address : {
         type : String,
         required : true
     },
