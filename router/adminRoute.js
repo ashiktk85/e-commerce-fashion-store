@@ -39,7 +39,7 @@ adminRoute.get('/adminProduct', isAdmin , productController.loadProduct)
 adminRoute.get('/addProduct', isAdmin, productController.loadAddpro)
 adminRoute.post('/addProduct', isAdmin, proUpload.array("image",5), productController.addProduct )
 adminRoute.get('/edit-pro', isAdmin, productController.loadEdit)
-adminRoute.post('/edit-pro', isAdmin, proUpload.array("image",5), productController.editPro)
+adminRoute.post('/edit-pro/:id', isAdmin, proUpload.array("image",5), productController.editPro)
 adminRoute.get('/block-pro', isAdmin, productController.blockPro)
 adminRoute.get('/unblock-pro', isAdmin, productController.unblockPro)
 

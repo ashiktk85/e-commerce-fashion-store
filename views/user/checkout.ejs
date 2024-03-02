@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Kevin hills</title>
+    <title>Toro - Minimal eCommerce HTML Template</title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -508,7 +508,7 @@
                                 </div>
                                 <ul>
                                     <li>
-                                        <a href="index.html">Home 01 </a>
+                                        <a href="/" style="font-family: poppins;color: white;">Home Page</a>
                                     </li>
                                     <li><span> &gt; </span></li>
                                     <li class="active" style="font-family: poppins;color: white;"> My Account </li>
@@ -541,122 +541,156 @@
                             /* Your styles here */
                         }
                     </style>
-                    <!-- <div class="my-account-area pt-10 pb-95">
-                        <div class="container" style="margin-left: 0;">
-                            <div class="row flex-row-reverse">
-                                <div class="col-lg-12">
-                                    <div class="myaccount-tab-menu nav" role="tablist">
-                                        <a href="#dashboad"  data-bs-toggle="tab">
-                                            Dashboard</a>
-                                        <a href="#orders"  data-bs-toggle="tab"> Orders</a>
-                                        
-                                        <a href="#address-edit" data-bs-toggle="tab"> address</a>
-                                        <a href="#address-edit" data-bs-toggle="tab">Change Password</a>
-                                        <a href="#account-info" data-bs-toggle="tab"> Account Details</a>
-                                        <a href="login-register.html"> Logout</a>
-                                    </div>
-                                
-                                    <div class="tab-content" id="myaccountContent">
-                                       
-                                        
-                                        
-                                        <div class="tab-pane fade" id="orders" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <div class="myaccount-table table-responsive text-center">
-                                                    <table class="table table-bordered">
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Order</th>
-                                                                <th>Date</th>
-                                                                <th>Status</th>
-                                                                <th>Total</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td>Aug 22, 2023</td>
-                                                                <td>Pending</td>
-                                                                <td>$3000</td>
-                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>July 22, 2023</td>
-                                                                <td>Approved</td>
-                                                                <td>$200</td>
-                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td>June 12, 2023</td>
-                                                                <td>On Hold</td>
-                                                                <td>$990</td>
-                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                       
-                                    </div>
+
+<div class="checkout-main-area pt-100 pb-100">
+    <div class="container">
+        <div class="customer-zone mb-30">
+            <p class="cart-page-title">Have a coupon? <a class="checkout-click" href="#">Click here to enter your code</a></p>
+            <div class="checkout-login-info">
+                <p>If you have a coupon code, please apply it below.</p>
+                <form action="#">
+                    <input type="text" placeholder="Coupon code">
+                    <input type="submit" value="Apply Coupon">
+                </form>
+            </div>
+        </div>
+        <div class="checkout-wrap">
+            <div class="row">
+                <div class="col-lg-7">
+                    <div class="billing-info-wrap mr-100">
+                        <h3>Billing Details</h3>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6">
+                                <div class="billing-info mb-25">
+                                    <label>First name <abbr class="required" title="required">*</abbr></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="billing-info mb-25">
+                                    <label>Last name <abbr class="required" title="required">*</abbr></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="billing-info mb-25">
+                                    <label>Company name (optional) <abbr class="required" title="required">*</abbr></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="billing-select mb-25">
+                                    <label>Country <abbr class="required" title="required">*</abbr></label>
+                                    <select class="select-active">
+                                        <option>Azerbaijan</option>
+                                        <option>Bahamas</option>
+                                        <option>Bahrain</option>
+                                        <option>Bangladesh</option>
+                                        <option>Barbados</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="billing-info mb-25">
+                                    <label>Street address <abbr class="required" title="required">*</abbr></label>
+                                    <input class="billing-address" placeholder="House number and street name" type="text">
+                                    <input placeholder="Apartment, suite, unit etc. (optional)" type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="billing-info mb-25">
+                                    <label>Town / City <abbr class="required" title="required">*</abbr></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="billing-select mb-25">
+                                    <label>District <abbr class="required" title="required">*</abbr></label>
+                                    <select class="select-active">
+                                        <option>Azerbaijan</option>
+                                        <option>Bahamas</option>
+                                        <option>Bahrain</option>
+                                        <option>Bangladesh</option>
+                                        <option>Barbados</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12">
+                                <div class="billing-info mb-25">
+                                    <label>Postcode / ZIP (optional) <abbr class="required" title="required">*</abbr></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12">
+                                <div class="billing-info mb-25">
+                                    <label>Phone <abbr class="required" title="required">*</abbr></label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12">
+                                <div class="billing-info mb-25">
+                                    <label>Email Address <abbr class="required" title="required">*</abbr></label>
+                                    <input type="text">
                                 </div>
                             </div>
                         </div>
-                    </div> -->
-                    <div class="my-account-area pt-10 pb-95">
-                        <div class="container" style="margin-left: 0;">
-                            <div class="row flex-row-reverse">
-                                <div class="col-lg-12">
-                                    <div class="myaccount-tab-menu nav" role="tablist">
-                                        <a href="accountDetails" data-bs-toggle="">Dashboard</a>
-                                        <a href="#" class="active" data-bs-toggle="">Orders</a>
-                                        <a href="userAddress"  data-bs-toggle="">Address</a>
-                                        <a href="#change-password" data-bs-toggle="tab">Change Password</a>
-                                        <a href="#account-info" data-bs-toggle="tab">Account Details</a>
-                                        <a href="login-register.html">Logout</a>
-                                    </div>
-                    
-                                        <!-- Orders Tab Pane Start -->
-                                        <div class="tab-pane fade show active" id="orders" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <div class="myaccount-table table-responsive text-center">
-                                                    <table class="table table-bordered">
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Order</th>
-                                                                <th>Date</th>
-                                                                <th>Status</th>
-                                                                <th>Total</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td>Aug 22, 2023</td>
-                                                                <td>Pending</td>
-                                                                <td>$3000</td>
-                                                                <td><a href="cart.html" class="check-btn sqr-btn">View</a></td>
-                                                            </tr>
-                                                            <!-- Add more rows as needed -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Orders Tab Pane End -->
-                    
-                                       
-                                </div>
-                            </div>
+                        <div class="additional-info-wrap">
+                            <h3>Additional information</h3>
+                            <label>Order notes (optional)</label>
+                            <textarea placeholder="Notes about your order, e.g. special notes for delivery. " name="message"></textarea>
                         </div>
                     </div>
-                    
+                </div>
+                <div class="col-lg-5">
+                    <div class="your-order-area">
+                        <h3>Your order</h3>
+                        <div class="your-order-wrap gray-bg-4">
+                            <div class="your-order-info-wrap">
+                                <div class="your-order-info">
+                                    <ul>
+                                        <li>Product <span>Total</span></li>
+                                    </ul>
+                                </div>
+                                <div class="your-order-middle">
+                                    <ul>
+                                        <li>Product Name X 1 <span>$329 </span></li>
+                                        <li>Product Name X 1 <span>$329 </span></li>
+                                    </ul>
+                                </div>
+                                <div class="your-order-info order-subtotal">
+                                    <ul>
+                                        <li>Subtotal <span>$329 </span></li>
+                                    </ul>
+                                </div>
+                                <div class="your-order-info order-total">
+                                    <ul>
+                                        <li>Total <span>£273.00 </span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="payment-method">
+                                <h5>Direct Bank Transfer</h5>
+                                <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
+                            </div>
+                            <div class="condition-wrap">
+                                <p>Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our <a href="#">privacy policy</a></p>
+                                <div class="condition-form mb-25">
+                                    <input type="checkbox">
+                                    <span>I have read and agree to the website <a href="#">terms and conditions</a><span class="star">*</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="Place-order mt-30">
+                            <a href="#">Place Order</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+</div>
+</div>
 
-        <%- include('../partials/footer') %>
+
+<%- include('../partials/footer') %>

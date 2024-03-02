@@ -195,128 +195,7 @@
                     </li>
                 </ul>
             </div>
-        </header>
-        <!-- <section class="content-main">
-            <form action="/admin/addProduct" method="post" enctype="multipart/form-data" id="submitId">
-                <div class="row">
-                    <div class="col-lg-9" style="width: 60%;">
-                        <div class="content-header">
-                            <h2 class="content-title">Add New Product</h2>
-                        </div>
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h4>Basic</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Product title</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_name"
-                                        name="product_name" onblur="nameFun()" value="<%= typeof product_name !== 'undefined' ? product_name : '' %>">
-                                    <p id="nameErr" class="text-danger"></p>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Full description</label>
-                                    <textarea placeholder="Type here" class="form-control" name="product_dis" rows="4"
-                                        id="product_dis" onblur="disFun()"></textarea>
-                                    <p id="disErr" class="text-danger"></p>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label class="form-label">Regular price</label>
-                                            <input placeholder="$" type="text" class="form-control" name="regprice"
-                                                id="regprice" onblur="rpFun()">
-                                            <p id="rpErr" class="text-danger"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="mb-4">
-                                            <label class="form-label">Offer price</label>
-                                            <input placeholder="$" type="text" class="form-control" name="offprice"
-                                                id="offprice" onblur="opFun()">
-                                            <p id="opErr" class="text-danger"></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                    <div class="mb-4">
-                                        <label class="form-label">Category</label>
-                                        <select class="form-select" name="catName">
-                                            <% if(locals.catData){%>
-                                                
-                                            <% catData.forEach(element =>{%>
-                                            
-                                                <option value="<%=element._id%>"> <%= element.name %></option>
-                                                 <%})%>
-                                                 <%}%>
-                                        </select>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mt-4">
-                        <div class="card mb-4" style="width: 290px;">
-                            <div class="card-header">
-                                <h4>Media</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="input-upload">
-                                    <label for="Pro_img" class="form-label">Upload Images</label>
-                                    <input class="form-control" name="image" type="file" id="Pro_img" multiple onchange="previewImages()">
-                                    <div id="imagePreviewContainer" class="image-preview-container"></div>
-                                    <p class="text-danger text-center mb-15 mt-15" id="imageError"></p>
-                                </div>
-                            </div>
-                            <style>
-                                .image-preview-container {
-                                    display: flex;
-                                    flex-wrap: wrap;
-                                }
-                        
-                                .image-preview {
-                                    width: 100px;
-                                    height: 100px;
-                                    margin: 5px;
-                                }
-                            </style>
-                        <div class="card mb-4" style="width: 290px;">
-                            <div class="card-header">
-                                <h4>Inventory</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row gx-2">
-                                   
-                                </div>
-                                <div class="mb-4">
-                                    <label for="sizeSmall" class="form-label">Small Size</label>
-                                    <input type="text" class="form-control" name="small" id="quantitySmall" onblur="coFun()" placeholder="Quantity">
-                                    <p id="sizeSmallErr" class="text-danger"></p>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="sizeMedium" class="form-label">Medium Size</label>
-                                    <input type="text" class="form-control" name="medium" id="quantityMedium" onblur="coFun()" placeholder="Quantity">
-                                    <p id="sizeMediumErr" class="text-danger"></p>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="sizeLarge" class="form-label">Large Size</label>
-                                    <input type="text" class="form-control" name="large" id="quantityLarge" onblur="coFun()" placeholder="Quantity">
-                                    <p id="sizeLargeErr" class="text-danger"></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row justify-content-end">
-                    <div class="col-lg-9">
-                        <div>
-                            <input type="button" class="btn btn-outline-secondary" onclick="cancel()" value="Cancel">
-                            <input type="submit" class="btn btn-primary" onclick="validateForm()"  value="Add"></input>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </section> -->
+      
         <section class="content-main">
             <form action="/admin/addProduct" method="post" enctype="multipart/form-data" id="submitId">
                 <div class="row">
@@ -438,7 +317,7 @@
                     <div class="col-lg-9">
                         <div>
                             <input type="button" class="btn btn-outline-secondary" onclick="cancel()" value="Cancel">
-                            <input type="submit" class="btn btn-primary" onclick="validateForm()" value="Add"></input>
+                            <input type="submit" class="btn btn-primary" id="submit" onclick="validateForm()" value="Add"></input>
                         </div>
                     </div>
                 </div>
@@ -491,261 +370,201 @@
     <!-- Using CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
+
     <script>
+        // alert("hell")
 
-function nameFun() {
-    const name = document.getElementById("product_name").value.trim();
-    const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
-    const nameError = document.getElementById("nameErr");
-
-    if (name === '') {
-        nameError.innerHTML = "Product name is required";
-    } else if (!nameRegex.test(name)) {
-        nameError.innerHTML = "Invalid Name, no spaces at the beginning of the name";
-    } else {
-        nameError.innerHTML = "";
-    }
-}
-
-function disFun() {
-    const dis = document.getElementById("product_dis").value.trim();
-    const disError = document.getElementById("disErr");
-
-    if (dis === '') {
-        disError.innerHTML = "Product description is required";
-    } else {
-        disError.innerHTML = "";
-    }
-}
-
-function rpFun() {
-    const rp = document.getElementById("regprice").value.trim();
-    const regex = /^[0-9]+$/;
-    const rpError = document.getElementById("rpErr");
-
-    if (rp === '') {
-        rpError.innerHTML = "Regular price is required";
-    } else if (!regex.test(rp)) {
-        rpError.innerHTML = "Invalid price";
-    } else {
-        rpError.innerHTML = "";
-    }
-}
-
-function opFun() {
-    const op = document.getElementById("offprice").value.trim();
-    const rp = document.getElementById("regprice").value.trim();
-    const regex = /^[0-9]+$/;
-    const opError = document.getElementById("opErr");
-
-    if (op === '') {
-        opError.innerHTML = "Offer price is required";
-    } else if (!regex.test(op)) {
-        opError.innerHTML = "Invalid price";
-    } else if (parseFloat(op) > parseFloat(rp)) {
-        opError.innerHTML = "Offer price cannot exceed regular price";
-    } else {
-        opError.innerHTML = "";
-    }
-}
-
-function coFun() {
-    validateQuantity("small", "quantitySmall", "sizeSmallErr");
-    validateQuantity("medium", "quantityMedium", "sizeMediumErr");
-    validateQuantity("large", "quantityLarge", "sizeLargeErr");
-}
-
-function validateQuantity(sizeLabel, quantityId, errorId) {
-    const quantity = document.getElementById(quantityId).value.trim();
-    const errorElement = document.getElementById(errorId);
-
-    if (quantity === '') {
-        errorElement.innerHTML = `${sizeLabel} Size Quantity is required`;
-    } else if (!/^[0-9]+$/.test(quantity)) {
-        errorElement.innerHTML = `Invalid quantity for ${sizeLabel} Size`;
-    } else {
-        errorElement.innerHTML = "";
-    }
-}
-
-function imageValidation() {
-    const selectImage = document.getElementById("Pro_img").files;
-    const imageError = document.getElementById("imageError");
-
-    if (selectImage.length < 3) {
-        imageError.textContent = "Please select at least 3 images";
-        return false;
-    }
-    imageError.textContent = "";
-    return true;
-}
-
-function validateImage() {
-    const fileInput = document.getElementById('Pro_img');
-    const imageError = document.getElementById('imageError');
-    const allowedExtensions = ['jpg', 'jpeg', 'png'];
-
-    imageError.textContent = '';
-
-    if (!fileInput.files.length) {
-        imageError.textContent = 'Please select an image';
-    } else {
-        const fileExtension = fileInput.files[0].name.split('.').pop().toLowerCase();
-        if (!allowedExtensions.includes(fileExtension)) {
-            imageError.textContent = 'Invalid file format. Please upload a JPEG or PNG file.';
+        function nameFun() {
+            const name = document.getElementById("product_name").value.trim();
+            const nameRegex = /^[A-Za-z]+(?:\s[A-Za-z]+)*$/;
+            const nameError = document.getElementById("nameErr");
+    
+            if (name === '') {
+                nameError.innerHTML = "Product name is required";
+            } else if (!nameRegex.test(name)) {
+                nameError.innerHTML = "Invalid Name, no spaces at the beginning of the name";
+            } else {
+                nameError.innerHTML = "";
+            }
         }
-    }
-}
-
-function previewImages() {
+    
+        function disFun() {
+            const dis = document.getElementById("product_dis").value.trim();
+            const disError = document.getElementById("disErr");
+    
+            if (dis === '') {
+                disError.innerHTML = "Product description is required";
+            } else {
+                disError.innerHTML = "";
+            }
+        }
+    
+        function rpFun() {
+            const rp = document.getElementById("regprice").value.trim();
+            const regex = /^[0-9]+$/;
+            const rpError = document.getElementById("rpErr");
+    
+            if (rp === '') {
+                rpError.innerHTML = "Regular price is required";
+            } else if (!regex.test(rp)) {
+                rpError.innerHTML = "Invalid price";
+            } else {
+                rpError.innerHTML = "";
+            }
+        }
+    
+        function opFun() {
+            const op = document.getElementById("offprice").value.trim();
+            const rp = document.getElementById("regprice").value.trim();
+            const regex = /^[0-9]+$/;
+            const opError = document.getElementById("opErr");
+    
+            if (op !== '' && !regex.test(op)) {
+                opError.innerHTML = "Invalid price";
+            } else if (op !== '' && parseFloat(op) > parseFloat(rp)) {
+                opError.innerHTML = "Offer price cannot exceed regular price";
+            } else {
+                opError.innerHTML = "";
+            }
+        }
+    
+        function coFun() {
+            validateQuantity("small", "quantitySmall", "sizeSmallErr");
+            validateQuantity("medium", "quantityMedium", "sizeMediumErr");
+            validateQuantity("large", "quantityLarge", "sizeLargeErr");
+        }
+    
+        function validateQuantity(sizeLabel, quantityId, errorId) {
+            const quantity = document.getElementById(quantityId).value.trim();
+            const errorElement = document.getElementById(errorId);
+    
+            if (quantity === '') {
+                errorElement.innerHTML = `${sizeLabel} Size Quantity is required`;
+            } else if (!/^[0-9]+$/.test(quantity)) {
+                errorElement.innerHTML = `Invalid quantity for ${sizeLabel} Size`;
+            } else {
+                errorElement.innerHTML = "";
+            }
+        }
+    
+        function previewImages() {
             const input = document.getElementById('Pro_img');
             const previewContainer = document.getElementById('imagePreviewContainer');
             const files = input.files;
-
+    
             // Clear previous previews
             previewContainer.innerHTML = '';
-
+    
             for (const file of files) {
                 const reader = new FileReader();
-
+    
                 reader.onload = function (e) {
                     const preview = document.createElement('img');
                     preview.src = e.target.result;
                     preview.classList.add('image-preview');
                     previewContainer.appendChild(preview);
                 };
-
+    
                 reader.readAsDataURL(file);
             }
         }
+    
+        function validateImages() {
+            const fileInput = document.getElementById('Pro_img');
+            const imageError = document.getElementById('imageError');
+            const allowedExtensions = ['jpg', 'jpeg', 'png'];
+
+            for (const file of fileInput.files) {
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+        imageError.textContent = 'Invalid file format. Please upload JPEG or PNG files.';
+        return false;
+    }
+}
+    
+            if (fileInput.files.length < 3) {
+                imageError.textContent = 'Please select at least 3 images';
+                return false;
+            }
+    
+          imageError.textContent = '';
+
+
+
+return true;
+}
 
 function validateForm() {
-    nameFun();
-    disFun();
-    rpFun();
-    coFun();
-    opFun();
-    imageValidation();
-    validateImage();
+const validationFunctions = [nameFun(), disFun(), rpFun(), coFun(), validateImages()];
+let isValid = true;
 
-    const errorElements = document.querySelectorAll('.text-danger');
-    for (const element of errorElements) {
-        if (element.innerHTML.trim() !== '') {
-            return false;
-        }
+for (const validationFunction of validationFunctions) {
+    validationFunction();
+}
+
+const errorElements = document.querySelectorAll('.text-danger');
+for (const element of errorElements) {
+    if (element.innerHTML.trim() !== '') {
+        isValid = false;
+        break;
     }
+}
 
-    return true;
+return isValid;
 }
 
 document.getElementById("submitId").addEventListener("submit", (e) => {
-    nameFun();
-    disFun();
-    rpFun();
-    coFun();
-    opFun();
-    imageValidation();
-    validateImage();
-
-    const name = document.getElementById("nameErr");
-    const dis = document.getElementById("disErr");
-    const gp = document.getElementById("rpErr");
-    const op = document.getElementById("opErr");
-    const st = document.getElementById("stErr");
-    const ie = document.getElementById("imageError");
-
-    if (name.innerHTML || dis.innerHTML || gp.innerHTML || op.innerHTML || st.innerHTML || ie.innerHTML) {
-        e.preventDefault();
-    }
+if (!validateForm()) {
+    e.preventDefault();
+}
 });
 
+// function cancel() {
+// // Removed unused parameters (name, dis, rp, op, small, medium, large)
+// function cancel() {
+//     const name = document.getElementById("product_name").value.trim();
+//     const dis = document.getElementById("product_dis").value.trim();
+//     const rp = document.getElementById("regprice").value.trim();
+//     const op = document.getElementById("offprice").value.trim();
+//     const small = document.getElementById("quantitySmall").value.trim();
+//     const medium = document.getElementById("quantityMedium").value.trim();
+//     const large = document.getElementById("quantityLarge").value.trim();
 
+//     if (name === '' && dis === '' && rp === '' && op === '' && small === '' && medium === '' && large === '') {
+//         // If all fields are empty, redirect to adminProduct page
+//         window.location.href = "http://localhost:7777/admin/adminProduct";
+//     } else {
+//         // If any field is not empty, show a confirmation modal
+//         alert("khhkjfkhc")
+//         Swal.fire({
+//             title: "Are you sure?",
+//             text: "You won't be able to revert this!",
+//             icon: "warning",
+//             showCancelButton: true,
+//             confirmButtonColor: "#d33",
+//             cancelButtonColor: "#3085d6",
+//             confirmButtonText: "Discard", // Swapping the buttons
+//             cancelButtonText: "Cancel"     // Swapping the buttons
+//         }).then((result) => {
+//             if (result.isConfirmed) {
+//                 // If the user confirms, show success modal and redirect
+//                 Swal.fire({
+//                     title: "Cancel!",
+//                     text: "Your data has been discarded.",
+//                     icon: "success"
+//                 }).then(() => {
+//                     window.location.href = "http://localhost:7777/admin/addProduct";
+//                 });
+//             }
+//         });
+//     }
+// }
 
+// Existing code...
 
-        // function cancel(){
-        //     const name = document.getElementById("product_name").value.trim()
-        //     const dis = document.getElementById("product_dis").value.trim()
-        //     const rp = document.getElementById("regprice").value.trim()
-        //     const op = document.getElementById("offprice").value.trim()
+</script>
 
-
-        //     const col = document.getElementById("size").value.trim()
-
-        //     if(name==''&&dis==''&&rp==''&&op==''){
-        //         window.location.href = "http://localhost:7777/admin/adminProduct"
-        //     }else{
-        //         //  alert("h")
-        //          Swal.fire({
-        //             title: "Are you sure?",
-        //             text: "You won't be able to revert this!",
-        //             icon: "warning",
-        //             showCancelButton: true,
-        //             confirmButtonColor: "#d33",
-        //             cancelButtonColor: "#3085d6",
-        //             confirmButtonText: "Discard", // Swapping the buttons
-        //             cancelButtonText: "Cancel"     // Swapping the buttons
-        //         }).then((result) => {
-        //             if (result.isConfirmed) {
-        //                 Swal.fire({
-        //                     title: "Cancel!",
-        //                     text: "Your filed has been removed.",
-        //                     icon: "success"
-        //                 }).then(()=>{
-        //                     window.location.href = "http://localhost:7777/admin/addProduct"
-        //                 })
-        //             }
-        //         })
-        //     }
-        // }
-
-
-        function cancel() {
-    const name = document.getElementById("product_name").value.trim();
-    const dis = document.getElementById("product_dis").value.trim();
-    const rp = document.getElementById("regprice").value.trim();
-    const op = document.getElementById("offprice").value.trim();
-    const small = document.getElementById("quantitySmall").value.trim();
-    const medium = document.getElementById("quantityMedium").value.trim();
-    const large = document.getElementById("quantityLarge").value.trim();
-
-    if (name === '' && dis === '' && rp === '' && op === '' && small === '' && medium === '' && large === '') {
-        // If all fields are empty, redirect to adminProduct page
-        window.location.href = "http://localhost:7777/admin/adminProduct";
-    } else {
-        // If any field is not empty, show a confirmation modal
-        alert("khhkjfkhc")
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Discard", // Swapping the buttons
-            cancelButtonText: "Cancel"     // Swapping the buttons
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // If the user confirms, show success modal and redirect
-                Swal.fire({
-                    title: "Cancel!",
-                    text: "Your data has been discarded.",
-                    icon: "success"
-                }).then(() => {
-                    window.location.href = "http://localhost:7777/admin/addProduct";
-                });
-            }
-        });
-    }
-}
-
-
-
-
-
-
-
-
-    </script>
+    
 </body>
 
 

@@ -303,7 +303,7 @@
                 </div>
             </form> -->
 
-            <form action="" method="post" enctype="multipart/form-data" id="submitId">
+            <form action='/admin/edit-pro/<%= proData._id %>' method="post" enctype="multipart/form-data"  id="submitId">
                 <div class="row">
                     <div class="col-lg-9" style="width: 60%;">
                         <div class="content-header">
@@ -375,14 +375,18 @@
                                             <% proData.image.slice(0, 5).forEach(image => { %>
                                                 <img src="/uploads/<%= image %>" alt="product image">
                                             <% }); %>
-                                        <% } else { %>
-                                            <img id="defaultImage" src="/uploads/<%= image %>" alt="default product image">
-                                        <% } %>
+                                        <% } else if (proData && proData.image) { %>
+                                            <% for (let i = 0; i < proData.image.length; i++) { %>
+                                                <img id="existingImage<%= i %>" src="/uploads/<%= proData.image[i] %>" alt="existing product image">
+                                            <% } %>
+                                        <% }  %>
                                     </div>
+                            
                                     <input class="form-control" name="image" type="file" id="Pro_img" multiple onchange="previewImages()">
                                     <p class="text-danger text-center mb-15 mt-15" id="imageError"></p>
                                 </div>
                             </div>
+                            
                         </div>
                         
                         <!-- <div class="card mb-4" style="width: 290px;">
@@ -565,23 +569,40 @@
             }
         }
         
+        // function opFun() {
+        //     const op = document.getElementById("offprice").value.trim();
+        //     const rp = document.getElementById("regprice").value.trim();
+        //     const regex = /^[0-9]+$/;
+        //     const opError = document.getElementById("opErr");
+        
+        //     if (op === '') {
+        //         opError.innerHTML = "Offer price is required";
+        //     } else if (!regex.test(op)) {
+        //         opError.innerHTML = "Invalid price";
+        //     } else if (parseFloat(op) > parseFloat(rp)) {
+        //         opError.innerHTML = "Offer price cannot exceed regular price";
+        //     } else {
+        //         opError.innerHTML = "";
+        //     }
+        // }
+        
+
+
         function opFun() {
-            const op = document.getElementById("offprice").value.trim();
-            const rp = document.getElementById("regprice").value.trim();
-            const regex = /^[0-9]+$/;
-            const opError = document.getElementById("opErr");
-        
-            if (op === '') {
-                opError.innerHTML = "Offer price is required";
-            } else if (!regex.test(op)) {
-                opError.innerHTML = "Invalid price";
-            } else if (parseFloat(op) > parseFloat(rp)) {
-                opError.innerHTML = "Offer price cannot exceed regular price";
-            } else {
-                opError.innerHTML = "";
-            }
-        }
-        
+    const op = document.getElementById("offprice").value.trim();
+    const rp = document.getElementById("regprice").value.trim();
+    const regex = /^[0-9]+$/;
+    const opError = document.getElementById("opErr");
+
+    if (op !== '' && !regex.test(op)) {
+        opError.innerHTML = "Invalid price";
+    } else if (op !== '' && parseFloat(op) > parseFloat(rp)) {
+        opError.innerHTML = "Offer price cannot exceed regular price";
+    } else {
+        opError.innerHTML = "";
+    }
+}
+
         function coFun() {
             validateQuantity("small", "quantitySmall", "sizeSmallErr");
             validateQuantity("medium", "quantityMedium", "sizeMediumErr");

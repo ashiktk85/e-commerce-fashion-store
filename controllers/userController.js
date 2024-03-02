@@ -607,6 +607,16 @@ const postEditAccount = async (req, res) => {
 };
 
 
+//   PRODUCTS PAGE ALL
+
+const allProducts = async(req, res ) => {
+    try {
+        res.render('allProducts')
+    } catch (error) {
+       console.log(`error in logging all products page : ${error}`); 
+    }
+}
+
 
 
 
@@ -635,6 +645,7 @@ module.exports = {
     changePassword,
     viewAccount,
     editAccount,
-    postEditAccount
+    postEditAccount,
+    allProducts
 
 };

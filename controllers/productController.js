@@ -21,7 +21,7 @@ const loadAddpro = async (req, res) => {
     try {
         
         const proData  =await Product.find({})
-        console.log(proData);
+        
         const catData = await Category.find({is_blocked:false})
         res.render('addProduct',{catData})
         console.log("jfckdgfjcvhj");
@@ -99,69 +99,204 @@ const addProduct = async (req, res) => {
 
 
 
+// const editPro = async (req, res) => {
+//     try {
+
+//         console.log("eeeeeeedittttttttttttttttttttttttttt")
+        
+//         const id = req.query.id;
+//         console.log(id);
+
+        
+
+//         // const catData = await Category.find();
+
+//         const images = req.files;
+//         console.log(images);
+//         const imageName = images ? images.map((x) => x.originalname) : [];
+//         console.log(imageName);
+
+//         console.log(req.body.catName);
+
+//         const catData=await Category.findOne({})
+//         console.log(catData);
+//         console.log("reached here...");
+
+//         const proData = await Product.findOneAndUpdate(
+//             { _id: id },
+//             {
+//                 $set: {
+//                     name: req.body.product_name,
+//                     discripiton: req.body.product_dis,
+//                     regularPrice: req.body.regprice,
+//                     offerPrice: req.body.offprice,
+//                     category: catData._id,
+//                     size: {
+//                         s: {
+//                             quantity: req.body.small,
+//                         },
+//                         m: {
+//                             quantity: req.body.medium,
+//                         },
+//                         l: {
+//                             quantity: req.body.large,
+//                         },
+//                     },
+//                 },
+//             }
+//         );
+
+//         console.log("pppppppppppppprrrrrrrrrrrrrrrrrrrrrrrrrrrooooooooooooooooooooooooooooo");
+
+//         if (images && images.length > 0) {
+//             await Product.findByIdAndUpdate({ _id: id }, { $push: { image: { $each: imageName } } });
+//         }
+
+//         if(proData) {
+//             res.redirect("/admin/adminProduct");
+//         }
+
+        
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send("Internal Server Error");
+//     }
+// };
+
+// const editPro = async (req, res) => {
+//     try {
+//         console.log("getting at the beegging of edit product");
+//       const id = req.params.id;
+  
+  
+//       console.log(id);
+//       if (req.files.length > 0) {
+  
+//         const catData=await Category.findOne({name:req.body.catName})
+   
+         
+//         const imageName    = req.files.map((x) => x.originalname);
+//         const updatePro = await Product.findByIdAndUpdate(
+//             { _id:id },
+//             {
+//                 $set: {
+//                     name: req.body.product_name,
+//                     discripiton: req.body.product_dis,
+//                     regularPrice: req.body.regprice,
+//                     offerPrice: req.body.offprice,
+//                     category: catData._id,
+//                     size: {
+//                         s: {
+//                             quantity: req.body.small,
+//                         },
+//                         m: {
+//                             quantity: req.body.medium,
+//                         },
+//                         l: {
+//                             quantity: req.body.large,
+//                         },
+//                     },
+//                 },
+//             }
+//         );
+//         if (updatePro) {
+//           res.redirect("/admin/adminProduct");
+//         }
+//       } else {
+//         console.log(req.body.catName)
+//         const catData=await Category.findOne({name:req.body.catName})
+//         console.log("getting at the beegging of edit product inside else");
+//         const updatePro = await Product.findByIdAndUpdate(
+//             { _id: id },
+//             {
+//                 $set: {
+//                     name: req.body.product_name,
+//                     discripiton: req.body.product_dis,
+//                     regularPrice: req.body.regprice,
+//                     offerPrice: req.body.offprice,
+//                     category: catData._id,
+//                     size: {
+//                         s: {
+//                             quantity: req.body.small,
+//                         },
+//                         m: {
+//                             quantity: req.body.medium,
+//                         },
+//                         l: {
+//                             quantity: req.body.large,
+//                         },
+//                     },
+//                 },
+//             }
+//         );
+//         console.log("getting at the last of edit product");
+//         if (updatePro) {
+//           res.redirect("/admin/adminProduct");
+//         }
+//       }
+  
+      
+
+  
+      
+//     } catch (error) {
+//       console.log(error.message);
+//     }
+//   };
+
+
 const editPro = async (req, res) => {
     try {
+        console.log("Editing product...");
 
-        console.log("eeeeeeedittttttttttttttttttttttttttt")
-        
-        const id = req.query.id;
-        console.log(id);
+        const id = req.params.id; // Use req.params to get the ID from the URL
 
-        
+        // Find the existing document by ID
+        const existingDoc = await Product.findById(id);
 
-        // const catData = await Category.find();
-
-        const images = req.files;
-        console.log(images);
-        const imageName = images ? images.map((x) => x.originalname) : [];
-        console.log(imageName);
-
-        console.log(req.body.catName);
-
-        const catData=await Category.findOne({})
-        console.log(catData);
-        console.log("reached here...");
-
-        const proData = await Product.findOneAndUpdate(
-            { _id: id },
-            {
-                $set: {
-                    name: req.body.product_name,
-                    discripiton: req.body.product_dis,
-                    regularPrice: req.body.regprice,
-                    offerPrice: req.body.offprice,
-                    category: catData._id,
-                    size: {
-                        s: {
-                            quantity: req.body.small,
-                        },
-                        m: {
-                            quantity: req.body.medium,
-                        },
-                        l: {
-                            quantity: req.body.large,
-                        },
-                    },
-                },
-            }
-        );
-
-        console.log("pppppppppppppprrrrrrrrrrrrrrrrrrrrrrrrrrrooooooooooooooooooooooooooooo");
-
-        if (images && images.length > 0) {
-            await Product.findByIdAndUpdate({ _id: id }, { $push: { image: { $each: imageName } } });
+        if (!existingDoc) {
+            // Handle the case where the document with the specified ID was not found
+            return res.status(404).json({ error: 'Document not found' });
         }
 
-        if(proData) {
-            res.redirect("/admin/adminProduct");
+        // Update the fields of the existing document
+        existingDoc.name = req.body.product_name;
+        existingDoc.discripiton = req.body.product_dis;
+        existingDoc.regularPrice = req.body.regprice;
+        existingDoc.offerPrice = req.body.offprice;
+
+        // Update category only if catName is provided in the request body
+        if (req.body.catName) {
+            const catData = await Category.findOne({ name: req.body.catName });
+            existingDoc.category = catData ? catData._id : null;
         }
 
-        
+        existingDoc.size = {
+            s: { quantity: req.body.small },
+            m: { quantity: req.body.medium },
+            l: { quantity: req.body.large },
+        };
+
+        // Update images only if files are provided in the request
+        if (req.files && req.files.length > 0) {
+            // Clear existing images and add new ones
+            const images = req.files.map((x) => x.originalname);
+            existingDoc.image = images;
+        }
+
+        // Save the updated document
+        await existingDoc.save();
+
+        // Redirect to the adminProduct page after successful update
+        res.redirect("/admin/adminProduct");
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         res.status(500).send("Internal Server Error");
     }
 };
+
+
+
 
 const blockPro=async(req,res)=>{
     try {
