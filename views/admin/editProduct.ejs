@@ -347,11 +347,13 @@
                                         <div class="mb-4">
                                             <label class="form-label">Category</label>
                                         <select class="form-select" name="catName">
-                                            <% if(locals.catData){%>
+                                            <option value="<%= catName %>"> <%= catName %></option>
+                                            <% if(locals.catData && catName){%>
                                                 
                                             <% catData.forEach(element =>{%>
                                             
-                                                <option value="<%=element._id%>"> <%= element.name %></option>
+                                                
+                                                <option value="<%= element.name %>"> <%= element.name %></option>
                                                  <%})%>
                                                  <%}%>
                                         </select>

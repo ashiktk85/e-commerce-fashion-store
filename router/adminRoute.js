@@ -42,6 +42,7 @@ adminRoute.get('/edit-pro', isAdmin, productController.loadEdit)
 adminRoute.post('/edit-pro/:id', isAdmin, proUpload.array("image",5), productController.editPro)
 adminRoute.get('/block-pro', isAdmin, productController.blockPro)
 adminRoute.get('/unblock-pro', isAdmin, productController.unblockPro)
+adminRoute.get('/edit-detailedView', isAdmin, productController.detailedPro)
 
 
 

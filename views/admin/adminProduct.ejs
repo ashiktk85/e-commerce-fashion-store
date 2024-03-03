@@ -216,87 +216,69 @@
                                      <%}%>
                             </select>
                         </div>
-                        <!-- <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Latest added</option>
-                                <option>Cheap first</option>
-                                <option>Most viewed</option>
-                            </select>
-                        </div> -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Image</th>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Regular price</th>
+                                        <th class="text-center">Offer Price</th>
+                                        <th class="text-center">Action</th>
+                                        <th class="text-center">Product Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for (let i = 0; i < proData.length; i++) { %>
+                                        <tr>
+                                            <td class="align-middle text-center" style="width: 100px;">
+                                                <img style="width: 100%;" src="/uploads/<%= proData[i].image[0] %>" alt="Product">
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <a href="#" class="text-truncate"><%= proData[i].name %></a>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                $<%= proData[i].regularPrice %>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <% if (proData[i].offerPrice === null) { %>
+                                                 <span>Nill</span>
+                                                <% } else { %>
+                                                $<%= proData[i].offerPrice %>
+                                                <% } %>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <% if (proData[i].is_blocked == true) { %>
+                                                    <a href="/admin/block-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm btn-light rounded unlist-btn">
+                                                        <i class="material-icons md-delete_forever"></i> Unlist
+                                                    </a>
+                                                <% } else { %>
+                                                    <a href="/admin/edit-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                                        <i class="material-icons md-edit"></i> Edit
+                                                    </a>
+                                                    <a href="/admin/unblock-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                                        <i class="material-icons md-delete_forever"></i> List
+                                                    </a>
+                                                <% } %>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <a href="/admin/edit-detailedView?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                                    <i class="material-icons"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        
+                        
+                        
                     </div>
                 </header> <!-- card-header end// -->
-                <div class="card-body">
-                    <div class="row gx-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-5">
-
-                        <% for( let i = 0; i< proData.length; i++ ) { %>
-                        
-                            <div class="col">
-                                
-                                <div class="card card-product-grid">
-                                    <a href="#" class="img-wrap">
-                                        <img style="width: 200px; height: 250px;" src="/uploads/<%= proData[i].image[0] %>" alt="Product">
-                                    </a>
-                                    <div class="info-wrap">
-                                        <a href="#" class="title text-truncate"><%= proData[i].name %></a>
-                                        <div class="price mb-2">$<%= proData[i].offerPrice %></div>
-                                       
-                                
-                                        <% if (proData[i].is_blocked == true) { %>
-                                            <a href="/admin/block-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm btn-light rounded unlist-btn">
-                                                <i class="material-icons md-delete_forever"></i> Unlist
-                                            </a>
-                                        <% } else { %>
-                                            <a href="/admin/edit-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
-                                                <i class="material-icons md-edit"></i> Edit
-                                            </a>
-                                            <a href="/admin/unblock-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
-                                                <i class="material-icons md-delete_forever"></i> List
-                                            </a>
-                                        <% } %>
-                                    </div>
-                                    <style>
-                                        /* Edit button style */
-a.btn-brand:hover {
-    background-color: black;
-    color: white;
-}
-
-/* Unlist button style */
-a.unlist-btn:hover {
-    background-color: black;
-    color: white;
-}
-a.btn-brand {
-    background-color: black;
-    color: white;
-}
-
-/* Unlist button style */
-a.unlist-btn {
-    background-color: black;
-    color: white;
-}
-                                    </style>
-                                </div>
-                                
-                            </div> 
-                        
-                        <% } %>
-                        
-                               
-            </div> <!-- card end// -->
-            <!-- <div class="pagination-area mt-30 mb-50">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
-                    </ul>
-                </nav>
-            </div> -->
+                 <!-- card end// -->
+     
         </section>
        <!-- content-main end// -->
         <footer class="main-footer font-xs">

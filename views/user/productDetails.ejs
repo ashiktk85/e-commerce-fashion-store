@@ -547,16 +547,26 @@
                                         <a href="#"> (1 customer review)</a>
                                     </div>
                                     <div>
-                                        <strike><h6 ><%= proData.regularPrice %></h6></strike>
-                                        <small style="color: red;"><%= proData.offPercentage %> %</small>
-                                    </div>
-                                     
-                                     
-                                    <h2 > <%= proData.offerPrice %></h2>
-                                    
+                                        
+                                        <% if (proData.offerPrice) { %>
+                                            <strike><span class="old-price">₹<%= proData.regularPrice %></span></strike>
+                                            
+                                            <span style="color: green;">₹<%= proData.offerPrice %> </span>
+                                           
+                                            <% if (proData.regularPrice && proData.offerPrice) { %>
+                                                <% var offerPercentage = ((proData.regularPrice - proData.offerPrice) / proData.regularPrice) * 100; %>
+                                                <div class="rating-result" title="<%= offerPercentage.toFixed(2) %>%">
+                                                    <span>
+                                                        <span style="color: red;"><%= offerPercentage.toFixed(0) %>% off</span>
+                                                    </span>
+                                                </div>
+                                            <% } %>
+                                        <% } else { %>
+                                            <span>₹<%= proData.regularPrice %></span>
+                                        <% } %>
                                     <br>
                                     <br>
-                                    <h5> Category : <%= proData.category  %></h5>
+                                    <h5> Category : <%= categoryName  %></h5>
 
                                   
                                     <div class="product-details-action-wrap">
@@ -566,7 +576,7 @@
                                             </div>
                                         </div>
                                         <div class="product-details-cart">
-                                            <a title="Add to cart" href="#">Add to cart</a>
+                                            <a title="Add to cart" href="cart">Add to cart</a>
                                         </div>
                                         <div class="product-details-wishlist">
                                             <a title="Add to wishlist" href="#"><i class="fa fa-heart"></i></a>

@@ -355,8 +355,11 @@ const productDetails = async (req, res) => {
         console.log(proData);
 
         const fullData = await Product.find({});
+        const category = await Category.findById(proData.category);
+        console.log(category);
 
-        res.render("productDetails", { proData, fullData });
+
+        res.render("productDetails", { proData, fullData, categoryName : category.name });
     } catch (error) {
         console.log(error.message);
     }
