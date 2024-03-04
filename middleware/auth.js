@@ -16,10 +16,10 @@ const isLogOut=async(req,res,next)=>{
     try {
       
          if(req.session.email){
- 
-           res.redirect("/home")
+            console.log("iiiiiiiiiiiiisssssssssssssssssslogout")
+           res.redirect("/")
         }else{
-          
+          console.log("isLOGGIN")
             next()
         }
     } catch (error) {

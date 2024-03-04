@@ -44,7 +44,7 @@ const home = async (req, res) => {
 
         const proData = await Product.find({});
 
-        const isAuthenticated = req.session.auth;
+        const isAuthenticated = req.session.email;
 
         res.render('home', { catData, proData, isAuthenticated })
     } catch (error) {
@@ -102,10 +102,6 @@ const userSignupPost = async (req, res) => {
                     confirm,
                     otp
                 };
-
-                // req.session.Data = newUser; 
-                // req.session.save();
-
 
                 req.session.Data = req.session.Data || {};
 
@@ -217,7 +213,9 @@ const resendOtp = async (req, res) => {
 
 const userLogin = async (req, res) => {
     try {
+
         res.render('login');
+
     } catch (error) {
         console.log(error);
         res.json({
@@ -238,6 +236,7 @@ const verifyLogin = async (req, res) => {
         if (userData) {
             if (userData.is_blocked == false) {
                 req.session.email = email;
+
                 console.log('verify');
                 const passwordMatch = await bcrypt.compare(password, userData.password);
                 if (passwordMatch) {
@@ -246,6 +245,9 @@ const verifyLogin = async (req, res) => {
                     res.redirect('/');
                 } else {
                     res.render('login', { passErr: 'Incorrect password. Please try again.' });
+
+
+
                 }
 
 
@@ -356,10 +358,11 @@ const productDetails = async (req, res) => {
 
         const fullData = await Product.find({});
         const category = await Category.findById(proData.category);
+
         console.log(category);
 
 
-        res.render("productDetails", { proData, fullData, categoryName : category.name });
+        res.render("productDetails", { proData, fullData, categoryName: category.name });
     } catch (error) {
         console.log(error.message);
     }
@@ -570,7 +573,7 @@ const viewAccount = async (req, res) => {
 const editAccount = async (req, res) => {
     try {
         const email = req.session.email;
-        const userData = await User.findOne({ email : email})
+        const userData = await User.findOne({ email: email })
         res.render('editAccount', { userData })
     } catch (error) {
         console.log(`error in rendering edit account : ${error}`);
@@ -590,18 +593,18 @@ const postEditAccount = async (req, res) => {
         //     const message = "No changes made, change to save.";
         //     res.render('editAccount', { userData, message });
         // } else {
-           const Data =  await User.findOneAndUpdate(
-                { email: email },
-                {
-                    $set: {
-                        name: name,
-                        mobile: phone
-                    }
+        const Data = await User.findOneAndUpdate(
+            { email: email },
+            {
+                $set: {
+                    name: name,
+                    mobile: phone
                 }
-            );
-            console.log(Data);
-            res.redirect('/viewAccount');
-        
+            }
+        );
+        console.log(Data);
+        res.redirect('/viewAccount');
+
     } catch (error) {
         console.error(`Error in getting post data from edit account: ${error}`);
         // Handle the error response or redirect to an error page
@@ -612,11 +615,23 @@ const postEditAccount = async (req, res) => {
 
 //   PRODUCTS PAGE ALL
 
-const allProducts = async(req, res ) => {
+const allProducts = async (req, res) => {
     try {
         res.render('allProducts')
     } catch (error) {
-       console.log(`error in logging all products page : ${error}`); 
+        console.log(`error in logging all products page : ${error}`);
+    }
+}
+
+//  LOGOUT 
+
+const logOut = async (req, res) => {
+    try {
+        console.log("logyyy");
+        req.session.email = null;
+        res.redirect("/login")
+    } catch (error) {
+        console.log(`error in logout : ${error}`);
     }
 }
 
@@ -649,6 +664,7 @@ module.exports = {
     viewAccount,
     editAccount,
     postEditAccount,
-    allProducts
+    allProducts,
+    logOut
 
 };

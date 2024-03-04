@@ -42,11 +42,11 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item active">
+                <li class="menu-item active" style="background-color: black;border-radius: 5px;">
                     <!-- <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i> -->
                         <a class="menu-link" href="/admin/userDetails"> <i class="icon material-icons md-people"></i> 
 
-                        <span class="text" style="padding-left: 10px;">Users</span>
+                        <span class="text" style="padding-left: 10px;color: #ffffff;">Users</span>
                     </a>
                     <!-- <div class="submenu">
                         <a href="page-sellers-cards.html">Sellers cards</a>
@@ -209,7 +209,7 @@
                     <p>Edit/update/block users in this panel.</p>
                 </div>
                 <div>
-                    <a href="#" class="btn btn-primary"><i class="text-muted material-icons md-post_add"></i>Create report</a>
+                    <a href="#" class="btn" style="background-color: black; color: #ffffff;"><i class="text-muted material-icons md-post_add"></i>Create report</a>
                 </div>
             </div>
             <!-- <div class="row">
@@ -576,8 +576,9 @@
                                                     <h6 class="mb-0 title">
                                                         <%= element.name %>
                                                     </h6>
-                                                    <small class="text-muted"><%= element._id %></small>
+                                                    
                                                 </a>
+                                                <small class="text-muted"><%= element._id %></small>
                                             </td>
                                             <td>
                                                 <a href="#" class="itemside">
@@ -593,26 +594,31 @@
                                             </td>
                                           
                                             
-                                                        <% if(element.is_blocked == false) { %>
-                                                            <td><span class="badge rounded-pill alert-success">Unblocked</span></td>
-                                                            <td class="">
-                                                                <a href="/admin/block-user?id=<%= element._id %>" class="btn btn-sm btn-danger rounded font-sm mt-15">BLOCK</a>
-                                                            </td>
-                                                           
-                                                        <% } else { %>
-                                                            <td><span class="badge rounded-pill alert-danger">Blocked</span></td>
-                                                            <td class="">
-                                                                <a href="/admin/unblock-user?id=<%= element._id %>" class="btn btn-sm btn-success rounded font-sm mt-15" style ="margin-right: auto;">UNBLOCK</a>
-                                                            </td>
-                                                            
-                                                        <% } %>
-                                                    
+                                            <% if(element.is_blocked == false) { %>
+                                                <td><span class="badge rounded-pill alert-success">Unblocked</span></td>
+                                                <td class="">
+                                                    <a href="/admin/block-user?id=<%= element._id %>" class="btn btn-sm btn-block rounded font-sm mt-15 block-btn" style="background-color: black; color: white;">BLOCK</a>
+                                                </td>
+                                            <% } else { %>
+                                                <td><span class="badge rounded-pill alert-danger">Blocked</span></td>
+                                                <td class="">
+                                                    <a href="/admin/unblock-user?id=<%= element._id %>" class="btn btn-sm btn-block rounded font-sm mt-15 unblock-btn" style="background-color: black; color: white;">UNBLOCK</a>
+                                                </td>
+                                            <% } %>
+                                            
                                                 
                                             
                                            
                                         </tr>
                                     <% }) %>
                                 </tbody>
+                                <style>
+                                    .block-btn, .unblock-btn {
+    width: 100px; /* Set the desired width */
+    height: 30px; /* Set the desired height */
+}
+
+                                </style>
                             </table>
                             
                         </div>

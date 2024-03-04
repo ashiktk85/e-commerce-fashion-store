@@ -37,6 +37,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+            color: #ffffff;
         }
 
         th {
@@ -123,9 +124,9 @@
             <div class="container" >
                 <h2 >Detailed product view</h2>
                 <div class="row">
-                    <div class="col-lg-12" style="color: #000000;">
+                    <div class="col-lg-12" style="color: #ffffff;">
                         <!-- Single Product Card -->
-                        <div class="card" style="background-color: #c9c8c8;">
+                        <div class="card" style="background-color: #1e1e1e;">
                             <div class="card-body">
                                 <!-- Product Images and Details Row -->
                                 <div class="row">
@@ -145,35 +146,35 @@
                                         <table class="table table-bordered">
                                             <tbody>
                                                 <tr>
-                                                    <th scope="row">Name</th>
-                                                    <td><%= proData.name %></td>
+                                                    <th scope="row"  style="color: #ffffff;">Name</th>
+                                                    <td  style="color: #ffffff;"><%= proData.name %></td>
                                                 </tr>
                                                 <tr>
-                                                    <th scope="row">Description</th>
-                                                    <td>
+                                                    <th scope="row"  style="color: #ffffff;">Description</th>
+                                                    <td  style="color: #ffffff;">
                                                         <%= proData.discripiton %>
                                                     </td>
                                                 </tr>
                                                 
                                                 <tr>
-                                                    <th scope="row">Regular Price</th>
-                                                    <td><%= proData.regularPrice %></td>
+                                                    <th scope="row"  style="color: #ffffff;">Regular Price</th>
+                                                    <td  style="color: #ffffff;"><%= proData.regularPrice %></td>
                                                 </tr>
                                                 <tr>
-                                                    <th scope="row">Offer Price</th>
-                                                    <td><%= proData.offerPrice !== null ? '$' + proData.offerPrice : 'Nill' %></td>
+                                                    <th scope="row"  style="color: #ffffff;">Offer Price</th>
+                                                    <td  style="color: #ffffff;"><%= proData.offerPrice !== null ? '$' + proData.offerPrice : 'Nill' %></td>
                                                 </tr>
                                                 <tr>
-                                                    <th scope="row">Stock</th>
+                                                    <th scope="row"  style="color: #ffffff;">Stock</th>
                                                     <td>
-                                                        <p style="color: #000000;">Small: <%= proData.size.s.quantity %></p>
-                                                        <p style="color: #000000;">Medium: <%= proData.size.m.quantity %></p>
-                                                        <p style="color: #000000;">Large: <%= proData.size.l.quantity %></p>
+                                                        <p style="color: #ffffff;">Small: <%= proData.size.s.quantity %></p>
+                                                        <p style="color: #ffffff;">Medium: <%= proData.size.m.quantity %></p>
+                                                        <p style="color: #ffffff;">Large: <%= proData.size.l.quantity %></p>
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th scope="row">Category</th>
-                                                    <td><%= catName %></td>
+                                                    <th scope="row"  style="color: #ffffff;">Category</th>
+                                                    <td  style="color: #ffffff;"><%= catName %></td>
                                                 </tr>
                                             </tbody>
                                         </table>
