@@ -903,7 +903,7 @@
                               </tr>
                           
 
-                              <% } %>
+                          
 
                               <% } else { %>
                               <tr>
@@ -912,7 +912,7 @@
                                 </td>
                               </tr>
                               <% } %>
-                               <%  else { %>
+                               <% } else { %>
                               <tr>
                                 <td colspan="6" id="noPro">Cart Not Found</td>
                               </tr>
@@ -958,6 +958,8 @@
               </div>
             </div>
           </div>
+          </div>
+          </div>
           <script>
             function increment(proId, quantity, index, price, subtotal) {
         
@@ -967,7 +969,7 @@
                 // alert(qty)
         
                 // alert(qty)
-                const sbt = document.getElementById("subtotal" + index).innerHTML
+      
                 // alert(sbt)
                 const ttl = document.getElementById("total").innerHTML
                 // alert(ttl)
@@ -983,7 +985,7 @@
                         price,
                         proId,
                         qty,
-                        subtotal,
+                        ttl,
         
                     },
                     success: (response) => {
@@ -1100,7 +1102,7 @@
                                 success: (response) => {
                                     if (response.status == true) {
         
-                                        window.location.href = "http://localhost:2003/cart"
+                                        window.location.href = "http://localhost:7777/cart"
         
                                         document.getElementById("total").innerHTML = response.total
         

@@ -1,5 +1,6 @@
 const Product = require('../models/productModel');
 const Category = require('../models/categoryModel');
+const Cart = require("../models/cartModel")
 
 
 
@@ -40,7 +41,6 @@ const loadEdit = async (req, res) => {
         const catData = await Category.find({ is_blocked: false, name: { $ne: Cat.name } });
 
         
-        console.log(catData);
         res.render("editProduct", { catData, proData , catName : Cat.name})
     } catch (error) {
         console.log(`error in load edit product controller ${error.message}`);
@@ -100,70 +100,7 @@ const addProduct = async (req, res) => {
 
 
 
-//     try {
-//         const id = req.params.id; // Use req.params.id if it's a route parameter
-//         const { product_name, product_dis, regprice, offprice, catName, small, medium, large } = req.body;
 
-//         console.log(id);
-//         let imageName = [];
-
-//         if (req.files && req.files.length > 0) {
-//             imageName = req.files.map((x) => x.originalname);
-//             const catData = await Category.findOne({ name: req.body.catName });
-
-//             const updatePro = await Product.findByIdAndUpdate(
-//                 { _id: id },
-//                 {
-//                     $set: {
-//                         name: product_name,
-//                         discripiton: product_dis,
-//                         regularPrice: regprice,
-//                         offerPrice: offprice,
-//                         image: imageName,
-//                         category: catData ? catData._id : null, // Ensure catData is not undefined
-//                         size: {
-//                             s: { quantity: small },
-//                             m: { quantity: medium },
-//                             l: { quantity: large },
-//                         },
-//                         is_blocked: false,
-//                     },
-//                 }
-//             );
-
-//             if (updatePro) {
-//                 res.redirect("/admin/adminProduct");
-//             }
-//         } else {
-//             // Handle the case where there are no files
-//             const updatePro = await Product.findByIdAndUpdate(
-//                 { _id: id },
-//                 {
-//                     $set: {
-//                         name: product_name,
-//                         discripiton: product_dis,
-//                         regularPrice: regprice,
-//                         offerPrice: offprice,
-//                         size: {
-//                             s: { quantity: small },
-//                             m: { quantity: medium },
-//                             l: { quantity: large },
-//                         },
-//                         is_blocked: false,
-//                     },
-//                 }
-//             );
-
-//             if (updatePro) {
-//                 res.redirect("/admin/adminProduct");
-        
-//             }
-//         }
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send("Internal Server Error");
-//     }
-// };
 const editPro = async (req, res) => {
     try {
         const id = req.params.id; 
@@ -242,12 +179,11 @@ const unblockPro = async (req, res) => {
 
 const detailedPro = async (req, res) => {
     try {
-
+       
         const id = req.query.id;
         console.log(id);
         const proData = await Product.findById({ _id: id })
         const Cat = await Category.findOne({ _id: proData.category })
-        console.log(proData);
         res.render('detailedProduct', { proData, catName: Cat.name })
     } catch (error) {
         console.log(`error in rendering detailed product page: ${error}`);

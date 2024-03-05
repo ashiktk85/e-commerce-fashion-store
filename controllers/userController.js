@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt');
 const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
 const Address = require("../models/addressModel")
+const Cart = require("../models/cartModel")
 
 //********   setting of nodemailer  *************************************** */
 
@@ -344,27 +345,38 @@ const PostForgotpass = async (req, res) => {
 
 const productDetails = async (req, res) => {
     try {
-        const id = req.query.id;
+        console.log("getting to product details postttttttt");
+        
 
-        const user = await User.findById({ _id: id })
+        
 
-        if (user) {
-            if (user.is_blocked === true) {
-                res.redirect('/login')
-            }
+        const userData = await User.findOne({ email: req.session.email });
+        const id = req.query.id;  
+
+        // Check if the user is blocked
+        const user = await User.findById({ _id: id });
+        if (user && user.is_blocked) {
+            res.redirect('/login');
+            return;
         }
+
+        // Now you can use the id in the Cart.findOne query
+        const cartData = await Cart.findOne({
+            userId: userData._id,
+            "items.productsId": id,
+        });
+
         const proData = await Product.findById({ _id: id });
-        console.log(proData);
 
         const fullData = await Product.find({});
         const category = await Category.findById(proData.category);
 
         console.log(category);
 
-
-        res.render("productDetails", { proData, fullData, categoryName: category.name });
+        res.render("productDetails", { proData, fullData, categoryName: category.name, cartData });
     } catch (error) {
         console.log(error.message);
+        res.status(500).send("Internal Server Error");
     }
 };
 

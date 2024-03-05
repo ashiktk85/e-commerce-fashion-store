@@ -1,0 +1,70 @@
+ <div class="product-details-wrapper pt-100 pb-100" >
+            <div class="container" >
+                <h2 >Detailed product view</h2>
+                <div class="row">
+                    <div class="col-lg-12" style="color: #ffffff;">
+                        <!-- Single Product Card -->
+                        <div class="card" style="background-color: #1e1e1e;">
+                            <div class="card-body">
+                                <!-- Product Images and Details Row -->
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <!-- Product Images -->
+                                        <div class="product-images">
+                                            <% for (let i = 0; i < Math.min(proData.image.length, 5); i++) { %>
+                                                <div class="product-image">
+                                                    <img class="img-fluid" src="/uploads/<%= proData.image[i] %>"
+                                                        alt="Product Image">
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <!-- Product Details Table -->
+                                        <table class="table table-bordered">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row"  style="color: #ffffff;">Name</th>
+                                                    <td  style="color: #ffffff;"><%= proData.name %></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"  style="color: #ffffff;">Description</th>
+                                                    <td  style="color: #ffffff;">
+                                                        <%= proData.discripiton %>
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <th scope="row"  style="color: #ffffff;">Regular Price</th>
+                                                    <td  style="color: #ffffff;"><%= proData.regularPrice %></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"  style="color: #ffffff;">Offer Price</th>
+                                                    <td  style="color: #ffffff;"><%= proData.offerPrice !== null ? '$' + proData.offerPrice : 'Nill' %></td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"  style="color: #ffffff;">Stock</th>
+                                                    <td>
+                                                        <p style="color: #ffffff;">Small: <%= proData.size.s.quantity %></p>
+                                                        <p style="color: #ffffff;">Medium: <%= proData.size.m.quantity %></p>
+                                                        <p style="color: #ffffff;">Large: <%= proData.size.l.quantity %></p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row"  style="color: #ffffff;">Category</th>
+                                                    <td  style="color: #ffffff;"><%= catName %></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <!-- End Product Details Table -->
+                                    </div>
+                                </div>
+                                <!-- End Product Images and Details Row -->
+                            </div>
+                        </div>
+                        <!-- End Single Product Card -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        

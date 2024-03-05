@@ -48,7 +48,8 @@ userRoute.post('/postEditAccount',userAuth.isLogin,  userController.postEditAcco
 // cart 
 
 userRoute.get('/cart',userAuth.isLogin, cartController.cartPage)
-userRoute.post('/loadCart', userAuth.isLogin, cartController.loadCart)
+// userRoute.post('/loadCart', userAuth.isLogin, cartController.loadCart)
+userRoute.post("/addcartLoad",userAuth.isBlocked,userAuth.isLogin,cartController.loadCart)
 
 //checkout
 userRoute.get('/checkout',userAuth.isLogin, cartController.checkout)

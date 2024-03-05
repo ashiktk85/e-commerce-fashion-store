@@ -11,113 +11,35 @@ const Cart = require("../models/cartModel")
 
 // LOADING CART PAGE
 
-const cartPage = async (req, res) => {
+
+const cartPage = async (req ,res) => {
     try {
-
-        console.log("getting to cart pageeeeeeeeeeeeeee");
-        const email = req.session.email;
-        console.log(email);
-
-        const userData = await User.findOne({ email: email })
-
-        const cartData = await Cart.findOne({ userId : userData._id })
-        
-
-        const proData = [];
-
-        if (cartData) {
-            const arr = [];
-
-            for (let i = 0; i < cartData.items.length; i++) {
-                arr.push(cartData.items[i].productID.toString())
-            }
-            console.log("cartttttt : ", arr);
-
-            for (let i = 0; i < arr.length; i++) {
-                proData.push(await Product.findById({ _id: arr[i] }))
-            }
-
-            console.log(proData);
-        }
-        
-        
-        console.log(proData, cartData)
-        res.render("cart", { proData, cartData });
+        const proData = await Product.find({})
+        const cartData =  await User.find({})
+        console.log("loading cart page");
+        res.render('cart',{cartData, proData})
     } catch (error) {
-        console.log(`error in loading cart page : ${error}`);
+        console.log(`Error in adding cart data : ${error}`);
+        
     }
-}
+}  
 
 // CART POST DATA
 
-const loadCart = async (req, res) => {
+
+
+// ADD TO CART
+const loadCart = async (req ,res) => {
     try {
-        const id = req.body.id;
-        const price = req.body.proPrice;
-
-        // Other necessary processing...
-
-        if (req.session.email) {
-            const userData = await User.findOne({ email: req.session.email });
-            const userCart = await Cart.findOne({ userId: userData._id });
-
-            if (userCart) {
-                let proCart = false;
-
-                for (let i = 0; i < userCart.items.length; i++) {
-                    if (id === userCart.items[i].productsId) {
-                        proCart = true;
-                        break;
-                    }
-                }
-
-                if (proCart) {
-                    res.json({ status: "viewCart" });
-                } else {
-                    const updateCart = await Cart.findOneAndUpdate(
-                        { userId: userData._id },
-                        {
-                            $push: {
-                                items: {
-                                    productsId: id,
-                                    subTotal: priceOFF,
-                                    quantity: 1,
-                                },
-                            },
-                            $inc: {
-                                total: priceOFF,
-                            },
-                        }
-                    );
-                    // Handle the response or additional logic here...
-                }
-            } else {
-                const carData = new Cart({
-                    userId: userData._id,
-                    items: [
-                        {
-                            productsId: id,
-                            subTotal: priceOFF,
-                            quantity: 1,
-                        },
-                    ],
-                    total: priceOFF,
-                });
-
-                const cart = await carData.save();
-                // Handle the response or additional logic here...
-            }
-
-            res.json({ status: true });
-        } else {
-            res.json({ status: "login" });
-        }
-
+        console.log("getting to load carttttttttttttttttttttttttttttt");
+        const {id ,proPrice} = req.body
+        console.log(req.body);
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ status: "error" });
+        console.log(`Error in adding cart data : ${error}`);
+        
     }
-};
+}  
+
 
 
 // LOADING CHEKOUT PAGE
@@ -131,7 +53,9 @@ const checkout = async (req, res) => {
 }
 
 module.exports = {
-    cartPage,
+    
     checkout,
-    loadCart
+    loadCart,
+    cartPage
+   
 }
