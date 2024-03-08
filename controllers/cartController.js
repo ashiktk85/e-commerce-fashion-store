@@ -8,6 +8,9 @@ const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
 const Address = require("../models/addressModel")
 const Cart = require("../models/cartModel")
+const generateOrder = require("../controllers/otpGenerator")
+const generateDate=require('../controllers/dateGenerator');
+const Order = require("../models/orderModel");
 
 // LOADING CART PAGE
 
@@ -258,14 +261,87 @@ const checkout = async (req, res) => {
     }
 }
 
-const placeOrder=async(req,res)=>{
-    try {
-        const{ selectedAddress, paymentMethod}=req.body
-        console.log(selectedAddress, paymentMethod)
-    } catch (error) {
-        console.log(error.message)
-    }
-}
+
+
+const placeOrder = async (req, res) => {
+  try {
+      const { selectedAddress, paymentMethod, cartid,total } = req.body;
+      console.log(selectedAddress, paymentMethod, cartid);
+
+      if (!selectedAddress || !paymentMethod) {
+          res.json({ status: "fill" });
+          return;
+      }
+
+      const userData = await User.findOne({ email: req.session.email });
+      const cartData = await Cart.findOne({ userId: userData._id });
+
+      const proData = cartData.items;
+      console.log(proData);
+
+      for (let i = 0; i < proData.length; i++) {
+          const proId = proData[i].productId;
+          const quantity = proData[i].quantity;
+          const selectedSize = proData[i].size.toLowerCase(); // Convert to lowercase
+
+          const product = await Product.findById(proId);
+
+          if (product) {
+              console.log("Product size:", product.size);
+              console.log("Selected size:", selectedSize);
+
+              if (
+                  product.size &&
+                  product.size[selectedSize] &&
+                  product.size[selectedSize].quantity >= quantity
+              ) {
+                  product.size[selectedSize].quantity -= quantity;
+                  await product.save();
+                  console.log(`Stock updated for product with ID ${proId}`);
+              } else {
+                  console.error(`Invalid size or insufficient stock for product with ID ${proId}`);
+                  res.json({ status: "error", message: "Invalid size or insufficient stock" });
+                  return;
+              }
+          } else {
+              console.error(`Product with ID ${proId} not found`);
+              res.json({ status: "error", message: "Product not found" });
+              return;
+          }
+      }
+
+      const orderNum = generateOrder.generateOrder();
+      console.log(orderNum);
+
+      const addressData = await Address.findOne({_id : selectedAddress});
+      console.log(addressData);
+
+      const date = generateDate();
+
+      const orderData = new Order({
+        userId: userData._id,
+        userEmail:userData.email,
+        orderNumber: orderNum,
+        items: proData,
+        totalAmount: total,
+        orderType: paymentMethod,
+        orderDate:date,
+        status: "Processing",
+        shippingAddress: addressData,
+
+      })
+
+      orderData.save()
+
+      res.json({ status: "true"});
+      const deleteCart = await Cart.findByIdAndDelete({ _id: cartData._id });
+  } catch (error) {
+      console.log(error.message);
+      res.json({ status: "error", message: error.message });
+  }
+};
+
+
 
 module.exports = {
     

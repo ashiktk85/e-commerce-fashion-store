@@ -45,5 +45,12 @@ adminRoute.get('/unblock-pro', isAdmin, productController.unblockPro)
 adminRoute.get('/edit-detailedView', isAdmin, productController.detailedPro)
 
 
+//******************** orders *************************** */
+
+adminRoute.get("/order",isAdmin,orderController.loadOrder)
+adminRoute.get("/order-Detail",isAdmin,orderController.loadOrderDetail)
+adminRoute.post("/orderSave",isAdmin,orderController.saveOrder)
+
+
 
 module.exports = adminRoute;

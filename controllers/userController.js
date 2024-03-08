@@ -8,6 +8,7 @@ const Category = require('../models/categoryModel')
 const Product = require('../models/productModel')
 const Address = require("../models/addressModel")
 const Cart = require("../models/cartModel")
+const Orders = require("../models/orderModel")
 
 //********   setting of nodemailer  *************************************** */
 
@@ -433,7 +434,8 @@ const addAddress = async (req, res) => {
 
 const orders = async (req, res) => {
     try {
-        res.render('order')
+        const orderData = await Orders.find({})
+        res.render('order',{orderData})
     } catch (error) {
         console.log(`error in rendring orders page ${error}`)
     }

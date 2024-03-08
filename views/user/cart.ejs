@@ -782,8 +782,15 @@
                         <h4>Cart totals</h4>
                         <div class="grand-total-content">
                           <ul>
-                            <li>Subtotal <span id="cartSub"><%=cartData.totalPrice %> </span></li>
-                            <li>Total <span id="total"><%=cartData.totalPrice %></span> </li>
+                            <% if (cartData && cartData.totalPrice) { %>
+                              <li>Subtotal <span id="cartSub"><%= cartData.totalPrice %> </span></li>
+                              <li>Total <span id="total"><%= cartData.totalPrice %></span> </li>
+                            <% } else { %>
+                          
+                              <li>Subtotal <span id="cartSub">N/A</span></li>
+                              <li>Total <span id="total">N/A</span></li>
+                            <% } %>
+                            
                           </ul>
                         </div>
                         <div class="grand-btn">

@@ -612,7 +612,7 @@
                         </div>
                         <script>
                             function handleAddressSelection(checkbox) {
-                                // Uncheck all other checkboxes
+                                
                                 var checkboxes = document.getElementsByName('selectedAddress');
                                 checkboxes.forEach(function (cb) {
                                     if (cb !== checkbox) {
@@ -655,7 +655,7 @@
                                 </div>
                                 <div class="your-order-info order-total">
                                     <ul>
-                                        <li>Total <span>₹<%= cartData.totalPrice %> </span></li>
+                                        <li>Total ₹<span id="total"><%= cartData.totalPrice %> </span></li>
                                     </ul>
                                 </div>
                             </div>
@@ -679,6 +679,8 @@
 </div>
 </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     let selectedAddress 
 
@@ -691,19 +693,42 @@
         }
     }
 
-    function placeOrder(cartid){
-        const paymentMethod=document.getElementById("payment").value
-        $.ajax({
-            url:"/placeOrder",
-            method:"post",
-            data:{
-                selectedAddress,
-                paymentMethod,
-                cartid
+    function placeOrder(cartid) {
+    const paymentMethod = document.getElementById("payment").value;
+    const total = document.getElementById("total").innerHTML;
+    alert(total)
+
+    $.ajax({
+        url: "/placeOrder",
+        method: "post",
+        data: {
+            selectedAddress,
+            paymentMethod,
+            cartid,
+            total
+        },
+        success: (response) => {
+            if (response.status === "true") {
+                alert("order placed succesfull")
+                window.location.href = "/orders";
+            } else if (response.status === "fill") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Must fill the Options",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+             
+                console.error("Unexpected response:", response);
             }
-        })
-    }
-    
+        },
+        error: (error) => {
+            console.error("Ajax request error:", error);
+        },
+    });
+}
+
     
     
 
