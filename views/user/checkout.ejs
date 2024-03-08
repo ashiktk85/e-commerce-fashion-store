@@ -12,6 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
     <!-- All CSS is here
 	============================================ -->
@@ -558,82 +560,68 @@
             <div class="row">
                 <div class="col-lg-7">
                     <div class="billing-info-wrap mr-100">
-                        <h3>Billing Details</h3>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6">
-                                <div class="billing-info mb-25">
-                                    <label>First name <abbr class="required" title="required">*</abbr></label>
-                                    <input type="text">
+                       
+                          
+                            
+                        <div class="tab-pane fade show active" id="address-edit" role="tabpanel">
+                            <% if(userAddress && userAddress.length > 0) { %>
+                                <div class="myaccount-content">
+                                    <table class="table table-bordered border-dark">
+                                        <% for(let i = 0; i < Math.min(userAddress.length, 3); i++) { %>
+                                            <tr>
+                                                <td>
+                                                    <p><strong> <%= userAddress[i].name %></strong></p>
+                                                    <p>Address: <%= userAddress[i].address %><br>
+                                                        <%= userAddress[i].city %>, <%= userAddress[i].state %> <%= userAddress[i].pincode %></p>
+                                                    <p>Mobile: <%= userAddress[i].mobile %></p>
+                                                </td>
+                                                <td>
+                                                    <div style="display: flex; align-items: center;">
+                                                        <a href="/editAddress?id=<%= userAddress[i]._id %>" class="check-btn sqr-btn-sm" style="margin-right: 10px;">
+                                                            <i class="fa fa-edit"></i> Edit Address
+                                                        </a>
+                                                    </div>
+                                                    <input style="width: 20px;height: 20px;margin-top: 20px;background-color: #000000;" type="checkbox" name="selectedAddress" value="<%= userAddress[i]._id %>" onclick="handleAddressSelection(this)">
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    </table>
+                        
+                                    <% if (userAddress.length >= 3) { %>
+                                        <div class="mt-4">
+                                            <p style="color: red;">You have reached the maximum limit of 3 addresses. To add a new address, please delete an existing one.</p>
+                                        </div>
+                                    <% } %>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6">
-                                <div class="billing-info mb-25">
-                                    <label>Last name <abbr class="required" title="required">*</abbr></label>
-                                    <input type="text">
+                            <% } %>
+                        
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!-- Additional content related to the Address tab can be added here -->
                                 </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-info mb-25">
-                                    <label>Company name (optional) <abbr class="required" title="required">*</abbr></label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-select mb-25">
-                                    <label>Country <abbr class="required" title="required">*</abbr></label>
-                                    <select class="select-active">
-                                        <option>Azerbaijan</option>
-                                        <option>Bahamas</option>
-                                        <option>Bahrain</option>
-                                        <option>Bangladesh</option>
-                                        <option>Barbados</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-info mb-25">
-                                    <label>Street address <abbr class="required" title="required">*</abbr></label>
-                                    <input class="billing-address" placeholder="House number and street name" type="text">
-                                    <input placeholder="Apartment, suite, unit etc. (optional)" type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-info mb-25">
-                                    <label>Town / City <abbr class="required" title="required">*</abbr></label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="billing-select mb-25">
-                                    <label>District <abbr class="required" title="required">*</abbr></label>
-                                    <select class="select-active">
-                                        <option>Azerbaijan</option>
-                                        <option>Bahamas</option>
-                                        <option>Bahrain</option>
-                                        <option>Bangladesh</option>
-                                        <option>Barbados</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-12 col-md-12">
-                                <div class="billing-info mb-25">
-                                    <label>Postcode / ZIP (optional) <abbr class="required" title="required">*</abbr></label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-12 col-md-12">
-                                <div class="billing-info mb-25">
-                                    <label>Phone <abbr class="required" title="required">*</abbr></label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-12 col-md-12">
-                                <div class="billing-info mb-25">
-                                    <label>Email Address <abbr class="required" title="required">*</abbr></label>
-                                    <input type="text">
+                                <div class="col-md-6 text-md-end">
+                                    <a href="addAddress">
+                                        <div class="login-register-btn-remember">
+                                            <div class="login-register-btn">
+                                                <button type="button" onclick="addSelectedAddress()">Add Address</button>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
+                        <script>
+                            function handleAddressSelection(checkbox) {
+                                // Uncheck all other checkboxes
+                                var checkboxes = document.getElementsByName('selectedAddress');
+                                checkboxes.forEach(function (cb) {
+                                    if (cb !== checkbox) {
+                                        cb.checked = false;
+                                    }
+                                });
+                            }
+                        </script>
+                        
                         <div class="additional-info-wrap">
                             <h3>Additional information</h3>
                             <label>Order notes (optional)</label>
@@ -653,35 +641,35 @@
                                 </div>
                                 <div class="your-order-middle">
                                     <ul>
-                                        <li>Product Name X 1 <span>$329 </span></li>
-                                        <li>Product Name X 1 <span>$329 </span></li>
+                                        <% for( let i = 0; i < proData.length && cartData; i++ ) { %>
+                                            <li><%= proData[i].name %> X <%= cartData.items[i].quantity %> <span>₹<%= cartData.items[i].subTotal %></span></li>
+                                        <% } %>
+                                        
+                                      
                                     </ul>
                                 </div>
                                 <div class="your-order-info order-subtotal">
                                     <ul>
-                                        <li>Subtotal <span>$329 </span></li>
+                                        <li>Subtotal <span>₹<%= cartData.totalPrice %> </span></li>
                                     </ul>
                                 </div>
                                 <div class="your-order-info order-total">
                                     <ul>
-                                        <li>Total <span>£273.00 </span></li>
+                                        <li>Total <span>₹<%= cartData.totalPrice %> </span></li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="payment-method">
-                                <h5>Direct Bank Transfer</h5>
-                                <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
-                            </div>
+                            
                             <div class="condition-wrap">
-                                <p>Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our <a href="#">privacy policy</a></p>
                                 <div class="condition-form mb-25">
-                                    <input type="checkbox">
-                                    <span>I have read and agree to the website <a href="#">terms and conditions</a><span class="star">*</span></span>
+                                    <input type="checkbox" value="COD" id="payment">
+                                    <span>Cash on Delivery<span class="star">*</span></span>
                                 </div>
                             </div>
                         </div>
                         <div class="Place-order mt-30">
-                            <a href="#">Place Order</a>
+    
+                            <a  onclick="placeOrder('<%= cartData._id %>')">Place Order</a>
                         </div>
                     </div>
                 </div>
@@ -691,6 +679,43 @@
 </div>
 </div>
 </div>
+<script>
+    let selectedAddress 
+
+    function handleAddressSelection(checkbox) {
+        if (checkbox.checked) {
+            selectedAddress = checkbox.value;
+            alert(selectedAddress)
+        } else {
+            selectedAddress = null;
+        }
+    }
+
+    function placeOrder(cartid){
+        const paymentMethod=document.getElementById("payment").value
+        $.ajax({
+            url:"/placeOrder",
+            method:"post",
+            data:{
+                selectedAddress,
+                paymentMethod,
+                cartid
+            }
+        })
+    }
+    
+    
+    
+
+   
+</script>
+
+
+
+
+
+
+
 
 
 <%- include('../partials/footer') %>

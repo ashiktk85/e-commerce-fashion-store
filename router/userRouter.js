@@ -21,7 +21,7 @@ userRoute.post('/otpVerification', userAuth.isLogOut,userAuth.isLogOut, userCont
 userRoute.get('/resendOtp',userAuth.isLogOut, userController.resendOtp);
 userRoute.get('/forgotPassword',userAuth.isLogOut ,userAuth.isLogOut, userController.forgotPassword)
 userRoute.post('/forgotPassword',userAuth.isLogOut ,userAuth.isLogOut, userController.PostForgotpass);
-userRoute.get('/productDetails', userAuth.isBlocked, userController.productDetails)
+userRoute.get('/productDetails', userAuth.isBlocked,userAuth.isLogin, userController.productDetails)
 userRoute.get('/logout', userAuth.isLogin, userController.logOut)
 
 
@@ -48,8 +48,14 @@ userRoute.post('/postEditAccount',userAuth.isLogin,  userController.postEditAcco
 // cart 
 
 userRoute.get('/cart',userAuth.isLogin, cartController.cartPage)
+
 // userRoute.post('/loadCart', userAuth.isLogin, cartController.loadCart)
+
 userRoute.post("/addcartLoad",userAuth.isBlocked,userAuth.isLogin,cartController.loadCart)
+userRoute.post("/cartadd",userAuth.isBlocked,userAuth.isLogin,cartController.addCart)
+userRoute.post("/decrement",userAuth.isBlocked,userAuth.isLogin,cartController.decrement)
+
+userRoute.post("/placeOrder",userAuth.isBlocked,userAuth.isLogin,cartController.placeOrder)
 
 //checkout
 userRoute.get('/checkout',userAuth.isLogin, cartController.checkout)

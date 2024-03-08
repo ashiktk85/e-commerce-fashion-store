@@ -27741,7 +27741,7 @@ body.body-menu-overlay::before {
   -webkit-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
-  color: #535353;
+  color: #000000;
 }
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {

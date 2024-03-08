@@ -19,7 +19,7 @@ const isLogOut=async(req,res,next)=>{
             console.log("iiiiiiiiiiiiisssssssssssssssssslogout")
            res.redirect("/")
         }else{
-          console.log("isLOGGIN")
+          
             next()
         }
     } catch (error) {

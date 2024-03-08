@@ -571,31 +571,40 @@
                                     <input type="hidden" id="proId" name="user_id"
                                     value="<%=proData._id %>">
                                     <div class="sidebar-widget mb-60">
-                                        <h4 class=""><B>Size</B></h4>
-                                        <div class="sidebar-widget-size mt-45">
-                                            <ul>
-                                                <li><a href="#">S</a></li>
-                                                <li><a href="#">M</a></li>
-                                                <li><a href="#">L</a></li>
-                                                
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="product-details-action-wrap">
-                                        <div class="product-details-quality">
-                                            <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" type="text" name="qtybutton" value="2">
+                                        <h4 class=""><b>Size</b></h4>
+                                        <div class="sidebar-widget mb-60">
+                                            <h4 class=""><b>Size</b></h4>
+                                            <div class="sidebar-widget-size mt-45">
+                                                <ul>
+                                                    <li><a href="#" onclick="selectSize('S')" id="sizeS">S</a></li>
+                                                    <li><a href="#" onclick="selectSize('M')" id="sizeM">M</a></li>
+                                                    <li><a href="#" onclick="selectSize('L')" id="sizeL">L</a></li>
+                                                </ul>
                                             </div>
                                         </div>
-                                        <div class="product-details-cart">
-                                            <a title="Add to cart" href="" onclick="addCart()">Add to cart</a>
+                                        <style>
+                                            .selected {
+                                                background-color: #d52323;
+                                                color: #ffffff; /* Add your desired highlight color */
+                                            }
+
+                                            
+                                        </style>
+                                        
+                                        <!-- Product details and add to cart -->
+                                        <div class="product-details-action-wrap">
+                                            <div class="product-details-quality">
+                                                <div class="cart-plus-minus">
+                                                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="2">
+                                                </div>
+                                            </div>
+                                            <div class="product-details-cart">
+                                                <a title="Add to cart" href="#" onclick="addCart()">Add to cart</a>
+                                            </div>
+                                            <div class="product-details-wishlist">
+                                                <a title="Add to wishlist" href="#"><i class="fa fa-heart"></i></a>
+                                            </div>
                                         </div>
-                                        <div class="product-details-wishlist">
-                                            <a title="Add to wishlist" href="#"><i class="fa fa-heart"></i></a>
-                                        </div>
-                                         
-                                    </div>
                                     <div class="product-details-info">
                                         <a href="#"><i class="dlicon location_pin"></i>Store availability</a>
                                         <a href="#"><i class="dlicon envir_car"></i>Delivery and return</a>
@@ -1135,6 +1144,19 @@
 
 </body>
 <script>
+    let selectedSize = 'S'; // Default size
+
+function selectSize(size) {
+    selectedSize = size;
+
+    // Highlight the selected button and remove highlight from others
+    document.getElementById('sizeS').classList.remove('selected');
+    document.getElementById('sizeM').classList.remove('selected');
+    document.getElementById('sizeL').classList.remove('selected');
+
+    document.getElementById(`size${size}`).classList.add('selected');
+}
+
 
     function addCart() {
 
@@ -1153,7 +1175,8 @@
             method: "post",
             data: {
                 id,
-                proPrice
+                proPrice,
+                selectedSize
             },
             success: (response) => {
                 if (response.status == true) {

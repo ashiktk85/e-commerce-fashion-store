@@ -360,7 +360,7 @@ const productDetails = async (req, res) => {
             return;
         }
 
-        // Now you can use the id in the Cart.findOne query
+        
         const cartData = await Cart.findOne({
             userId: userData._id,
             "items.productsId": id,
