@@ -40,6 +40,7 @@ userRoute.get('/deleteAddress',userAuth.isLogin, userController.deleteAddress)
 userRoute.get('/editAddress',userAuth.isLogin,  userController.editAddress)
 userRoute.post('/postEditaddress', userAuth.isLogin, userController.postEditaddress)
 userRoute.get('/changePassword',userAuth.isLogin,  userController.changePassword)
+userRoute.post('/change-pass',userAuth.isLogin,  userController.changePass)
 userRoute.get('/viewAccount',userAuth.isLogin,  userController.viewAccount)
 userRoute.get('/editAccount',userAuth.isLogin,  userController.editAccount)
 userRoute.post('/postEditAccount',userAuth.isLogin,  userController.postEditAccount)
@@ -63,6 +64,7 @@ userRoute.get('/checkout',userAuth.isLogin, cartController.checkout)
 // all products
 
 userRoute.get('/allProducts',userController.allProducts)
+
 
 
 module.exports = userRoute;         

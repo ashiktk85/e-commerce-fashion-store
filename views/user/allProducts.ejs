@@ -695,11 +695,12 @@
                                 <span>Sort by <i class="fa fa-angle-down angle-down"></i> <i class="fa fa-angle-up angle-up"></i></span>
                                 <ul>
                                     <li class="active"><a href="#">Default sorting</a></li>
-                                    <li><a href="#">Sort by popularity</a></li>
-                                    <li><a href="#">Sort by average rating</a></li>
-                                    <li><a href="#">Sort by latest</a></li>
-                                    <li><a href="#">Sort by price: low to high</a></li>
-                                    <li><a href="#">Sort by price: high to low</a></li>
+                              
+                                    <li><a href="/allProducts?sort=lowToHigh">Price: Low to High</a></li>
+                                    <li><a href="/allProducts?sort=highToLow">Price: High to Low</a></li>
+                                    <li><a href="/allProducts?sort=aA-zZ">aA-zZ</a></li>
+                                    <li><a href="/allProducts?sort=zZ-aA">zZ-aA</a></li>
+                                    <li><a href="#">Avg. Rating</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -773,26 +774,31 @@
             <div class="tab-content jump-3 pt-30">
                 <div id="shop-1" class="tab-pane active">
                     <div class="row g-0 grid-2">
+                        <% for( let i = 0; i < proData.length; i++ ) { %>
+                        
+                        
                         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 grid-item-2">
+                           
                             <div class="product-wrap">
                                 <div class="product-img default-overlay">
-                                    <a href="product-details.html">
-                                        <img class="default-img" src="assets/images/product/metro-1.jpg" alt="">
+                                    <a href="/productDetails?id=<%= proData[i]._id %>">
+                                        <img class="default-img" src="/uploads/<%= proData[i].image[1] %>" alt="pro img">
                                     </a>
                                     <div class="product-action product-action-position-3 action-inc-width-height">
                                         <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i class="fa fa-eye"></i><span>Quick Shop</span></a>
                                         <a title="Add to Wishlist" href="#"><i class="fa fa-heart"></i><span>Add to Wishlist</span></a>
-                                        <a class="icon-blod" title="Add to Compare" href="#"><i class="dlicon arrows-4_compare"></i><span>Add to Compare</span></a>
+                                        <!-- <a class="icon-blod" title="Add to Compare" href="#"><i class="dlicon arrows-4_compare"></i><span>Add to Compare</span></a> -->
                                         <a title="Add to Cart" href="#"><i class="fa fa-shopping-cart"></i><span>Add to Cart</span></a>
                                     </div>
                                     <div class="product-content-5">
-                                        <h4><a href="#">Checked Knit Jumpsuit</a></h4>
-                                        <span>$34.00</span>
+                                        <h4><a href="#"><%= proData[i].name %></a></h4>
+                                        <span><%= proData[i].offerPrice %></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 grid-item-2">
+                        <% } %>
+                        <!-- <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 grid-item-2">
                             <div class="product-wrap">
                                 <div class="product-img default-overlay">
                                     <a href="product-details.html">
@@ -1029,7 +1035,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div id="shop-2" class="tab-pane ">

@@ -4,6 +4,7 @@ const adminRoute = express();
 const adminController = require('../controllers/adminController')
 const CategoryControler = require("../controllers/categoryController");
 const productController = require ('../controllers/productController')
+const orderController = require("../controllers/orderController")
 const proUpload = require('../multer/multer')
 
 adminRoute.set("view engine", "ejs");
@@ -47,7 +48,7 @@ adminRoute.get('/edit-detailedView', isAdmin, productController.detailedPro)
 
 //******************** orders *************************** */
 
-adminRoute.get("/order",isAdmin,orderController.loadOrder)
+adminRoute.get("/adminOrders",isAdmin,orderController.loadOrder)
 adminRoute.get("/order-Detail",isAdmin,orderController.loadOrderDetail)
 adminRoute.post("/orderSave",isAdmin,orderController.saveOrder)
 

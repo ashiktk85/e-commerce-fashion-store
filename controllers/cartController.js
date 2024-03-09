@@ -153,14 +153,19 @@ const addCart = async(req , res) => {
     console.log("uuuuuuuuusssssssssssssserrrrrrrrrrrrrrrr"+req.session.userId)
 
     console.log(proData);
-    const sizeLower=sizeS.toLowerCase()
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"+sizeLower)
+    console.log(sizeS);
+    const sizeLower = sizeS.toLowerCase();
+    console.log(typeof(sizeLower));
+    console.log("Size Lowercase:", sizeLower);
+  
+    let   stock = proData.size.s.quantity;
+  
+    
+    console.log("Stock:", stock);
+    
 
-    // const stock = proData.size.sizeLower.quantity;
-    // console.log(stock)
-
-    // if (stock > quantity) {
-    //   if (quantity < 10) {
+    if (stock > quantity) {
+      if (quantity < 10) {
         const addPrice = await Cart.findOneAndUpdate(
           { userId: req.session.userId, "items.productId": proIdString },
           {
@@ -178,13 +183,13 @@ const addCart = async(req , res) => {
         res.json({ status: true, total: findCart.totalPrice });
         console.log("suuceeeeeeeeeeeeeeeeeeeeeeeeees")
     
-    //   else {
-    //     res.json({ status: "minimum" });
-    //   }
-    // } else {
-    //   console.log("out os stocccccccccccck");
-    //   res.json({ status: "stock" });
-    // }
+        } else {
+        res.json({ status: "minimum" });
+      }
+    } else {
+      console.log("out os stocccccccccccck");
+      res.json({ status: "stock" });
+    }
         
 
     } catch (error) {
@@ -282,7 +287,7 @@ const placeOrder = async (req, res) => {
       for (let i = 0; i < proData.length; i++) {
           const proId = proData[i].productId;
           const quantity = proData[i].quantity;
-          const selectedSize = proData[i].size.toLowerCase(); // Convert to lowercase
+          const selectedSize = proData[i].size.toLowerCase(); 
 
           const product = await Product.findById(proId);
 

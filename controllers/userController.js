@@ -294,7 +294,7 @@ const forgotPassword = async (req, res) => {
 const PostForgotpass = async (req, res) => {
     try {
         const email = req.body.email;
-        const newPassword = req.body.forgotPassword;
+        const newpassword = req.body.forgotPassword;
         const confirmPassword = req.body.confirmPassword;
 
         // Validate email format
@@ -304,11 +304,11 @@ const PostForgotpass = async (req, res) => {
         }
 
         // Validate password length
-        if (newPassword.length < 8) {
+        if (newpassword.length < 8) {
             return res.render('forgotPassword', { message: 'Password must be at least 8 characters long.' });
         }
 
-        if (newPassword !== confirmPassword) {
+        if (newpassword !== confirmPassword) {
             return res.render('forgotPassword', { message: 'Passwords do not match.' });
         }
 
@@ -320,7 +320,7 @@ const PostForgotpass = async (req, res) => {
         }
 
         // Hash the new password before updating it in the database
-        const hashedPassword = await passwordHashing(newPassword);
+        const hashedPassword = await passwordHashing(newpassword);
         user.password = hashedPassword;
 
         // Save the updated user information in the database
@@ -434,7 +434,13 @@ const addAddress = async (req, res) => {
 
 const orders = async (req, res) => {
     try {
-        const orderData = await Orders.find({})
+        const userData = await User.findOne({ email: req.session.email });
+
+    const orderData = await Orders.find({ userId: userData._id }).sort({
+      _id: -1,
+    });
+
+        
         res.render('order',{orderData})
     } catch (error) {
         console.log(`error in rendring orders page ${error}`)
@@ -450,7 +456,7 @@ const postAddress = async (req, res) => {
         const { name, number, pincode, locality, address, city, state, country } = req.body;
         const userId = req.session.userId;
 
-        // Count the number of addresses for the user
+       
         const existingAddressesCount = await Address.countDocuments({ userId });
 
         if (existingAddressesCount >= 3) {
@@ -458,7 +464,6 @@ const postAddress = async (req, res) => {
             return res.redirect('/userAddress?limitReached=true');
         }
 
-        // Assuming you have a UserAddress model
         const userAddress = new Address({
             userId,
             name,
@@ -545,16 +550,15 @@ const postEditaddress = async (req, res) => {
                         country
                     }
                 },
-                { new: true } // Return the modified document
+                { new: true } 
             );
 
-            // Redirect to user's address page with the updated address
             res.redirect('/userAddress');
         }
     } catch (error) {
         console.log(`error in post edit address : ${error}`);
-        // Handle errors and send an appropriate response
-        res.redirect('/userAddress?message=Error updating address. Please try again.'); // Redirect to the user's address page with an error message
+       
+        res.redirect('/userAddress?message=Error updating address. Please try again.'); 
     }
 };
 
@@ -568,6 +572,47 @@ const changePassword = async (req, res) => {
         console.log(`error in rnder change password : ${error}`);
     }
 }
+
+//POST CHANGE PASS
+
+const changePass = async (req, res) => {
+    try {
+        console.log("getting here");
+      const { currentPass, newpass, conPass } = req.body;
+        console.log( currentPass, newpass, conPass)
+      if (newpass == conPass) {
+        const email = req.session.email;
+  
+        const userData = await User.findOne({ email: email });
+  
+        const passwordMatch = await bcrypt.compare(currentPass, userData.password);
+  
+        if (passwordMatch) {
+          const passwordHash = await passwordHashing(newpass);
+  
+          const updatePass = await User.findByIdAndUpdate(
+            { _id: userData._id },
+            {
+              $set: {
+                password: passwordHash,
+              },
+            }
+          );
+  
+          if (updatePass) {
+            res.json({ status: true });
+          }
+        } else {
+          res.json({ status: "wrong" });
+        }
+      } else {
+        res.json({ status: "compare" });
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  
 
 
 //            VIEW ACCOUNT
@@ -621,7 +666,7 @@ const postEditAccount = async (req, res) => {
 
     } catch (error) {
         console.error(`Error in getting post data from edit account: ${error}`);
-        // Handle the error response or redirect to an error page
+ 
         res.status(500).send('Internal Server Error');
     }
 };
@@ -631,7 +676,40 @@ const postEditAccount = async (req, res) => {
 
 const allProducts = async (req, res) => {
     try {
-        res.render('allProducts')
+        const sort = req.query.sort;
+
+        if (sort == "lowToHigh") {
+            const proData = await Product.find({}).sort({ offerPrice: 1 }).limit(6);
+            const catData = await Category.find({});
+            const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
+            
+            res.render("allProducts", { proData, catData, newPro});
+          } else if (sort == "highToLow") {
+            const proData = await Product.find({}).sort({ offerPrice: -1 }).limit(6);
+            const catData = await Category.find({});
+            const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
+            
+            res.render("allProducts", { proData, catData, newPro});
+          } else if (sort == "aA-zZ") {
+            const proData = await Product.find({}).sort({ name: 1 }).limit(6);
+            const catData = await Category.find({});
+            const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
+            
+            res.render("allProducts", { proData, catData, newPro});
+          } else if (sort == "zZ-aA") {
+            const proData = await Product.find({}).sort({ name: -1 }).limit(6);
+            const catData = await Category.find({});
+            const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
+            
+            res.render("allProducts", { proData, catData, newPro});
+          }
+      
+          const proData = await Product.find({}).limit(6);
+          const catData = await Category.find({});
+          const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
+          
+          res.render("allProducts", { proData, catData, newPro});
+        
     } catch (error) {
         console.log(`error in logging all products page : ${error}`);
     }
@@ -679,6 +757,7 @@ module.exports = {
     editAccount,
     postEditAccount,
     allProducts,
-    logOut
+    logOut,
+    changePass
 
 };
