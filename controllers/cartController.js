@@ -68,7 +68,7 @@ const loadCart = async (req, res) => {
             const userData = await User.findOne({ email: req.session.email });
             const userCart = await Cart.findOne({ userId: userData._id });
             const proData = await Product.findById({ _id: id });
-            console.log(userCart);
+          
 
             if (userCart) {
                 let proCart = false;
@@ -141,19 +141,17 @@ const addCart = async(req , res) => {
     try {
         console.log("carrttttyyyyyyyyy");
         const {offerprice, proId, qty, subtotal,sizeS} = req.body;
-        console.log(offerprice, proId, qty, subtotal,sizeS)
+       
         
-         //  console.log("hello             "+proId);
     const quantity = parseInt(qty);
-    console.log(quantity);
+
     const proIdString = proId.toString();
 
     const proData = await Product.findById({ _id: proId });
-    console.log(proData)
+
     console.log("uuuuuuuuusssssssssssssserrrrrrrrrrrrrrrr"+req.session.userId)
 
-    console.log(proData);
-    console.log(sizeS);
+
     const sizeLower = sizeS.toLowerCase();
     console.log(typeof(sizeLower));
     console.log("Size Lowercase:", sizeLower);
@@ -196,6 +194,67 @@ const addCart = async(req , res) => {
       console.log(`error in add cart real ${error}`);  
     }
 }
+
+// const addCart = async (req, res) => {
+//   try {
+//     console.log("carrttttyyyyyyyyy");
+//     const { offerprice, proId, qty, subtotal, sizeS } = req.body;
+//     console.log(offerprice, proId, qty, subtotal, sizeS);
+
+//     const quantity = parseInt(qty);
+//     console.log("this is quantity......",   quantity);
+//     const proIdString = proId.toString();
+
+//     const proData = await Product.findById(proId);
+//     console.log(proData);
+//     console.log("uuuuuuuuusssssssssssssserrrrrrrrrrrrrrrr" + req.session.userId);
+
+//     console.log(sizeS);
+//     const sizeLower = sizeS.toLowerCase();
+//     console.log(typeof sizeLower);
+//     console.log("Size Lowercase:", sizeLower);
+
+//     let stock = proData.size[sizeLower].quantity;
+
+//     console.log("Stock:", stock);
+
+//     if (stock >= quantity) {
+//       console.log("getting here");
+//       if (quantity < 10) {
+//         const addPrice = await Cart.findOneAndUpdate(
+//           { userId: req.session.userId, "items.productId": proIdString },
+//           {
+//             $inc: {
+//               "items.$.price": offerprice,
+//               "items.$.quantity": 1,
+//               "items.$.subTotal": offerprice,
+//               totalPrice: offerprice,
+//             },
+//           }
+//         );
+
+//         // Update product stock in the database
+//         await Product.findByIdAndUpdate(proId, {
+//           $inc: { [`size.${sizeLower}.quantity`]: -quantity },
+//         });
+
+//         const findCart = await Cart.findOne({ userId: req.session.userId });
+
+//         res.json({ status: true, total: findCart.totalPrice });
+//         console.log("suuceeeeeeeeeeeeeeeeeeeeeeeeees");
+//       } else {
+//         res.json({ status: "minimum" });
+//       }
+//     } else {
+//       console.log("out os stocccccccccccck");
+//       res.json({ status: "stock" });
+//     }
+//   } catch (error) {
+//     console.log(`error in add cart real ${error}`);
+//     res.status(500).json({ status: "error" });
+//   }
+// };
+
 
 
 const decrement = async (req, res) => {
@@ -346,6 +405,47 @@ const placeOrder = async (req, res) => {
   }
 };
 
+const removeItemCart = async (req, res) => {
+  try {
+    const id = req.query.id
+    const size = req.query.size;
+    console.log(id, size);
+    const email = req.session.email;
+
+    const user = await User.findOne({ email : email })
+    const data = await Cart.findOne({userId : user._id})
+
+    console.log(data);
+
+    const deleteOne = await Cart.findOneAndUpdate({userId : user._id}, 
+      {
+        $pull : {
+          items: { productId: id  , size: size },
+
+        }
+      })
+
+     res.redirect('/cart')
+
+
+
+  } catch (error) {
+    console.log(`error in removing single cart item : ${error}`)
+  }
+}
+
+const clearCart = async(req, res) => {
+  try {
+    const id = req.query.id;
+    console.log(id);
+
+    const deleteCart = await Cart.findByIdAndDelete({_id : id})
+    res.redirect('/cart')
+  } catch (error) {
+    console.log(`error in clearing cart : ${error}`);
+  }
+}
+
 
 
 module.exports = {
@@ -355,6 +455,8 @@ module.exports = {
     cartPage,
     addCart,
     decrement,
-    placeOrder
+    placeOrder,
+    removeItemCart,
+    clearCart
    
 }

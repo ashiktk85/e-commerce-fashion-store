@@ -6,6 +6,7 @@ const nocache = require("nocache");
 const connectDB = require('./database/connection');
 var cookieParser = require('cookie-parser')
 
+
 require('dotenv').config();
 
 const dbHost = process.env.DB_HOST;
@@ -36,6 +37,9 @@ app.use(session({
     saveUninitialized : false,
     cookie : { maxage : 6000000}
 }));
+
+
+
 
 const PORT = process.env.PORT || 7777;
 

@@ -31,39 +31,36 @@ userRoute.get('/logout', userAuth.isLogin, userController.logOut)
 
 //  Account- Dashboard routes
 
-userRoute.get('/orders',userAuth.isLogin, userController.orders)
-userRoute.get('/accountDetails',userAuth.isLogin, userController.accountDetails)
-userRoute.get('/addAddress',userAuth.isLogin, userController.addAddress)
-userRoute.get('/userAddress',userAuth.isLogin, userController.userAddress)
-userRoute.post('/postAddress',userAuth.isLogin, userController.postAddress)
-userRoute.get('/deleteAddress',userAuth.isLogin, userController.deleteAddress)
-userRoute.get('/editAddress',userAuth.isLogin,  userController.editAddress)
-userRoute.post('/postEditaddress', userAuth.isLogin, userController.postEditaddress)
-userRoute.get('/changePassword',userAuth.isLogin,  userController.changePassword)
-userRoute.post('/change-pass',userAuth.isLogin,  userController.changePass)
-userRoute.get('/viewAccount',userAuth.isLogin,  userController.viewAccount)
-userRoute.get('/editAccount',userAuth.isLogin,  userController.editAccount)
-userRoute.post('/postEditAccount',userAuth.isLogin,  userController.postEditAccount)
-
+userRoute.get('/orders',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked, userController.orders)
+userRoute.get('/accountDetails',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked, userController.accountDetails)
+userRoute.get('/addAddress',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked, userController.addAddress)
+userRoute.get('/userAddress',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked, userController.userAddress)
+userRoute.post('/postAddress',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked, userController.postAddress)
+userRoute.get('/deleteAddress',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked, userController.deleteAddress)
+userRoute.get('/editAddress',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked,  userController.editAddress)
+userRoute.post('/postEditaddress', userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked, userController.postEditaddress)
+userRoute.get('/changePassword',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked,  userController.changePassword)
+userRoute.post('/change-pass',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked,  userController.changePass)
+userRoute.get('/viewAccount',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked,  userController.viewAccount)
+userRoute.get('/editAccount',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked,  userController.editAccount)
+userRoute.post('/postEditAccount',userAuth.isLogin,userAuth.isLogOut,userAuth.isBlocked,  userController.postEditAccount)
 
 // cart 
 
 userRoute.get('/cart',userAuth.isLogin, cartController.cartPage)
-
-// userRoute.post('/loadCart', userAuth.isLogin, cartController.loadCart)
-
 userRoute.post("/addcartLoad",userAuth.isBlocked,userAuth.isLogin,cartController.loadCart)
 userRoute.post("/cartadd",userAuth.isBlocked,userAuth.isLogin,cartController.addCart)
 userRoute.post("/decrement",userAuth.isBlocked,userAuth.isLogin,cartController.decrement)
-
 userRoute.post("/placeOrder",userAuth.isBlocked,userAuth.isLogin,cartController.placeOrder)
+userRoute.get('/cartremove', userAuth.isBlocked,userAuth.isLogin, cartController.removeItemCart)
+userRoute.get('/clearCart', userAuth.isBlocked,userAuth.isLogin,cartController.clearCart)
 
 //checkout
-userRoute.get('/checkout',userAuth.isLogin, cartController.checkout)
+userRoute.get('/checkout',userAuth.isLogin,userAuth.isBlocked, cartController.checkout)
 
 // all products
 
-userRoute.get('/allProducts',userController.allProducts)
+userRoute.get('/allProducts',userAuth.isBlocked,userAuth.isLogin,userAuth.isLogOut,userController.allProducts)
 
 
 

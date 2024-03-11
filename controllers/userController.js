@@ -66,7 +66,7 @@ const userSignupPost = async (req, res) => {
         number = number.trim();
         confirm = confirm.trim();
 
-        const otp = otpGnerator();
+        const {otp,otpTime} = otpGnerator.otpGnerator();
         console.log(otp);
 
 
@@ -102,7 +102,10 @@ const userSignupPost = async (req, res) => {
                     number,
                     password,
                     confirm,
-                    otp
+                    otp,
+                    otpTime
+                    
+                
                 };
 
                 req.session.Data = req.session.Data || {};
@@ -155,28 +158,6 @@ const loadOtp = async (req, res) => {
 
 //*********************** post otp ***************************************************** */
 
-const verifyOtp = async (req, res) => {
-    const getOtp = req.body.otp;
-    console.log(getOtp);
-
-    if (req.session.Data) {
-        if (getOtp == req.session.Data.otp) {
-            const securePass = await passwordHashing(req.session.Data.password)
-            const user = new User({
-                name: req.session.Data.name,
-                email: req.session.Data.email,
-                mobile: req.session.Data.number,
-                password: securePass,
-            });
-            const userData = await user.save();
-            console.log(userData);
-            res.render('login', { sucess: "OTP verified" })
-        } else {
-            res.render('otpVerification', { message: "Wrong otp." })
-        }
-    }
-
-}
 
 
 const resendOtp = async (req, res) => {
@@ -184,7 +165,7 @@ const resendOtp = async (req, res) => {
         console.log("hello");
 
         const email = req.session.Data.email;
-        const resendOtpGen = otpGnerator();
+        const resendOtpGen = otpGnerator.otpGnerator();
         req.session.Data.otp = resendOtpGen;
         console.log(resendOtpGen);
 
@@ -209,6 +190,60 @@ const resendOtp = async (req, res) => {
         console.log(error.message);
     }
 };
+
+
+const verifyOtp = async (req, res) => {
+    try {
+        const getOtp = req.body.otp;
+        console.log(getOtp);
+
+        if (req.session.Data) {
+            const storedOtpData = req.session.Data.otp;
+            const otpTime = req.session.Data.otpTime;
+
+            
+          
+            const currentTime = Date.now();
+            const otpExpiryDuration = 60000; // 60 seconds
+
+            // Check if the OTP is correct
+            if (getOtp === storedOtpData) {
+                // Check if the OTP is not expired
+                if (currentTime - otpTime < otpExpiryDuration) {
+                    const securePass = await passwordHashing(req.session.Data.password);
+
+                    // Save user data
+                    const user = new User({
+                        name: req.session.Data.name,
+                        email: req.session.Data.email,
+                        mobile: req.session.Data.number,
+                        password: securePass,
+                    });
+
+                    const userData = await user.save();
+                    console.log(userData);
+
+                    
+                    delete req.session.otpData;
+
+                    return res.render('login', { success: "OTP verified. You can now log in." });
+                } else {
+                    return res.render('otpVerification', { message: "OTP expired, please resend OTP." });
+                }
+            } else {
+                return res.render('otpVerification', { message: "Wrong OTP, please try again." });
+            }
+        } else {
+            return res.render('otpVerification', { message:"OTP expired, please resend OTP."  });
+        }
+    } catch (error) {
+        console.error(`Error in OTP verification: ${error}`);
+        return res.render('otpVerification', { message: "An error occurred. Please try again later." });
+    }
+};
+
+
+
 
 
 // **************************** user login *****************************************************************
@@ -297,13 +332,12 @@ const PostForgotpass = async (req, res) => {
         const newpassword = req.body.forgotPassword;
         const confirmPassword = req.body.confirmPassword;
 
-        // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.render('forgotPassword', { message: 'Invalid email format.' });
         }
 
-        // Validate password length
+ 
         if (newpassword.length < 8) {
             return res.render('forgotPassword', { message: 'Password must be at least 8 characters long.' });
         }
@@ -312,21 +346,20 @@ const PostForgotpass = async (req, res) => {
             return res.render('forgotPassword', { message: 'Passwords do not match.' });
         }
 
-        // Retrieve user from the database based on the email
+    
         const user = await User.findOne({ email });
 
         if (!user) {
             return res.render('forgotPassword', { message: 'User not found.' });
         }
 
-        // Hash the new password before updating it in the database
+   
         const hashedPassword = await passwordHashing(newpassword);
         user.password = hashedPassword;
 
-        // Save the updated user information in the database
         await user.save();
 
-        // Update the password in the session as well
+     
         if (req.session.Data) {
             req.session.Data.password = hashedPassword;
             req.session.save();
@@ -354,7 +387,7 @@ const productDetails = async (req, res) => {
         const userData = await User.findOne({ email: req.session.email });
         const id = req.query.id;  
 
-        // Check if the user is blocked
+
         const user = await User.findById({ _id: id });
         if (user && user.is_blocked) {
             res.redirect('/login');

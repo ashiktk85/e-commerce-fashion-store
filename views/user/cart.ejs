@@ -707,7 +707,7 @@
                               <% for (let i=0; i < proData.length; i++) { %>
                                 <tr>
                                   <td class="product-remove">
-                                    <a href="#"><i class="dlicon ui-1_simple-remove"></i></a>
+                                    <a href="/cartremove?id=<%= cartData.items[i].productId %>&size=<%= cartData.items[i].size %>"><i class="dlicon ui-1_simple-remove"></i></a>
                                   </td>
 
                                   <td class="product-img sm">
@@ -771,9 +771,13 @@
                           <button class="coupon-btn" type="submit">Apply coupon</button>
                         </div>
                         <div class="cart-clear">
-                          <a href="#">Clear Cart</a>
-                          <a href="#">Update cart</a>
-                        </div>
+                          <% if (cartData && cartData._id) { %>
+                              <a href="/clearCart?id=<%= cartData._id %>">Clear Cart</a>
+                          <% } else { %>
+                              <b style="font-family: poppins;">CART IS EMPTY</b>
+                              
+                          <% } %>
+                      </div>
                       </div>
                     </div>
                     <div class="col-lg-4">
