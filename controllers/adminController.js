@@ -86,6 +86,17 @@ const unblockUser = async (req, res) => {
     }
 }
 
+// ADMIN LOGOUT 
+
+const logout = async (req, res) => {
+    try {
+      delete req.session.admin;
+      res.redirect("/admin");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
 module.exports = {
     adminHome,
@@ -94,4 +105,5 @@ module.exports = {
     userDetails,
     blockUser,
     unblockUser,
+    logout
 }

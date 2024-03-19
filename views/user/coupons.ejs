@@ -546,125 +546,167 @@
                             <div class="row flex-row-reverse">
                                 <div class="col-lg-12">
                                     <div class="myaccount-tab-menu nav" role="tablist">
-                                        <a href="accountDetails" class="active" data-bs-toggle="tab">
+                                        <a href="accountDetails" data-bs-toggle="tab">
                                             Dashboard</a>
                                         <a href="orders" data-bs-toggle=""> Orders</a>
                                         <!-- <a href="#download" data-bs-toggle="tab"> Download</a> -->
                                         <a href="userAddress" data-bs-toggle=""> Address</a>
                                         <a href="changePassword" data-bs-toggle="">Change Password</a>
                                         <a href="viewAccount" data-bs-toggle=""> Account Details</a>
-                                        <a href="coupons"> My coupon</a>
+                                        <a href="coupons" class="active" > My coupon</a>
                                     </div>
+                                    <h2 style="font-family: poppins; margin-top: 20px; font-size: 22px;">Available Coupons</h2>
+                                  
                                     <!-- My Account Tab Menu End -->
                                     <!-- My Account Tab Content Start -->
-                                    <div class="tab-content" id="myaccountContent">
-                                        <!-- Single Tab Content Start -->
-                                        <div class="tab-pane fade show active" id="dashboad" role="tabpanel">
-                                            <% if(userData)  { %>
-                                                
-                                                <div class="myaccount-content">
-                                                    <div class="welcome">
-                                                        <p>Hello, <strong><%= userData.name %></strong> </p>
-                                                        <small>Login  : <strong><%= userData.email %></strong>  </small>
-                                                    </div>
-                
-                                                    <p class="mb-0">"In your account dashboard, easily monitor recent orders, handle shipping and billing addresses, and update account details or passwords. Streamline your online experience with convenient access to vital information for efficient order management and personalized account adjustments."</p>
+                                    <style>
+                                        /* Styles for demonstration purposes */
+                                        body {
+                                          background-color: #eee;
+                                          color: #ffffff;
+                                          margin: 0;
+                                          padding: 0;
+                                        }
+                                        .wrapper {
+                                          display: flex;
+                                          justify-content: center;
+                                          align-items: center;
+                                          height: 100vh;
+                                        }
+                                        .card {
+                                          position: relative;
+                                          background-color: #7B1FA2;
+                                          padding: 10px;
+                                          width: 200px; /* Adjust the width for smaller cards */
+                                          border-radius: 10px;
+                                          margin-right: 20px; /* Add spacing between cards */
+                                        }
+                                        .content {
+                                          z-index: 10;
+                                        }
+                                        .logo {
+                                          margin-bottom: 20px; /* Reduce logo margin */
+                                          text-align: right;
+                                        }
+                                        .off {
+                                          line-height: 0px;
+                                        }
+                                        .off h1 {
+                                          font-size: 50px; /* Reduce font size for smaller cards */
+                                        }
+                                        .off span {
+                                          margin-right: 20px; /* Reduce margin */
+                                        }
+                                        .plus {
+                                          font-size: 18px; /* Reduce font size */
+                                        }
+                                        .code {
+                                          text-transform: uppercase;
+                                          padding: 5px;
+                                          background-color: #f4efef;
+                                          color: red;
+                                          font-size: 14px; /* Reduce font size */
+                                        }
+                                        .cross-bg {
+                                          height: 100%;
+                                          width: 100%;
+                                          position: absolute;
+                                          background-color: #9C27B0;
+                                          left: 0px;
+                                          top: 0px;
+                                          opacity: 0.4;
+                                          clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+                                          z-index: 1;
+                                        }
+                                      </style>
+                                      </head>
+                                      <body>
+                                      
+                                      <div class="wrapper" style="padding-bottom: 400px;padding-right: 260px;">
+                                        <!-- Coupon 1 -->
+                                       +
+                                        <!-- Repeat the card structure for more coupons -->
+                                        <div class="card">
+                                            <div class="cross-bg"></div>
+                                            <div class="content">
+                                              <div class="logo">
+                                                <img src="https://i.imgur.com/w68MQc4.png" width="60">
+                                              </div>
+                                              <div class="text-center text-uppercase text-white off">
+                                                <span>Flat</span>
+                                                <h1 class="mt-0">50%</h1>
+                                              </div>
+                                              <div class="text-center text-white">
+                                                <span class="plus">+</span>
+                                              </div>
+                                              <div class="text-center text-uppercase text-white">
+                                                <h3 class="m-0">10% OFF</h3>
+                                              </div>
+                                              <div class="px-3 mb-3">
+                                                <div class="code text-center mt-3">
+                                                  <span>Use code: <b>Extra10</b></span>
                                                 </div>
-                                          <% } %>
-                                         </div>
-                                        <!-- Single Tab Content End -->
-                                        <!-- Single Tab Content Start -->
-                                        <!-- <div class="tab-pane fade" id="orders" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <div class="myaccount-table table-responsive text-center">
-                                                    <table class="table table-bordered">
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Order</th>
-                                                                <th>Date</th>
-                                                                <th>Status</th>
-                                                                <th>Total</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td>Aug 22, 2023</td>
-                                                                <td>Pending</td>
-                                                                <td>$3000</td>
-                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>July 22, 2023</td>
-                                                                <td>Approved</td>
-                                                                <td>$200</td>
-                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td>June 12, 2023</td>
-                                                                <td>On Hold</td>
-                                                                <td>$990</td>
-                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                              </div>
                                             </div>
-                                        </div> -->
-                                        <!-- Single Tab Content End -->
-                                        <!-- Single Tab Content Start -->
-                                        <div class="tab-pane fade" id="download" role="tabpanel">
-                                            <div class="myaccount-content">
-                                                <div class="myaccount-table table-responsive text-center">
-                                                    <table class="table table-bordered">
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Product</th>
-                                                                <th>Date</th>
-                                                                <th>Expire</th>
-                                                                <th>Download</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Haven - Free Real Estate PSD Template</td>
-                                                                <td>Aug 22, 2023</td>
-                                                                <td>Yes</td>
-                                                                <td><a href="#" class="check-btn sqr-btn "><i class="fa fa-cloud-download"></i> Download File</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>HasTech - Profolio Business Template</td>
-                                                                <td>Sep 12, 2023</td>
-                                                                <td>Never</td>
-                                                                <td><a href="#" class="check-btn sqr-btn "><i class="fa fa-cloud-download"></i> Download File</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                          </div>
+                                          <div class="card">
+                                            <div class="cross-bg"></div>
+                                            <div class="content">
+                                              <div class="logo">
+                                                <img src="https://i.imgur.com/w68MQc4.png" width="60">
+                                              </div>
+                                              <div class="text-center text-uppercase text-white off">
+                                                <span>Flat</span>
+                                                <h1 class="mt-0">50%</h1>
+                                              </div>
+                                              <div class="text-center text-white">
+                                                <span class="plus">+</span>
+                                              </div>
+                                              <div class="text-center text-uppercase text-white">
+                                                <h3 class="m-0">10% OFF</h3>
+                                              </div>
+                                              <div class="px-3 mb-3">
+                                                <div class="code text-center mt-3">
+                                                  <span>Use code: <b>Extra10</b></span>
                                                 </div>
+                                              </div>
                                             </div>
-                                        </div>
-                                        <!-- Single Tab Content End -->
-                                        <!-- Single Tab Content Start -->
+                                          </div>
+                                          <div class="card">
+                                            <div class="cross-bg"></div>
+                                            <div class="content">
+                                              <div class="logo">
+                                                <img src="https://i.imgur.com/w68MQc4.png" width="60">
+                                              </div>
+                                              <div class="text-center text-uppercase text-white off">
+                                                <span>Flat</span>
+                                                <h1 class="mt-0">50%</h1>
+                                              </div>
+                                              <div class="text-center text-white">
+                                                <span class="plus">+</span>
+                                              </div>
+                                              <div class="text-center text-uppercase text-white">
+                                                <h3 class="m-0">10% OFF</h3>
+                                              </div>
+                                              <div class="px-3 mb-3">
+                                                <div class="code text-center mt-3">
+                                                  <span>Use code: <b>Extra10</b></span>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          
+                                        
+                                      </div>
+                                      
+                                      
+                                       
                                       
                                             
 
 
-                                            <!-- <div class="myaccount-content">
-                                                <address>
-                                                    <p><strong>Alex Tuntuni</strong></p>
-                                                    <p>1355 Market St, Suite 900 <br>
-                                            San Francisco, CA 94103</p>
-                                                    <p>Mobile: (123) 456-7890</p>
-                                                </address>
-                                                <a href="#" class="check-btn sqr-btn "><i class="fa fa-edit"></i> Edit Address</a>
-                                            </div> -->
                                         </div>
-                                        <!-- Single Tab Content End -->
-                                        <!-- Single Tab Content Start -->
-                                        <!-- Single Tab Content End -->
+                                     
                                     </div>
                                 </div>
                             </div>

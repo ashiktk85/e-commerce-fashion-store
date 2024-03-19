@@ -74,9 +74,22 @@
                
                 <li class="">
                     <!-- <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i> -->
-                        <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-account-circle"></i> 
+                        <a class="menu-link" href="/admin/adminOrders"> <i class="icon material-icons md-account-circle"></i> 
 
-                        <span class="text">Account</span>
+                        <span class="text">Orders</span>
+                    </a>
+                    <!-- <div class="submenu">
+                        <a href="page-form-product-1.html">Add product 1</a>
+                        <a href="page-form-product-2.html">Add product 2</a>
+                        <a href="page-form-product-3.html">Add product 3</a>
+                        <a href="page-form-product-4.html">Add product 4</a>
+                    </div> -->
+                </li>
+                <li class="">
+                    <!-- <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i> -->
+                        <a class="menu-link" href="/admin/adminCoupon"> <i class="icon material-icons md-account-circle"></i> 
+
+                        <span class="text">Coupons</span>
                     </a>
                     <!-- <div class="submenu">
                         <a href="page-form-product-1.html">Add product 1</a>
@@ -253,16 +266,16 @@
                                                         <i class="material-icons md-delete_forever"></i> Unlist
                                                     </a>
                                                 <% } else { %>
-                                                    <a href="/admin/edit-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                                    <a href="/admin/edit-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand" style="background-color: black;">
                                                         <i class="material-icons md-edit"></i> Edit
                                                     </a>
-                                                    <a href="/admin/unblock-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm btn-light rounded">
+                                                    <a href="/admin/unblock-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm btn-light rounded" >
                                                         <i class="material-icons md-delete_forever"></i> List
                                                     </a>
                                                 <% } %>
                                             </td>
-                                            <td class="align-middle text-center">
-                                                <a href="/admin/edit-detailedView?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand">
+                                            <td class="align-middle text-center" >
+                                                <a href="/admin/edit-detailedView?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand" style="background-color: black;">
                                                     <i class="material-icons"></i> View
                                                 </a>
                                             </td>

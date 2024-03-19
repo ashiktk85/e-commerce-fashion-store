@@ -61,9 +61,9 @@
                         <a href="page-categories.html">Categories</a>
                     </div> -->
                 </li>
-                <li class="menu-item active" style="background-color: black;border-radius: 5px;">
+                <li >
                     <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-shopping_cart"></i>
-                        <span class="text" style="padding-left: 10px;color: #ffffff;">Catagory</span>
+                        <span class="text" style="padding-left: 10px;"">Catagory</span>
                     </a>
                     <!-- <div class="submenu">
                         <a href="page-orders-1.html">Order list 1</a>
@@ -85,11 +85,11 @@
                         <a href="page-form-product-4.html">Add product 4</a>
                     </div> -->
                 </li>
-                <li class="">
+                <li class="menu-item active" style="background-color: black;border-radius: 5px;">
                     <!-- <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i> -->
                         <a class="menu-link" href="/admin/adminCoupon"> <i class="icon material-icons md-account-circle"></i> 
 
-                        <span class="text">Coupons</span>
+                        <span class="text" style="color: #ffffff;">Coupons</span>
                     </a>
                     <!-- <div class="submenu">
                         <a href="page-form-product-1.html">Add product 1</a>
@@ -211,183 +211,115 @@
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Categories </h2>
-                    <p>Add, edit or delete a category</p>
+                    <h2 class="content-title card-title">Coupon</h2>
+                    <p>Add, edit or delete a Coupon</p>
                 </div>
                 <div>
-                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
+                    <input type="text" placeholder="Search Coupon" class="form-control bg-white">
                 </div>
+            </div>
+            <div class="d-flex justify-content-end pb-20">
+                <a href="/admin/addCoupon" class="btn btn-sm btn-primary rounded font-sm" style="background-color: #000000;">Create Coupon</a>
             </div>
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <form action="/admin/category" method="post">
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_name" name="name" />
-                                </div>
-                                <% if(typeof nameError !== 'undefined')  { %>
-
-                                    <small style="color: red;"><%= nameError %></small>
-                               <% } %>
-                                <!-- <div class="mb-4">
-                                    <label for="product_slug" class="form-label">Slug</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
-                                </div> -->
-                                <!-- <div class="mb-4">
-                                    <label class="form-label">Parent</label>
-                                    <select class="form-select">
-                                        <option>Clothes</option>
-                                        <option>T-Shirts</option>
-                                    </select>
-                                </div> -->
-                                <div class="mb-4">
-                                    <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" name="dis"></textarea>
-                                </div>
-                                <div class="d-grid">
-                                    <button class="btn " type="submit" style="background-color: black; color: #ffffff;">Create category</button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-md-9">
+             
+                        <div class="col-md-15">
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
-                                        <tr>
+                                        <tr style="width: 100%;">
+                                          
+                                            <th>Code</th>
                                             <th>Name</th>
-                                            <th>Description</th>
-                                            <th>List/Unlist</th>
-                                            <th>Edit</th>
-                                            <th class="text-center">Delete</th>
+                                            <th>ST-Date</th>
+                                            <th>ED-Date</th>
+                                            <th>Mini-amount</th>
+                                            <th>Max-amount</th>
+                                            <th>Status</th>
+                                            <th class="text-end" >Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% catData.forEach(element => { %>
+                                      <% if (couponData.length>0) { %>
+
+                                        <% for( let i = 0; i < couponData.length; i++ ) { %>
+
                                             <tr>
-                                                <td>
-                                                    <h6 class="mb-0 title">
-                                                        <%= element.name %>
-                                                    </h6>
-                                                </td>
-                                                <td>
-                                                    <h6 class="mb-0 title">
-                                                        <%= element.description %>
-                                                    </h6>
-                                                </td>
-                                                <% if (element.is_blocked == false) { %>
-                                                    <td>
-                                                        <span class="badge rounded-pill alert-success">Unlist</span>
-                                                    </td>
-                                                    <td class="text-start">
-                                                        <a href="/admin/cat-edit?id=<%= element._id %>" class="btn btn-sm  rounded font-sm mt-2" style="background-color: black;color: white;">Edit</a>
-                                                    </td>
-                                                    
-                                                        <td class="text-end">
-                                                        <button type="button" class="btn btn-sm  rounded font-sm mt-2" onclick="list('<%= element._id %>')" style="background-color: black;color: white;">List</button>
-                                                    </td>
-                                                <% } else { %>
-                                                    <td>
-                                                        <span class="badge rounded-pill alert-danger">List</span>
-                                                    </td>
-                                                    <td class="text-start">
-                                                        <a href="/admin/cat-edit?id=<%= element._id %>" class="btn btn-sm  rounded font-sm mt-2" style="background-color: black;color: white;">Edit</a>
-                                                    </td>
+                                            
+                                                <td><%= couponData[i].couponCode  %></td>
+                                                <td><b><%= couponData[i].name  %></b></td>
+                                                <td><%= couponData[i].startDate %></td>
+                                                <td><%=  couponData[i].EndDate %></td>
+                                                <td><%=  couponData[i].minimumAmount %></td>
+                                                <td><%=  couponData[i].maximumAmount%></td>
+                                                <% if (couponData[i].isActive==true) { %>
+
+                                                    <td id="status<%=i%>">Active</td>
+                                                    <td class="text-end" style="text-align: right;">
+                                                        <a href="/admin/coupon-edit?id=<%=couponData[i]._id  %>" id="edit<%=i%>" class="btn btn-info rounded font-sm mt-6 p-10" style="display: inline-block; margin-right: 10px;background-color: #000000;color: #ffffff;border: #000000;">EDIT</a>
+                                                        <button type="button" class="btn btn-primary" style="padding: 10px; display: inline-block;" id="listButton<%=i%>" onclick="Block('<%= couponData[i]._id %>','<%=i%>')">Not Active</button>
+                                                      </td>
+                                                 
+                                                <% }else{ %>
+                                                    <td id="status<%=i%>">Not Active</td>
                                                     <td class="text-end">
-                                                        <button type="button" class="btn btn-sm  rounded font-sm mt-2" onclick="list('<%= element._id %>')" style="background-color: black;color: white;">Unlist</button>
+                                                        <a href="/admin/coupon-edit?id=<%= couponData[i]._id %>" id="edit<%=i%>" class="btn  rounded font-sm mt-6 p-10" style="display: none; margin-right: 10px;background-color: #000000;color: #ffffff;">EDIT</a>
+                                                        <button type="button" class="btn btn-primary" style="padding: 10px; display: inline-block;" id="listButton<%=i%>" onclick="Block('<%=couponData[i]._id %>','<%=i%>')">Active</button>
                                                     </td>
-                                                <% } %>
+                                                    <% } %>
+                                               
+                     
                                             </tr>
-                                        <% }) %>
+
+                                        
+                                        <% } %>
+                                       
+                                      <% }else{ %>
+
+                                        <tr>
+                                            <td>
+                                                No Coupon
+                                            </td>
+                                        </tr>
+
+                                        <% } %>
+                                                
+                                        
+                                          
                                     </tbody>
-                                    <style>
-.btn-brand,
-.btn-light,
-.btn-danger,
-.btn-edit {
-    background-color: black;
-    color: white;
-    width: 100px; /* Adjust the width as needed */
-}
-
-/* Style to remove rounded corners */
-.btn-brand,
-.btn-light,
-.btn-danger,
-.btn-edit {
-    border-radius: 5;
-}
-
-/* Style for button on hover */
-.btn-brand:hover,
-.btn-light:hover,
-.btn-danger:hover,
-.btn-edit:hover {
-    background-color: darkgrey; /* Change to the color you prefer on hover */
-    color: white;
-}
-
-                                    </style>
-                                    
-                                    
                                 </table>
                             </div>
-                        </div> <!-- .col// -->
-                    </div> <!-- .row // -->
-                </div> <!-- card body .// -->
-            </div> <!-- card .// -->
-        </section> <!-- content-main end// -->
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                    document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
-                    </div>
-                </div>
+                        </div> 
+                
+                </div> 
             </div>
-        </footer>
-    </main>
-    <script src="//js/vendors/jquery-3.6.0.min.js"></script>
-    <script src="//js/vendors/bootstrap.bundle.min.js"></script>
-    <script src="//js/vendors/select2.min.js"></script>
-    <script src="//js/vendors/perfect-scrollbar.js"></script>
-    <script src="//js/vendors/jquery.fullscreen.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Main Script -->
-    <script src="//js/main.js" type="text/javascript"></script>
-    <script>
-        function list(id){
-            
-             const catId=id
-        
-            $.ajax({
-                url:"/admin/cat-list",
-                method:"post",
-                data:{
-                    catId
-                },
-               success:(response)=>{
-                if(response.status===true){
-                    window.location.href="http://localhost:7777/admin/category"
-                }
+        </section> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+     <script>
+       function Block(id,index){
+           // alert(id)
+         $.ajax({
+           url:"/admin/coupon-block",
+           method:"post",
+           data:{
+               id
+           },
+           success:(response)=>{
+               if(response.status==true){
+                   // alert("hello")
+                   document.getElementById("edit"+index).style.display="none"
+                       document.getElementById("listButton"+index).innerHTML='Active'
+                       document.getElementById('status'+index).innerHTML='Not Active'
+               }else if(response.status==false){
+                  
+                       document.getElementById("edit"+index).style.display="inline-block"
+                       document.getElementById("listButton"+index).innerHTML='Not Active'
+                       document.getElementById('status'+index).innerHTML='Active'
                }
-            })
-            
-   
-        }
-
-
-
-       
-   </script>
-</body>
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
-</html>
+           }
+         })
+       }
+     </script>

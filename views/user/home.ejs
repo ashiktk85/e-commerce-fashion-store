@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Toro - Minimal eCommerce HTML Template</title>
+    <title>Kevin Hills</title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -94,10 +94,10 @@
                     <div class="col-xl-4 col-lg-2">
                         <div class="header-right-wrap header-right-flex">
                             <div class="same-style header-wishlist">
-                                <a href="wishlist.html"><i class="fa fa-heart-o"></i></a>
+                                <a href="/wishlist"><i class="fa fa-heart-o"></i></a>
                             </div>
                             <div class="same-style cart-wrap">
-                                <a href="#" class="cart-active">
+                                <a href="/cart" class="">
                                     <i class="dlicon shopping_bag-20"></i>
                                     <span class="count-style">02</span>
                                 </a>
@@ -136,10 +136,10 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="mobile-header-right-wrap">
-                            <div class="header-right-wrap header-right-flex">
-                                <div class="same-style cart-wrap">
-                                    <a href="#" class="cart-active">
+                        <div class="">
+                            <div class="">
+                                <div class="">
+                                    <a href="#" class="">
                                         <i class="dlicon shopping_bag-20"></i>
                                         <span class="count-style">02</span>
                                     </a>
@@ -481,49 +481,9 @@
             </div>
         </div>
         <!-- mini cart start -->
-        <div class="sidebar-cart-active">
-            <div class="sidebar-cart-all">
-                <a class="cart-close" href="cart"><i class="dlicon ui-1_simple-remove"></i></a>
-                <div class="cart-content">
-                    <h3>Shopping Cart</h3>
-                    <ul>
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="#"><img src="assets/images/cart/cart-1.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="#">Bejewelled velvet sandals</a></h4>
-                                <span> 1 × $49.00	</span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#">×</a>
-                            </div>
-                        </li>
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="#"><img src="assets/images/cart/cart-2.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="#">Contrast faux fur jacket</a></h4>
-                                <span> 1 × $49.00	</span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#">×</a>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="cart-total">
-                        <h4>Subtotal: <span>$170.00</span></h4>
-                    </div>
-                    <div class="cart-checkout-btn">
-                        <a class="btn-hover cart-btn-style" href="cart.html">view cart</a>
-                        <a class="no-mrg btn-hover cart-btn-style" href="checkout.html">checkout</a>
-                    </div>
-                </div>
-            </div>
-            
-           
-            </div>
+     
+        
+        
         </div> 
         <div class="banner-area section-padding-1  pb-60 padding-40-row-col">
             <style>
@@ -632,7 +592,8 @@
                     <div class="tab-content jump jump-2">
                         <div id="product-8" class="tab-pane active">
                             <div class="row">
-                                <% for( let i = 0; i < proData.length; i++ ) { %>
+                                <% let productCount = 0; %>
+                                <% for (let i = 0; i < proData.length && productCount < 8; i++) { %>
                                     <% if(proData[i].is_blocked == false) {%>
                                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
                                     <div class="product-wrap mb-50">
@@ -644,7 +605,7 @@
                                             </a>
                                             <div class="product-action product-action-position-1">
                                                 <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i class="fa fa-eye"></i><span>Quick Shop</span></a>
-                                                <a title="Add to Wishlist" href="#"><i class="fa fa-heart"></i><span>Add to Wishlist</span></a>
+                                                <a title="Add to Wishlist" onclick="addWishList('<%= proData[i]._id %>')"><i class="fa fa-heart"></i><span>Add to Wishlist</span></a>
                                                 <!-- <a class="icon-blod" title="Add to Compare" href="#"><i class="dlicon arrows-4_compare"></i><span>Add to Compare</span></a> -->
                                                 <a title="Add to Cart" href="cart"><i class="fa fa-shopping-cart"></i><span>Add to Cart</span></a>
                                             </div>
@@ -971,14 +932,91 @@
     <script src="assets/js/plugins/wow.js"></script>
     <script src="assets/js/plugins/ajax-mail.js"></script>
     <!-- Include jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
+
+    <script>
+        function addWishList(id) {
+        alert(id)
+        $.ajax({
+            url: '/addWishlist',
+            method: 'post',
+            data: {
+                id
+            },
+            success: (response) => {
+                if (response.status == true) {
+
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "center",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        // timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Add to wishlist"
+                    }).then((result) => {
+                        document.getElementById("addWishlist").style.display = "none"
+                        document.getElementById("removeWish").style.display = "inline-block"
+                        //    alert('hello')
+                    })
+        } else if (response.status == "login") {
+            Swal.fire({
+
+                text: "You want to login the page?!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#000000",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Go to login!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/login"
+                }
+            })
+        }
+    }
+        })
+    }
+
+
+
+ 
+    function checkout(cartData) {
+        if (!cartData || cartData.length === 0) { // Check if cartData is undefined or empty
+            // Show SweetAlert message
+            Swal.fire({
+                icon: 'warning',
+                title: 'Your cart is empty!',
+                text: 'Please add items to your cart before proceeding to checkout.',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        } else {
+            // Redirect to the checkout page
+            window.location.href = '/checkout';
+        }
+    }
+
+
+
+
+    </script>
 
  
    

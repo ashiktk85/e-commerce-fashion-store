@@ -6,6 +6,7 @@ const CategoryControler = require("../controllers/categoryController");
 const productController = require ('../controllers/productController')
 const orderController = require("../controllers/orderController")
 const proUpload = require('../multer/multer')
+const couponController = require("../controllers/couponController")
 
 adminRoute.set("view engine", "ejs");
 adminRoute.set("views", "./views/admin")
@@ -14,7 +15,7 @@ adminRoute.set("views", "./views/admin")
 
 const isAdmin = require("../middleware/adminAuth");
 
-
+// ADMIN HOME
 
 adminRoute.get('/', adminController.adminLogin)
 adminRoute.post('/adminLogin', adminController.verifyAdmin)
@@ -22,10 +23,11 @@ adminRoute.get('/adminDashboard',isAdmin, adminController.adminHome);
 adminRoute.get('/userDetails',isAdmin, adminController.userDetails)
 adminRoute.get("/block-user", isAdmin, adminController.blockUser);
 adminRoute.get("/unblock-user", isAdmin, adminController.unblockUser);
+adminRoute.get("/logout", isAdmin, adminController.logout);
 
 
 
-//************** category ******************* */
+// CATEGORY
 
 adminRoute.get('/category',isAdmin, CategoryControler.loadCategory)
 adminRoute.post('/category', isAdmin, CategoryControler.addCategory)
@@ -34,7 +36,7 @@ adminRoute.get("/cat-edit", isAdmin,CategoryControler.loadEdit)
 adminRoute.post("/editCategoryPost", isAdmin, CategoryControler.editCat);
 adminRoute.post("/cat-cancel",isAdmin, CategoryControler.cancelCat)
 
-//***************** product  ******************************/
+// PRODUCT
 
 adminRoute.get('/adminProduct', isAdmin , productController.loadProduct)
 adminRoute.get('/addProduct', isAdmin, productController.loadAddpro)
@@ -46,12 +48,20 @@ adminRoute.get('/unblock-pro', isAdmin, productController.unblockPro)
 adminRoute.get('/edit-detailedView', isAdmin, productController.detailedPro)
 
 
-//******************** orders *************************** */
+//  ORDERS
 
 adminRoute.get("/adminOrders",isAdmin,orderController.loadOrder)
 adminRoute.get("/order-Detail",isAdmin,orderController.loadOrderDetail)
 adminRoute.post("/orderSave",isAdmin,orderController.saveOrder)
 
+// COUPON
+
+adminRoute.get("/adminCoupon",isAdmin,couponController.loadCouponPage)
+adminRoute.get("/addCoupon",isAdmin,couponController.addCouponLoad)
+adminRoute.post("/addCoupon",isAdmin,couponController.addCoupon)
+adminRoute.post("/coupon-block",isAdmin,couponController.blockCoupon)
+adminRoute.get("/coupon-edit",isAdmin,couponController.editCouponpage)
+adminRoute.post("/editCoupon",isAdmin,couponController.editCoupon)
 
 
 module.exports = adminRoute;
