@@ -3,6 +3,7 @@ const userRoute = express();
 
 const userController = require("../controllers/userController")
 const cartController = require('../controllers/cartController')
+const couponController = require('../controllers/couponController')
 const userAuth = require('../middleware/auth');
 
 
@@ -62,6 +63,10 @@ userRoute.get('/allProducts',userAuth.isBlocked,userAuth.isLogin,userController.
 userRoute.get("/wishlist", userAuth.isLogin,userAuth.isBlocked, userController.whishlist)
 userRoute.post('/addWishlist', userController.addWishlist)
 userRoute.post('/removeWishlist',userController.removeWishlist)
+
+//coupons
+
+userRoute.post('/applyCoupon',userAuth.isLogin,couponController.applyCoupon)
 
 
 

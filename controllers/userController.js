@@ -853,8 +853,20 @@ const removeWishlist = async (req, res) => {
 
 const loadCoupon = async(req , res) => {
     try {
-        const couponData = await Coupon.find()
-        res.render('coupons')
+
+        const user = await User.findOne({ email: req.session.email });
+
+    
+
+        const couponData = await Coupon.find({
+          users: { $nin: [user.id] },
+         
+        });
+    
+        const readeemCoupon = await Coupon.find({
+          users: { $in: [user.id] },
+        });
+        res.render('coupons',{couponData, readeemCoupon})
     } catch (error) {
        console.log(`error in loading coupn : ${error}`); 
     }

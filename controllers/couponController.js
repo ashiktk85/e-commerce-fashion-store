@@ -38,8 +38,9 @@ const addCoupon = async (req, res) => {
       minimumAmount: Minimum,
       maximumAmount: maximum,
       discount: discount,
-      couponCode: "Echo" + couponCode(6),
+      couponCode: "KEVINHILLS" + couponCode(6),
     });
+    console.log(addCoupon.couponCode);
     await addCoupon.save();
 
     res.json({ status: true });
@@ -92,37 +93,89 @@ const editCoupon = async (req, res) => {
 
 // BLOCK COUPON
 
-const blockCoupon=async(req,res)=>{
-    try {
-        const id=req.body.id
-        const findCoupon = await Coupon.findById({_id:id})
-        // console.log("inside block coupon")
-        if(findCoupon.isActive===true){
-            const updateCoupon = await Coupon.findByIdAndUpdate({_id:id},
-                {
-                    $set:{
-                        isActive:false
-                    }
-                })
-
-                res.json({status:true})
-                
-        }else{
-            const updateCoupon=await Coupon.findByIdAndUpdate({_id:id},
-                {
-                    $set:{
-                        isActive:true
-                    }
-                })  
-
-                res.json({status:false})
+const blockCoupon = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const findCoupon = await Coupon.findById({ _id: id });
+    // console.log("inside block coupon")
+    if (findCoupon.isActive === true) {
+      const updateCoupon = await Coupon.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            isActive: false,
+          },
         }
+      );
 
+      res.json({ status: true });
+    } else {
+      const updateCoupon = await Coupon.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            isActive: true,
+          },
+        }
+      );
 
-    } catch (error) {
-        console.log(error.message)
+      res.json({ status: false });
     }
-}
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// APPLY COUPON
+
+const applyCoupon = async (req, res) => {
+  try {
+    const { code, id } = req.body;
+    console.log(code, id);
+    const cart = await Cart.findOne({ _id: id });
+    console.log(cart)
+
+    const coupon = await Coupon.findOne({ couponCode: code });
+    console.log(coupon)
+
+    const user = await User.findOne({ email: req.session.email });
+    console.log(user._id)
+
+    if (coupon) {
+      if (
+        
+        cart.totalPrice>=coupon.minimumAmount && coupon.minimumAmount < coupon.maximumAmount
+      ) {
+        console.log("inside second idf of coupon finding");
+        const userInsidecoupon = await Coupon.findOne({
+          _id: coupon._id,
+          users: user._id,
+        });
+        console.log(userInsidecoupon);
+        if (userInsidecoupon) {
+          res.json({ status: "invalid" });
+        } else {
+          const amount = (cart.totalPrice / 100) * coupon.discount;
+          console.log(amount);
+          res.json({
+            status: true,
+            total: amount,
+            cartTotal: cart.totalPrice,
+            code: code,
+          });
+        }
+      } else {
+        console.log("invaliddddyyyy");
+        res.json({ status: "invalid" });
+      }
+    } else {
+      console.log("its main invalidh");
+      res.json({ status: "invalid" });
+    }
+  } catch (error) {
+    console.log(`error in  apply coupon post ${error.message}`);
+  }
+};
 
 module.exports = {
   loadCouponPage,
@@ -130,5 +183,6 @@ module.exports = {
   addCoupon,
   editCouponpage,
   editCoupon,
-  blockCoupon
+  blockCoupon,
+  applyCoupon,
 };

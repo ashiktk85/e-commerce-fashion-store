@@ -550,10 +550,10 @@
             <p class="cart-page-title">Have a coupon? <a class="checkout-click" href="#">Click here to enter your code</a></p>
             <div class="checkout-login-info">
                 <p>If you have a coupon code, please apply it below.</p>
-                <form action="#">
-                    <input type="text" placeholder="Coupon code">
-                    <input type="submit" value="Apply Coupon">
-                </form>
+                <!-- <form action="#"> -->
+                    <input type="text" id="code" placeholder="Coupon code">
+                    <button type="submit" id="apply" value="Apply Coupon" onclick="apply('<%= cartData._id %>')" style="background-color: #000000;color: #ffffff;border: none;">Apply</button>
+                <!-- </form> -->
             </div>
         </div>
         <div class="checkout-wrap">
@@ -655,9 +655,15 @@
                                 </div>
                                 <div class="your-order-info order-total">
                                     <ul>
+                                        <li>Discount ₹<span id="discount">0 </span></li>
+                                    </ul>
+                                </div>
+                                <div class="your-order-info order-total">
+                                    <ul>
                                         <li>Total ₹<span id="total"><%= cartData.totalPrice %> </span></li>
                                     </ul>
                                 </div>
+                                
                             </div>
                             
                             <div class="condition-wrap">
@@ -728,6 +734,86 @@
         },
     });
 }
+
+function apply(id) {
+        const code = document.getElementById("code").value
+        const amount=document.getElementById("total").innerHTML
+        alert(amount)
+        // alert(code)
+        // alert(id)
+
+        $.ajax({
+            url: "/applyCoupon",
+            method: "post",
+            data: {
+                code,
+                id
+
+            },
+            success: (response) => {
+                if (response.status == true) {
+
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "bottom",
+                        showConfirmButton: false,
+                        timer: 1500,
+                        // timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Coupon added"
+                    }).then((result) => {
+
+                        document.getElementById("discount").innerHTML = parseInt(response.total)
+                        document.getElementById("total").innerHTML = parseInt(amount) - parseInt(response.total)
+                        // document.getElementById("remove").style.display = "inline-block"
+                        document.getElementById("apply").style.display = "none"
+                        document.getElementById("code").style.display = "none"
+                        // document.getElementById("text").innerHTML = "<h6>You already added this coupon code </h6> <h4 style='color:#007bff'>" + response.code + "</h4>"
+                        // document.getElementById("show").style.display = "none"
+
+                     
+                    })
+                } else if (response.status == "invalid") {
+
+                    Swal.fire({
+
+                        icon: "error",
+                        title: "Invalid Coupon",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+
+                }
+            }
+        })
+    }
+
+    function remove() {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "bottom",
+            showConfirmButton: false,
+            timer: 1500,
+            // timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "Coupon Removed"
+        }).then((result) => {
+            window.location.href = "/checkOutPage"
+        })
+
+    }
 
     
     
