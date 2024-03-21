@@ -408,7 +408,7 @@ const productDetails = async (req, res) => {
 
     const fullData = await Product.find({});
     const category = await Category.findById(proData.category);
-
+  console.log("looooo");
     res.render("productDetails", {
       proData,
       fullData,
@@ -871,6 +871,7 @@ const loadCoupon = async(req , res) => {
        console.log(`error in loading coupn : ${error}`); 
     }
 }
+
 
 //  LOGOUT
 

@@ -5,6 +5,7 @@ const userController = require("../controllers/userController")
 const cartController = require('../controllers/cartController')
 const couponController = require('../controllers/couponController')
 const userAuth = require('../middleware/auth');
+const orderController = require('../controllers/orderController')
 
 
 
@@ -47,11 +48,17 @@ userRoute.get('/coupons',userController.loadCoupon)
 
 userRoute.get('/cart',userAuth.isLogin, cartController.cartPage)
 userRoute.post("/addcartLoad",userAuth.isBlocked,userAuth.isLogin,cartController.loadCart)
-userRoute.post("/cartadd",userAuth.isBlocked,userAuth.isLogin,cartController.addCart)
+userRoute.post("/increment",userAuth.isBlocked,userAuth.isLogin,cartController.increment)
 userRoute.post("/decrement",userAuth.isBlocked,userAuth.isLogin,cartController.decrement)
 userRoute.post("/placeOrder",userAuth.isBlocked,userAuth.isLogin,cartController.placeOrder)
 userRoute.get('/cartremove', userAuth.isBlocked,userAuth.isLogin, cartController.removeItemCart)
 userRoute.get('/clearCart', userAuth.isBlocked,userAuth.isLogin,cartController.clearCart)
+userRoute.get('/orderSuccess', orderController.orderSuccess)
+
+// size 
+userRoute.post('/selects',cartController.selectS)
+userRoute.post('/selectm',cartController.selectM)
+userRoute.post('/selectl',cartController.selectL)
 
 //checkout
 userRoute.get('/checkout',userAuth.isLogin,userAuth.isBlocked, cartController.checkout)

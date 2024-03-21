@@ -152,9 +152,21 @@ const saveOrder = async (req, res) => {
       res.status(500).json({ status: "error", message: "Internal server error" });
     }
   };
+
+  // ORDER SUCCESS PAGE
+
+  const orderSuccess = async(req, res) => {
+    try {
+      res.render('orderSuccess')
+    } catch (error) {
+      console.log(`error in order success page ${error.message}`);
+    }
+  }
   
   module.exports = {
     loadOrder,
     loadOrderDetail,
-    saveOrder
+    saveOrder,
+    orderSuccess
+    
   }

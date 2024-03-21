@@ -702,7 +702,10 @@
     function placeOrder(cartid) {
     const paymentMethod = document.getElementById("payment").value;
     const total = document.getElementById("total").innerHTML;
-    alert(total)
+    const code =  document.getElementById("code").value;
+
+    
+    alert(code)
 
     $.ajax({
         url: "/placeOrder",
@@ -716,7 +719,7 @@
         success: (response) => {
             if (response.status === "true") {
                 alert("order placed succesfull")
-                window.location.href = "/orders";
+                window.location.href = "/orderSuccess";
             } else if (response.status === "fill") {
                 Swal.fire({
                     icon: "error",
@@ -766,7 +769,8 @@ function apply(id) {
                     });
                     Toast.fire({
                         icon: "success",
-                        title: "Coupon added"
+                        title: "Coupon added",
+                        position : "center"
                     }).then((result) => {
 
                         document.getElementById("discount").innerHTML = parseInt(response.total)

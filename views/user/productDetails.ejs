@@ -566,19 +566,59 @@
                                         <!-- <h4 class=""><b>Size</b></h4> -->
                                         <div class="sidebar-widget mb-60">
                                             <h4 class=""><b>Size</b></h4>
-                                            <div class="sidebar-widget-size mt-45">
-                                                <ul>
-                                                    <li><a href="#" onclick="selectSize('S')" id="sizeS">S</a></li>
-                                                    <li><a href="#" onclick="selectSize('M')" id="sizeM">M</a></li>
-                                                    <li><a href="#" onclick="selectSize('L')" id="sizeL">L</a></li>
-                                                </ul>
+                                            <div class="product__details__option__size">
+                                               
+                                            
+                                                <label class="size-box" for="size-s">
+                                                    <input type="radio" name="size" value="S" id="size-s" onclick="selectSize('s', '<%= proData.size.s.small %>', '<%= proData._id %>')">
+                                                    <span>S</span>
+                                                </label>
+                                            
+                                                <label class="size-box" for="size-m">
+                                                    <input type="radio" name="size" value="M" id="size-m" onclick="selectSize('m', '<%= proData.size.m.medium %>', '<%= proData._id %>')">
+                                                    <span>M</span>
+                                                </label>
+                                            
+                                                <label class="size-box" for="size-l">
+                                                    <input type="radio" name="size" value="L" id="size-l" onclick="selectSize('l', '<%= proData.size.l.large %>', '<%= proData._id %>')">
+                                                    <span>L</span>
+                                                </label>
                                             </div>
+                                            
                                         </div>
                                         <style>
                                             .selected {
                                                 background-color: #d52323;
                                                 color: #ffffff; /* Add your desired highlight color */
                                             }
+                                            .product__details__option__size {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.size-box {
+    display: inline-block;
+    margin-right: 10px;
+    border: 2px solid #ddd; /* Border color for unselected size */
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.size-box span {
+    font-size: 14px;
+}
+
+.size-box input[type="radio"] {
+    display: none; /* Hide the radio input */
+}
+
+.size-box.selected {
+    background-color: #007bff; /* Background color for selected size */
+    color: #fff; /* Text color for selected size */
+    border-color: #007bff; /* Border color for selected size */
+}
 
                                             
                                         </style>
@@ -1134,18 +1174,73 @@
 
 </body>
 <script>
-    let selectedSize = 'S'; // Default size
 
-function selectSize(size) {
-    selectedSize = size;
+// Define your function to handle size selection
+function selectSize(size, sizeValue, productId) {
+    $('.size-box').removeClass('selected'); // Deselect all size boxes
+    $(event.target).parent().addClass('selected'); // Select the clicked size box
 
-    // Highlight the selected button and remove highlight from others
-    document.getElementById('sizeS').classList.remove('selected');
-    document.getElementById('sizeM').classList.remove('selected');
-    document.getElementById('sizeL').classList.remove('selected');
+    // Log the selected size and other details
+    console.log(`Selected size: ${size}, Product ID: ${productId}`);
 
-    document.getElementById(`size${size}`).classList.add('selected');
+    // Now you can use the selectedSize variable here as needed
+    console.log(`Selected size value: ${selectedSize}`);
 }
+
+
+
+
+function selectSizeS(size, pdtID) {
+    const s = "s";
+    $.ajax({
+        url: '/selects',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ s, size, pdtID }),
+        success: function(data) {
+            if (data) {
+                sizeinput.value = data.size;
+                console.log(sizeinput.value);
+                updateStockDisplay(data.size, data.stock);
+            }
+        }
+    });
+}
+
+function selectSizeM(size, pdtID) {
+    const m = "m";
+    $.ajax({
+        url: '/selectm',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ m, size, pdtID }),
+        success: function(data) {
+            if (data) {
+                sizeinput.value = data.size;
+                console.log(sizeinput.value);
+                updateStockDisplay(data.size, data.stock);
+            }
+        }
+    });
+}
+
+function selectSizeL(size, pdtID) {
+    const l = "l";
+    $.ajax({
+        url: '/selectl',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ l, size, pdtID }),
+        success: function(data) {
+            if (data) {
+                sizeinput.value = data.size;
+                console.log(sizeinput.value);
+                updateStockDisplay(data.size, data.stock);
+            }
+        }
+    });
+}
+
 
 
     function addCart() {
@@ -1157,6 +1252,10 @@ function selectSize(size) {
         const proPrice = document.getElementById("offerPrice").innerHTML
         alert(proPrice)
 
+        const selectedSize = document.querySelector('input[name="size"]:checked').value;
+        alert(selectedSize)
+
+
 
 
 
@@ -1166,7 +1265,7 @@ function selectSize(size) {
             data: {
                 id,
                 proPrice,
-                selectedSize
+                 selectedSize
             },
             success: (response) => {
                 if (response.status == true) {

@@ -821,69 +821,109 @@
     <script>
       // alert("hhuiui") 
     
-      function increment(proId,quantity, index,offerprice,subTotal) {
-        // alert(proId)
-        // alert(quantity)
-        // alert(index)
-        // alert(offerprice)
-        // alert(subTotal)
-        // alert(size)
-    
-        const qty = document.getElementById("quantity" +index ).innerHTML;
-        // alert(qty)
-        const price = document.getElementById("offerprice" + index).innerHTML;
-        // alert(price)
-        const subtotal = document.getElementById("subtotal" + index).innerHTML;
-        // alert(subtotal)
-        const sizeS = document.getElementById("size" + index).innerHTML;
-        // alert(sizeS)
-        const ttl = document.getElementById("total").innerHTML
-        // alert(ttl)
-    
-        $.ajax({
-          url:"/cartadd",
-            method: "post",
-            data: {
-                offerprice,
-                proId,
-                qty,
-                subtotal,
-                sizeS
-                
-             
-              },
-              success: (response) => {
-                if (response.status == true) {
-                  // alert(price)
-                  // alert(subtotal)
-                    document.getElementById("subtotal" + index).innerHTML = parseInt(price) + parseInt(subtotal) 
-                    document.getElementById("quantity" + index).innerHTML = parseInt(qty) + 1
-    
-                    document.getElementById("cartSub").innerHTML = response.total
-                    document.getElementById("total").innerHTML = response.total
-    
-                } else if (response.status == "minimum") {
-                    Swal.fire({
-                        icon: "error",
-                        // title: "Oops...",
-                        text: "We're sorry! Only 10 unit(s) allowed in each order!",
-    
-                    });
-    
-                } else if (response.status == "stock") {
-    
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Out of Stock!",
-    
-                    })
-    
-    
-                }
+      function increment(proId, quantity, index, offerprice, subTotal) {
+  const qty = document.getElementById("quantity" + index).innerHTML;
+  const price = document.getElementById("offerprice" + index).innerHTML;
+  const subtotal = document.getElementById("subtotal" + index).innerHTML;
+  const size = document.getElementById("size" + index).innerHTML;
+
+//   $.ajax({
+//     url: "/increment",
+//     method: "post",
+//     data: {
+//       offerprice,
+//       proId,
+//       qty,
+//       size: sizeS
+//     },
+//     success: (response) => {
+//       if (response.status === true) {
+//         document.getElementById("subtotal" + index).innerHTML = parseInt(price) + parseInt(subtotal);
+//         document.getElementById("quantity" + index).innerHTML = parseInt(qty) + 1;
+//         document.getElementById("cartSub").innerHTML = response.total;
+//         document.getElementById("total").innerHTML = response.total;
+//       } else if (response.status === "stock") {
+//         Swal.fire({
+//           icon: "error",
+//           title: "Oops...",
+//           text: "Out of Stock!",
+//         });
+//       } else if (response.status === "invalid size") {
+//         Swal.fire({
+//           icon: "error",
+//           title: "Oops...",
+//           text: "Invalid Size!",
+//         });
+//       } else if (response.status === "unauthenticated") {
+//         Swal.fire({
+//           icon: "error",
+//           title: "Oops...",
+//           text: "You are not authenticated!",
+//         });
+//       } else if (response.status === "invalid input") {
+//         Swal.fire({
+//           icon: "error",
+//           title: "Oops...",
+//           text: "Invalid Input!",
+//         });
+//       } else {
+//         Swal.fire({
+//           icon: "error",
+//           title: "Oops...",
+//           text: "An error occurred!",
+//         });
+//       }
+//     },
+//     error: (xhr, status, error) => {
+//       Swal.fire({
+//         icon: "error",
+//         title: "Oops...",
+//         text: "An error occurred!",
+//       });
+//     }
+//   });
+// }
+
+$.ajax({
+        url: '/increment',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ proId, size, price ,qty}),
+        success: function(data) {
+            if (data.success) {
+                // Increment the quantity in the DOM
+                const qty = document.getElementById('quantity');
+                qty.innerText = parseInt(qty.innerText) + 1;
+
+                // Show success message using SweetAlert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Quantity incremented successfully.',
+                }).then(function() {
+                    // Reload the page after the alert is closed
+                    window.location.reload();
+                });
+            } else {
+                // Show error message using SweetAlert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'An error occurred while incrementing quantity.',
+                });
             }
-        })
-    }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            // Show error message using SweetAlert
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred.',
+            });
+        }
+    });
+}
 
 
     
