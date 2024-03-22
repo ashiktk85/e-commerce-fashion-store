@@ -63,5 +63,9 @@ adminRoute.post("/coupon-block",isAdmin,couponController.blockCoupon)
 adminRoute.get("/coupon-edit",isAdmin,couponController.editCouponpage)
 adminRoute.post("/editCoupon",isAdmin,couponController.editCoupon)
 
+// SALES 
+
+adminRoute.get('/salesReport', isAdmin, adminController.loadSalesreport)
+
 
 module.exports = adminRoute;

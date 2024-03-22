@@ -1,9 +1,10 @@
 // const admin = require('../')
 const User = require('../models/userModel')
+const Order = require('../models/orderModel')
 const adminEmail = process.env.adminEmail;
 const adminPassword = process.env.adminPassword;
 
-
+// ADMIN LOGIN
 
 const adminLogin = async (req, res) => {
     try {
@@ -17,6 +18,7 @@ const adminLogin = async (req, res) => {
     }
 }
 
+//VARIFYING ADMIN LOGIN
 
 const verifyAdmin = async (req, res) => {
     try {
@@ -39,6 +41,8 @@ const verifyAdmin = async (req, res) => {
     }
 }
 
+// LOADING ADMIN HOME
+
 const adminHome = async (req, res) => {
     try {
         res.render('adminhome');
@@ -47,6 +51,7 @@ const adminHome = async (req, res) => {
     }
 }
 
+// LOADING USER DETAILS PAGE 
 
 const userDetails = async (req, res) => {
     try {
@@ -57,6 +62,8 @@ const userDetails = async (req, res) => {
         console.log(`There was an error in loading user details : ${error}`);
     }
 }
+
+// BLOCKING USER
 
 const blockUser = async (req, res) => {
     try {
@@ -72,6 +79,8 @@ const blockUser = async (req, res) => {
     }
 }
 
+// UNBLOCKING USER
+
 const unblockUser = async (req, res) => {
     try {
         const id = req.query.id;
@@ -83,6 +92,20 @@ const unblockUser = async (req, res) => {
         } res.redirect('/admin/userDetails')
     } catch (error) {
         console.log(`There is an error in unblocking user : ${error}`);
+    }
+}
+
+// LOADING SALES REPORT
+
+const loadSalesreport = async(req, res) => {
+    try {
+        const order = await Order.find({
+            status: { $nin: ["Ordered", "Canceled", "Shipped"] },
+          });
+
+          res.render('salesReport', {order})
+    } catch (error) {
+        console.log(`error in loading sales report : ${error.message}`);
     }
 }
 
@@ -105,5 +128,6 @@ module.exports = {
     userDetails,
     blockUser,
     unblockUser,
-    logout
+    logout,
+    loadSalesreport
 }

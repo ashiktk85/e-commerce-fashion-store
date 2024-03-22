@@ -90,6 +90,12 @@ const order_schema = new mongoose.Schema({
         },
 
     },
+    coupon:{
+        type:String,
+    },
+    discount:{
+        type:Number,
+    }
 
 }, { versionKey: false });
 

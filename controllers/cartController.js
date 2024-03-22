@@ -11,6 +11,14 @@ const generateOrder = require("../controllers/otpGenerator");
 const generateDate = require("../controllers/dateGenerator");
 const Order = require("../models/orderModel");
 const Coupon = require("../models/couponModel");
+const Razorpay = require("razorpay");
+
+//RAZOR PAY FUNCTION
+
+var instance = new Razorpay({
+  key_id: "rzp_test_ECB3Zjd1NyXFF9",
+  key_secret: "iEgLaQf47PbHbiIodSNL8NvV",
+});
 
 // LOADING CART PAGE
 
@@ -218,9 +226,18 @@ const increment = async (req, res) => {
 
     if (cart) {
       let filter = [];
-      const wanted = await Cart.find({userId : user}, {})
+      for (let i = 0; i < cart.items.length; i++) {
+        const item = cart.items[i];
+        console.log(
+          `Comparing item ${i}: productId=${item.productId}, size=${item.size}`
+        );
+        console.log(`Target values: proId=${proId}, siz=${siz}`);
+        if (item.productId == proId && item.size == siz.toString()) {
+          filter.push(item);
+        }
+      }
+      console.log("Filtered items: ", filter);
     }
-    
   } catch (error) {
     console.log(`error in  increment cart : ${error.message}`);
   }
@@ -342,87 +359,177 @@ const checkout = async (req, res) => {
   }
 };
 
+// PLACING AND SAVING THE ORDER
+
 const placeOrder = async (req, res) => {
   try {
     const { selectedAddress, paymentMethod, cartid, total, code } = req.body;
     console.log(selectedAddress, paymentMethod, cartid);
+    console.log(selectedAddress, paymentMethod, cartid);
+
+    const findCoupon = await Coupon.findOne({ couponCode: code });
 
     if (!selectedAddress || !paymentMethod) {
       res.json({ status: "fill" });
       return;
-    }
+    } else if (paymentMethod == "Cash on Delivery") {
+      const userData = await User.findOne({ email: req.session.email });
+      const cartData = await Cart.findOne({ userId: userData._id });
 
-    const userData = await User.findOne({ email: req.session.email });
-    const cartData = await Cart.findOne({ userId: userData._id });
+      const proData = cartData.items;
+      console.log(proData);
 
-    const proData = cartData.items;
-    console.log(proData);
+      for (let i = 0; i < proData.length; i++) {
+        const proId = proData[i].productId;
+        const quantity = proData[i].quantity;
+        const selectedSize = proData[i].size.toLowerCase();
 
-    for (let i = 0; i < proData.length; i++) {
-      const proId = proData[i].productId;
-      const quantity = proData[i].quantity;
-      const selectedSize = proData[i].size.toLowerCase();
+        const product = await Product.findById(proId);
 
-      const product = await Product.findById(proId);
+        if (product) {
+          console.log("Product size:", product.size);
+          console.log("Selected size:", selectedSize);
 
-      if (product) {
-        console.log("Product size:", product.size);
-        console.log("Selected size:", selectedSize);
-
-        if (
-          product.size &&
-          product.size[selectedSize] &&
-          product.size[selectedSize].quantity >= quantity
-        ) {
-          product.size[selectedSize].quantity -= quantity;
-          await product.save();
-          console.log(`Stock updated for product with ID ${proId}`);
+          if (
+            product.size &&
+            product.size[selectedSize] &&
+            product.size[selectedSize].quantity >= quantity
+          ) {
+            product.size[selectedSize].quantity -= quantity;
+            await product.save();
+            console.log(`Stock updated for product with ID ${proId}`);
+          } else {
+            console.error(
+              `Invalid size or insufficient stock for product with ID ${proId}`
+            );
+            res.json({
+              status: "error",
+              message: "Invalid size or insufficient stock",
+            });
+            return;
+          }
         } else {
-          console.error(
-            `Invalid size or insufficient stock for product with ID ${proId}`
-          );
-          res.json({
-            status: "error",
-            message: "Invalid size or insufficient stock",
-          });
+          console.error(`Product with ID ${proId} not found`);
+          res.json({ status: "error", message: "Product not found" });
           return;
         }
-      } else {
-        console.error(`Product with ID ${proId} not found`);
-        res.json({ status: "error", message: "Product not found" });
-        return;
       }
+
+      const orderNum = generateOrder.generateOrder();
+      console.log(orderNum);
+
+      const addressData = await Address.findOne({ _id: selectedAddress });
+      console.log(addressData);
+
+      const date = generateDate();
+
+      if (findCoupon) {
+        console.log("insise find coupon");
+        const orderData = new Order({
+          userId: userData._id,
+          userEmail: userData.email,
+          orderNumber: orderNum,
+          items: proData,
+          totalAmount: total,
+          orderType: paymentMethod,
+          orderDate: date,
+          status: "Processing",
+          shippingAddress: addressData,
+          discount: findCoupon.discount,
+        });
+
+        orderData.save();
+
+        const updateCouppon = await Coupon.findByIdAndUpdate(
+          { _id: findCoupon._id },
+          {
+            $push: {
+              users: userData._id,
+            },
+          }
+        );
+      } else {
+        const orderData = new Order({
+          userId: userData._id,
+          userEmail: userData.email,
+          orderNumber: orderNum,
+          items: proData,
+          totalAmount: total,
+          orderType: paymentMethod,
+          orderDate: date,
+          status: "Processing",
+          shippingAddress: addressData,
+        });
+
+        orderData.save();
+      }
+
+      res.json({ status: true });
+      const deleteCart = await Cart.findByIdAndDelete({ _id: cartData._id });
+    } else if (paymentMethod == "Razorpay") {
+      const userData = await User.findOne({ email: req.session.email });
+      const cartData = await Cart.findOne({ userId: userData._id });
+
+      const proData = [];
+      for (let i = 0; i < cartData.items.length; i++) {
+        proData.push(cartData.items[i]);
+      }
+
+      const quantity = [];
+
+      for (let i = 0; i < proData.length; i++) {
+        quantity.push(proData[i].quantity);
+      }
+
+      const proId = [];
+
+      for (let i = 0; i < proData.length; i++) {
+        proId.push(proData[i].productId);
+      }
+
+      const orderNum = generateOrder.generateOrder();
+      const stringOrderId = orderNum.toString();
+      const addressData = await Address.findOne({ _id: selectedAddress });
+      const date = generateDate();
+
+      var options = {
+        amount: total * 100,
+        currency: "INR",
+        receipt: stringOrderId,
+      };
+
+      console.log(`options : ${options.amount}`);
+
+      let amount = Number(total);
+      console.log(amount, "amountyyy");
+
+      instance.orders.create(options, async (error, razorpayOrder) => {
+        if (!error) {
+          console.log("getting to razyyy");
+          console.log(`razorpay order  : ${razorpayOrder}`);
+          console.log("Order ID:", razorpayOrder.id);
+          console.log("Amount:", razorpayOrder.amount);
+
+            res.json({
+            status: "razorpay",
+            order: razorpayOrder,
+            address: selectedAddress,
+            orderNumber: orderNum,
+            total: amount,
+            code: code,
+          });
+        } else {
+          console.log(error.message);
+        }
+      });
     }
-
-    const orderNum = generateOrder.generateOrder();
-    console.log(orderNum);
-
-    const addressData = await Address.findOne({ _id: selectedAddress });
-    console.log(addressData);
-
-    const date = generateDate();
-
-    const orderData = new Order({
-      userId: userData._id,
-      userEmail: userData.email,
-      orderNumber: orderNum,
-      items: proData,
-      totalAmount: total,
-      orderType: paymentMethod,
-      orderDate: date,
-      status: "Processing",
-      shippingAddress: addressData,
-    });
-
-    orderData.save();
-
-    res.json({ status: "true" });
-    const deleteCart = await Cart.findByIdAndDelete({ _id: cartData._id });
   } catch (error) {
     console.log(error.message);
     res.json({ status: "error", message: error.message });
   }
 };
+
+// REMOVING SINGLE CART ITEM
 
 const removeItemCart = async (req, res) => {
   try {

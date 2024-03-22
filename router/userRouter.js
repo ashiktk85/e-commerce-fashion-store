@@ -6,6 +6,7 @@ const cartController = require('../controllers/cartController')
 const couponController = require('../controllers/couponController')
 const userAuth = require('../middleware/auth');
 const orderController = require('../controllers/orderController')
+const walletController = require('../controllers/walletController')
 
 
 
@@ -42,18 +43,16 @@ userRoute.post('/change-pass',userAuth.isLogin,userAuth.isBlocked,  userControll
 userRoute.get('/viewAccount',userAuth.isLogin,userAuth.isBlocked,  userController.viewAccount)
 userRoute.get('/editAccount',userAuth.isLogin,userAuth.isBlocked,  userController.editAccount)
 userRoute.post('/postEditAccount',userAuth.isLogin,userAuth.isBlocked,  userController.postEditAccount)
-userRoute.get('/coupons',userController.loadCoupon)
+
 
 // cart 
-
 userRoute.get('/cart',userAuth.isLogin, cartController.cartPage)
 userRoute.post("/addcartLoad",userAuth.isBlocked,userAuth.isLogin,cartController.loadCart)
 userRoute.post("/increment",userAuth.isBlocked,userAuth.isLogin,cartController.increment)
 userRoute.post("/decrement",userAuth.isBlocked,userAuth.isLogin,cartController.decrement)
-userRoute.post("/placeOrder",userAuth.isBlocked,userAuth.isLogin,cartController.placeOrder)
 userRoute.get('/cartremove', userAuth.isBlocked,userAuth.isLogin, cartController.removeItemCart)
 userRoute.get('/clearCart', userAuth.isBlocked,userAuth.isLogin,cartController.clearCart)
-userRoute.get('/orderSuccess', orderController.orderSuccess)
+
 
 // size 
 userRoute.post('/selects',cartController.selectS)
@@ -62,6 +61,12 @@ userRoute.post('/selectl',cartController.selectL)
 
 //checkout
 userRoute.get('/checkout',userAuth.isLogin,userAuth.isBlocked, cartController.checkout)
+userRoute.post("/placeOrder",userAuth.isBlocked,userAuth.isLogin,cartController.placeOrder)
+userRoute.get('/orderSuccess', orderController.orderSuccess)
+userRoute.post('/verifyPayment', orderController.verifyPayment)
+
+//wallet
+userRoute.get('/wallet', walletController.loadWallet)
 
 // all products
 userRoute.get('/allProducts',userAuth.isBlocked,userAuth.isLogin,userController.allProducts)
@@ -72,7 +77,7 @@ userRoute.post('/addWishlist', userController.addWishlist)
 userRoute.post('/removeWishlist',userController.removeWishlist)
 
 //coupons
-
+userRoute.get('/coupons',userController.loadCoupon)
 userRoute.post('/applyCoupon',userAuth.isLogin,couponController.applyCoupon)
 
 
