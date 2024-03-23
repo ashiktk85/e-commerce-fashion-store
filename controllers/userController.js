@@ -851,26 +851,24 @@ const removeWishlist = async (req, res) => {
 
 // LOAD COUPON
 
-const loadCoupon = async(req , res) => {
-    try {
+const loadCoupon = async(req, res) => {
+  try {
+      const user = await User.findOne({ email: req.session.email });
 
-        const user = await User.findOne({ email: req.session.email });
+      const allCoupons = await Coupon.find();
 
-    
+      const couponData = allCoupons.filter(coupon => !coupon.users.includes(user.id));
+      const readeemCoupon = allCoupons.filter(coupon => coupon.users.includes(user.id));
 
-        const couponData = await Coupon.find({
-          users: { $nin: [user.id] },
-         
-        });
-    
-        const readeemCoupon = await Coupon.find({
-          users: { $in: [user.id] },
-        });
-        res.render('coupons',{couponData, readeemCoupon})
-    } catch (error) {
-       console.log(`error in loading coupn : ${error}`); 
-    }
+      console.log(couponData);
+      console.log(readeemCoupon);
+
+      res.render('coupons', { couponData, readeemCoupon });
+  } catch (error) {
+     console.log(`error in loading coupon: ${error}`); 
+  }
 }
+
 
 
 //  LOGOUT

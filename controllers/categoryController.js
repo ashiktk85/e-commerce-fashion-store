@@ -11,55 +11,11 @@ const loadCategory = async (req, res) => {
 
 
 
-
-// const addCategory = async (req, res) => {
-//     try {
-//         const name = req.body.name;
-//         const dis = req.body.dis;
-
-//         // Check if the name is empty or contains only spaces
-//         if (!name || name.trim() === '') {
-//             const  nameErr = "Name cannot be empty" ;
-//              res.render('adminCategory', {nameError : "Name cannot be empty"})
-//         }
-//         if(!dis || dis.trim() === " ") {
-//             res.render('adminCategory', {nameError : "Description  cannot be empty"})
-//         }
-
-//         const allData = await Category.find({});    
-
-//         // Use filter to exclude undefined or null names
-//         const validNames = allData.filter((x) => x && x.name).map((x) => x.name.toLowerCase());
-
-//         const isUnique = !validNames.includes(name.toLowerCase());
-
-//         if (isUnique) {
-//             const cat = new Category({
-//                 name: name,
-//                 discription: dis,
-//             });
-
-//             const catData = await cat.save();
-//             console.log(catData);
-
-//             res.render('adminCategory', {nameError : "Category added"})
-//         } else if(!isUnique) {
-//             res.render('adminCategory', {nameError : "category name already exists"})
-//         } else {
-//             res.render('adminCategory', {catData})
-//         }
-        
-//     } catch (error) {
-//         console.error(`Error in addCategory: ${error.message}`);
-//         res.status(500).json({ status: "error", message: "Internal Server Error" });
-//     }
-// };
-
 const addCategory = async (req, res) => {
     try {
         // Retrieve catData at the beginning
         const catData = await Category.find({});
-        
+
         const name = req.body.name;
         const dis = req.body.dis;
 
@@ -228,6 +184,82 @@ const cancelCat = async (req, res) => {
     }
 }
 
+// LOAD CATEGORY OFFER
+
+const loadCategoryOffer = async (req, res) => {
+    try {
+        const findCat = await Category.find({ is_blocked: false })
+        res.render("categoryOffer", { findCat })
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+//LOAD ADD CAT OFFER PAGE
+
+const addOfferLoad = async (req, res) => {
+    try {
+        const catData = await Category.find({
+            is_blocked: false,
+            $or: [
+                { offer: { $exists: false } },
+                { offer: false }
+            ]
+        });
+        console.log(catData)
+        res.render("addOffer", { catData })
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// ADD CAT OFFER POST
+
+const addOffer = async (req, res) => {
+    try {
+        const { discount, startDate, endDate, catname } = req.body
+        // console.log(discount,startDate,endDate,catname) 
+        console.log("getting here");
+        console.log(discount, startDate, endDate, catname)
+        console.log(typeof catname)
+
+
+        const findCat = await Category.findOne({ name: catname })
+        // console.log(findCat)
+
+        const updateCat = await Category.findByIdAndUpdate({ _id: findCat._id }, {
+            $set: {
+                offer: {
+                    discount: discount,
+                    startDate: startDate,
+                    endDate: endDate
+                }
+            }
+        })
+
+        res.json({ status: true })
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+// DELETE OFFER
+
+const deleteOffer = async (req, res) => {
+    try {
+        const id = req.body.id
+        console.log(id)
+        const findCat = await Category.findByIdAndUpdate({ _id: id }, {
+            $unset: { offer: "" }
+        })
+
+        res.json({ status: true })
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
 
 
 module.exports = {
@@ -236,5 +268,9 @@ module.exports = {
     listCat,
     editCat,
     loadEdit,
-    cancelCat
+    cancelCat,
+    loadCategoryOffer,
+    addOfferLoad,
+    addOffer,
+    deleteOffer
 }

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Toro - Minimal eCommerce HTML Template</title>
+    <title>Kevin hills</title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="" />
     <meta
@@ -17,12 +17,6 @@
       type="image/x-icon"
       href="assets/images/favicon.png"
     />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
 
     <!-- All CSS is here
 	============================================ -->
@@ -729,13 +723,11 @@
                 </div>
                 <ul>
                   <li>
-                    <a href="/" style="font-family: poppins; color: white"
-                      >Home Page</a
-                    >
+                    <a href="/" style="color: #ffffff;">Home 01 </a>
                   </li>
                   <li><span> &gt; </span></li>
                   <li class="active" style="font-family: poppins; color: white">
-                    My Account
+                   My Orders
                   </li>
                 </ul>
               </div>
@@ -766,544 +758,761 @@
               /* Your styles here */
             }
           </style>
-
-          <div class="checkout-main-area pt-100 pb-100">
-            <div class="container">
-              <div class="customer-zone mb-30">
-                <p class="cart-page-title">
-                  Have a coupon?
-                  
-                  <a class="checkout-click" href="#"
-                    >Click here to enter your code</a
-                  >
-                </p>
-                <div class="checkout-login-info">
-                  <a href="/coupons" id="show" style="font-weight: 500;color: red;">Available Coupons</a>
-                  <p>If you have a coupon code, please apply it below.</p>
-                  <!-- <form action="#"> -->
-                  <input type="text" id="code" style="margin-bottom: 10px;" placeholder="Coupon code" />
-                  <button class="btn  btn-rounded btn-md"
-                    type="submit"
-                    id="apply"
-                    value="Apply Coupon"
-                    onclick="apply('<%= cartData._id %>')"
-                    style="
-                      background-color: #000000;
-                      color: #ffffff;
-                      border: none;
-                    "
-                  >
-                    Apply
-                  </button>
-
-                <button class="btn  btn-rounded btn-md" id="remove"style="
-                background-color: #000000;
-                color: #ffffff;
-                border: none;
-              "
-                    onclick="remove()">Remove</button>
-                  <!-- </form> -->
-                </div>
-              </div>
-              <div class="checkout-wrap">
-                <div class="row">
-                  <div class="col-lg-7">
-                    <div class="billing-info-wrap mr-100">
-                      <div
-                        class="tab-pane fade show active"
-                        id="address-edit"
-                        role="tabpanel"
-                      >
-                        <% if(userAddress && userAddress.length > 0) { %>
-                        <div class="myaccount-content">
-                          <table class="table table-bordered border-dark">
-                            <% for(let i = 0; i < Math.min(userAddress.length,
-                            3); i++) { %>
-                            <tr>
-                              <td>
-                                <p>
-                                  <strong> <%= userAddress[i].name %></strong>
-                                </p>
-                                <p>
-                                  Address: <%= userAddress[i].address %><br />
-                                  <%= userAddress[i].city %>, <%=
-                                  userAddress[i].state %> <%=
-                                  userAddress[i].pincode %>
-                                </p>
-                                <p>Mobile: <%= userAddress[i].mobile %></p>
-                              </td>
-                              <td>
-                                <div style="display: flex; align-items: center">
-                                  <a
-                                    href="/editAddress?id=<%= userAddress[i]._id %>"
-                                    class="check-btn sqr-btn-sm"
-                                    style="margin-right: 10px"
-                                  >
-                                    <i class="fa fa-edit"></i> Edit Address
-                                  </a>
+          <!-- <div class="my-account-area pt-10 pb-95">
+                        <div class="container" style="margin-left: 0;">
+                            <div class="row flex-row-reverse">
+                                <div class="col-lg-12">
+                                    <div class="myaccount-tab-menu nav" role="tablist">
+                                        <a href="#dashboad"  data-bs-toggle="tab">
+                                            Dashboard</a>
+                                        <a href="#orders"  data-bs-toggle="tab"> Orders</a>
+                                        
+                                        <a href="#address-edit" data-bs-toggle="tab"> address</a>
+                                        <a href="#address-edit" data-bs-toggle="tab">Change Password</a>
+                                        <a href="#account-info" data-bs-toggle="tab"> Account Details</a>
+                                        <a href="login-register.html"> Logout</a>
+                                    </div>
+                                
+                                    <div class="tab-content" id="myaccountContent">
+                                       
+                                        
+                                        
+                                        <div class="tab-pane fade" id="orders" role="tabpanel">
+                                            <div class="myaccount-content">
+                                                <div class="myaccount-table table-responsive text-center">
+                                                    <table class="table table-bordered">
+                                                        <thead class="thead-light">
+                                                            <tr>
+                                                                <th>Order</th>
+                                                                <th>Date</th>
+                                                                <th>Status</th>
+                                                                <th>Total</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td>Aug 22, 2023</td>
+                                                                <td>Pending</td>
+                                                                <td>$3000</td>
+                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>2</td>
+                                                                <td>July 22, 2023</td>
+                                                                <td>Approved</td>
+                                                                <td>$200</td>
+                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>3</td>
+                                                                <td>June 12, 2023</td>
+                                                                <td>On Hold</td>
+                                                                <td>$990</td>
+                                                                <td><a href="cart.html" class="check-btn sqr-btn ">View</a></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
                                 </div>
-                                <input
-                                  style="
-                                    width: 20px;
-                                    height: 20px;
-                                    margin-top: 20px;
-                                    background-color: #000000;
-                                  "
-                                  type="checkbox"
-                                  name="selectedAddress"
-                                  value="<%= userAddress[i]._id %>"
-                                  onclick="handleAddressSelection(this)"
-                                />
-                              </td>
-                            </tr>
-                            <% } %>
-                          </table>
-
-                          <% if (userAddress.length >= 3) { %>
-                          <div class="mt-4">
-                            <p style="color: red">
-                              You have reached the maximum limit of 3 addresses.
-                              To add a new address, please delete an existing
-                              one.
-                            </p>
-                          </div>
-                          <% } %>
+                            </div>
                         </div>
-                        <% } %>
+                    </div> -->
+          <div class="my-account-area pt-10 pb-95">
+            <div class="container" style="margin-left: 0">
+              <div class="row flex-row-reverse">
+                <div class="col-lg-12">
+                  <div class="myaccount-tab-menu nav" role="tablist">
+                    <a href="accountDetails" data-bs-toggle="">Dashboard</a>
+                    <a href="#" class="active" data-bs-toggle="">Orders</a>
+                    <a href="userAddress" data-bs-toggle="">Address</a>
+                    <a href="changePassword" data-bs-toggle="tab"
+                      >Change Password</a
+                    >
+                    <a href="accountDetails" data-bs-toggle="tab"
+                      >Account Details</a
+                    >
+                    <a href="coupons">Coupons</a>
+                  </div>
 
-                        <div class="row">
-                          <div class="col-md-6">
-                            <!-- Additional content related to the Address tab can be added here -->
+                  <!-- Orders Tab Pane Start -->
+                  <section class="mt-60 mb-60">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12">
+                          <!-- <% if (findOrder.status=="Delivered") { %>
+                                                            <button style="background-color: #0d6efd; /* Blue */
+                                                            border: none;
+                                                            color: white;
+                                                            padding: 15px 32px;
+                                                            text-align: center;
+                                                            text-decoration: none;
+                                                            display: inline-block;
+                                                            font-size: 16px;
+                                                            margin: 4px 2px;
+                                                            margin-left: 1000px;
+                                                            margin-bottom: 30px;
+                                                            cursor: pointer;
+                                                            border-radius: 10px;" onclick="invoice('<%=findOrder._id%>')">Invoice</button>
+                                                        <% } %> -->
+
+                          <div class="card border border-dark mb-3">
+                            <div class="card-header bg-dark text-white">
+                              Order Summary
+                            </div>
+                            <div class="card-body">
+                              <div class="table-responsive">
+                                <table
+                                  class="table shopping-summery text-center clean"
+                                >
+                                  <!-- Table content -->
+                                  <div class="table-responsive">
+                                    <table
+                                      class="table shopping-summery text-center clean"
+                                    >
+                                      <thead>
+                                        <tr class="main-heading">
+                                          <th scope="col">Image</th>
+                                          <th scope="col" style="width: 30%">
+                                            Name
+                                          </th>
+                                          <th scope="col">Date</th>
+                                          <th scope="col">Address</th>
+                                          <th scope="col">Subtotal</th>
+                                          <th scope="col">Quantity</th>
+                                          <!-- <th scope="col">Remove</th> -->
+                                          <!-- <th scope="col">Remove</th> -->
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <% var subtotal=0 %> <% if
+                                        (proData&&findOrder) { %> <% for( let
+                                        i=0; i < proData.length; i++ ) { %>
+
+                                        <tr>
+                                          <td class="image product-thumbnail">
+                                            <img
+                                              src="/uploads/<%= proData[i].image[1] %>"
+                                              alt="#"
+                                              style="
+                                                max-width: 200px;
+                                                max-height: 200px;
+                                              "
+                                            />
+                                          </td>
+                                          <td class="product-des product-name">
+                                            <p
+                                              class="product-name"
+                                              style="text-align: start"
+                                            >
+                                              <a href="">
+                                                <b> <%= proData[i].name %></b>
+                                              </a>
+                                            </p>
+                                            <p
+                                              class="font-xs"
+                                              style="text-align: start"
+                                            >
+                                              <%= proData[i].discripiton %>
+                                            </p>
+                                          </td>
+                                          <td class="price" data-title="Price">
+                                            <span>
+                                              <%= findOrder.orderDate %>
+                                            </span>
+                                          </td>
+
+                                          <td
+                                            class="text-right"
+                                            data-title="Cart"
+                                          >
+                                            <span>
+                                              <%=
+                                              findOrder.shippingAddress.address
+                                              %> <br />
+                                            </span>
+                                            <span>
+                                              <%= findOrder.shippingAddress.city
+                                              %>
+                                            </span>
+                                          </td>
+                                          <td
+                                            class="text-right"
+                                            data-title="Cart"
+                                          >
+                                            <span>
+                                              <%= findOrder.items[i].subTotal %>
+                                            </span>
+                                            <%
+                                            subtotal=subtotal+findOrder.items[i].subTotal
+                                            %>
+                                          </td>
+                                          <td
+                                            class="text-center"
+                                            data-title="Stock"
+                                          >
+                                            <div
+                                              class="detail-qty border radius m-auto"
+                                            >
+                                              <span class="qty-val">
+                                                <%=
+                                                findOrder.items[i].quantity%>
+                                              </span>
+                                            </div>
+                                          </td>
+                                          <!-- <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fa fa-trash-alt"></i></a></td> -->
+                                        </tr>
+
+                                        <% } %> <% }%>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </table>
+                              </div>
+                            </div>
                           </div>
-                          <div class="col-md-6 text-md-end">
-                            <a href="addAddress">
-                              <div class="login-register-btn-remember">
-                                <div class="login-register-btn">
-                                  <button
-                                    type="button"
-                                    onclick="addSelectedAddress()"
+
+                          <div class="divider center_icon mt-50 mb-50">
+                            <i class="fa fa-gem"></i>
+                          </div>
+                          <div class="row mb-50">
+                            <div
+                              class="col-lg-6 col-md-12"
+                              style="margin-left: 300px"
+                            >
+                              <div
+                                class="border p-md-4 p-30 border-radius-10 cart-totals"
+                              >
+                                <div class="heading_s1 mb-3">
+                                  <h4>Totals</h4>
+                                </div>
+                                <div class="table-responsive">
+                                  <table class="table">
+                                    <tbody>
+                                      <tr>
+                                        <td class="cart_total_label">
+                                          Subtotal
+                                        </td>
+                                        <td class="cart_total_amount">
+                                          <span
+                                            class="font-lg fw-900 text-brand"
+                                            >₹<%= subtotal %></span
+                                          >
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="cart_total_label">
+                                          Shipping
+                                        </td>
+                                        <td class="cart_total_amount">
+                                          <i class="ti-gift mr-5"></i> Free
+                                          Shipping
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="cart_total_label">
+                                          Discount
+                                        </td>
+                                        <% var
+                                        discount=subtotal-findOrder.totalAmount
+                                        %>
+                                        <td class="cart_total_amount">
+                                          <i class="ti-gift mr-5"></i> <%=
+                                          discount %>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td class="cart_total_label">Total</td>
+                                        <td class="cart_total_amount">
+                                          <strong
+                                            ><span
+                                              class="font-xl fw-900 text-brand"
+                                              >₹<%= findOrder.totalAmount
+                                              %></span
+                                            ></strong
+                                          >
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+
+                                <% if (findOrder.status=="Canceled" ) { %>
+
+                                <p
+                                  style="
+                                    color: rgb(226, 78, 20);
+                                    font-size: 20px;
+                                    font-weight: bold;
+                                  "
+                                >
+                                  Canceled
+                                </p>
+
+                                <% }else if(findOrder.status=="Delivered" ){ %>
+
+                                <p
+                                  style="
+                                    color: rgb(15, 147, 22);
+                                    font-size: 20px;
+                                    font-weight: bold;
+                                    margin-bottom: 30px;
+                                  "
+                                >
+                                  Delivered
+                                </p>
+
+                                <button
+                                  onclick="Return()"
+                                  style="
+                                    padding: 8px 16px;
+                                    font-size: 14px;
+                                    background-color: #000000;
+                                    color: white;
+                                    border: none;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                    margin-bottom: 30px;
+                                  "
+                                >
+                                  Request Return
+                                </button>
+
+                                <div id="reason" style="display: none">
+                                  <input
+                                    type="radio"
+                                    id="dont_want"
+                                    name="reason"
+                                    value="Don't want the product anymore"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="dont_want"
+                                    >Don't want the product anymore</label
+                                  ><br />
+
+                                  <input
+                                    type="radio"
+                                    id="quality"
+                                    name="reason"
+                                    value="Quality of the product not as expected"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="quality"
+                                    >Quality of the product not as
+                                    expected</label
+                                  ><br />
+
+                                  <input
+                                    type="radio"
+                                    id="received_wrong"
+                                    name="reason"
+                                    value="Received wrong item"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="received_wrong"
+                                    >Received wrong item</label
+                                  ><br />
+
+                                  <input
+                                    type="radio"
+                                    id="received_broken"
+                                    name="reason"
+                                    value="Received a broken/damaged item"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="received_broken"
+                                    >Received a broken/damaged item</label
+                                  ><br />
+
+                                  <input
+                                    type="radio"
+                                    id="received_broken"
+                                    name="reason"
+                                    value="Received a broken/damaged item"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="received_broken"
+                                    >Other reason</label
+                                  ><br />
+
+                                  <p
+                                    class="text-danger"
+                                    id="error"
+                                    style="display: none"
                                   >
-                                    Add Address
+                                    Select one
+                                  </p>
+
+                                  <button
+                                    onclick="submit('<%=findOrder._id%>')"
+                                    style="
+                                      padding: 6px 8px;
+                                      font-size: 14px;
+                                      background-color: #000000;
+                                      color: white;
+                                      border: none;
+                                      border-radius: 4px;
+                                      cursor: pointer;
+                                      margin-bottom: 30px;
+                                      margin-top: 20px;
+                                    "
+                                  >
+                                    Submit
                                   </button>
                                 </div>
-                              </div>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                      <script>
-                        function handleAddressSelection(checkbox) {
-                          var checkboxes =
-                            document.getElementsByName("selectedAddress");
-                          checkboxes.forEach(function (cb) {
-                            if (cb !== checkbox) {
-                              cb.checked = false;
-                            }
-                          });
-                        }
-                      </script>
 
-                      <div class="additional-info-wrap">
-                        <h3>Additional information</h3>
-                        <label>Order notes (optional)</label>
-                        <textarea
-                          placeholder="Notes about your order, e.g. special notes for delivery. "
-                          name="message"
-                        ></textarea>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-5">
-                    <div class="your-order-area">
-                      <h3>Your order</h3>
-                      <div class="your-order-wrap gray-bg-4">
-                        <div class="your-order-info-wrap">
-                          <div class="your-order-info">
-                            <ul>
-                              <li>Product <span>Total</span></li>
-                            </ul>
-                          </div>
-                          <div class="your-order-middle">
-                            <ul>
-                              <% for( let i = 0; i < proData.length && cartData;
-                              i++ ) { %>
-                              <li>
-                                <%= proData[i].name %> X <%=
-                                cartData.items[i].quantity %>
-                                <span>₹<%= cartData.items[i].subTotal %></span>
-                              </li>
-                              <% } %>
-                            </ul>
-                          </div>
-                          <div class="your-order-info order-subtotal">
-                            <ul>
-                              <li>
-                                Subtotal
-                                <span>₹<%= cartData.totalPrice %> </span>
-                              </li>
-                            </ul>
-                          </div>
-                          <div class="your-order-info order-total">
-                            <ul>
-                              <li>Discount ₹<span id="discount">0 </span></li>
-                            </ul>
-                          </div>
-                          <div class="your-order-info order-total">
-                            <ul>
-                              <li>
-                                Total ₹<span id="total"
-                                  ><%= cartData.totalPrice %>
-                                </span>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div class="payment_method">
-                          <div class="mb-25">
-                            <h5>Payment</h5>
-                          </div>
-                          <div class="payment_option">
-                            <div class="custom-radio">
-                              <% if (cartData.totalPrice>=2000) { %>
-                              <input
-                                class="form-check-input"
-                                required
-                                type="radio"
-                                name="payment_option"
-                                id="cashOnDelivery"
-                                value="Cash on Delivery"
-                                checked
-                              />
-                              <label
-                                class="form-check-label"
-                                for="cashOnDelivery"
-                                data-bs-toggle="collapse"
-                                data-target="#bankTranfer"
-                                aria-controls="bankTranfer"
-                                >Cash on Delivery</label
-                              >
-                              <input
-                                class="form-check-input"
-                                required
-                                type="radio"
-                                name="payment_option"
-                                id="razorpay"
-                                value="Razorpay"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="razorpay"
-                                data-bs-toggle="collapse"
-                                data-target="#bankTranfer"
-                                aria-controls="bankTranfer"
-                                >Razorpay</label
-                              >
-                              <% }else{ %>
-                              <input
-                                class="form-check-input"
-                                required
-                                type="radio"
-                                name="payment_option"
-                                id="razorpay"
-                                value="Razorpay"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="razorpay"
-                                data-bs-toggle="collapse"
-                                data-target="#bankTranfer"
-                                aria-controls="bankTranfer"
-                                >Razorpay</label
-                              >
-                              <% } %>
+                                <% }else if(findOrder.status=="Return proccess"
+                                ){ %>
 
-                              <div class="form-group collapse" id="bankTranfer">
-                                <p class="text-muted mt-5">
-                                  There are many variations of passages of Lorem
-                                  Ipsum available, but the majority have
-                                  suffered alteration.
+                                <a
+                                  onclick="cancelReturn('<%= findOrder._id %>')"
+                                  class="btn btn-rounded"
+                                >
+                                  <i class="fa fa-share-square mr-10"></i>
+                                  Cancel Return</a
+                                >
+
+                                <%}else if(findOrder.status=="Returned"){%>
+                                <p
+                                  style="
+                                    color: rgb(20, 226, 30);
+                                    font-size: 20px;
+                                    font-weight: bold;
+                                    margin-bottom: 30px;
+                                  "
+                                >
+                                  The Order Returned
                                 </p>
+                                <% }else if(findOrder.status=="Payment Failed"){
+                                %>
+                                <a
+                                  onclick="payment('<%= findOrder._id %>')"
+                                  class="btn btn-rounded"
+                                >
+                                  <i class="fa fa-share-square mr-10"></i
+                                  >Continue Payment</a
+                                >
+
+                                <% }else { %>
+
+                                <button
+                                  onclick="reason()"
+                                  style="
+                                    padding: 8px 16px;
+                                    font-size: 14px;
+                                    background-color: #000000;
+                                    color: white;
+                                    border: none;
+                                    border-radius: 4px;
+                                    cursor: pointer;
+                                    margin-bottom: 30px;
+                                  "
+                                >
+                                  Cancel Order
+                                </button>
+
+                                <div id="reason2" style="display: none">
+                                  <input
+                                    type="radio"
+                                    id="dont_want"
+                                    name="reason1"
+                                    value="Don't want the product anymore"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="dont_want"
+                                    >Don't want the product anymore</label
+                                  ><br />
+
+                                  <input
+                                    type="radio"
+                                    id="quality"
+                                    name="reason1"
+                                    value="Quality of the product not as expected"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="quality"
+                                    >Quality of the product not as
+                                    expected</label
+                                  ><br />
+
+                                  <input
+                                    type="radio"
+                                    id="received_wrong"
+                                    name="reason1"
+                                    value="Received wrong item"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="received_wrong"
+                                    >Received wrong item</label
+                                  ><br />
+
+                                  <input
+                                    type="radio"
+                                    id="received_broken"
+                                    name="reason1"
+                                    value="Received a broken/damaged item"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="received_broken"
+                                    >Received a broken/damaged item</label
+                                  ><br />
+
+                                  <input
+                                    type="radio"
+                                    id="received_broken"
+                                    name="reason1"
+                                    value="Received a broken/damaged item"
+                                    style="
+                                      width: 15px;
+                                      height: 15px;
+                                      margin-right: 5px;
+                                    "
+                                  />
+                                  <label for="received_broken"
+                                    >Other reason</label
+                                  ><br />
+
+                                  <p
+                                    class="text-danger"
+                                    id="error"
+                                    style="display: none"
+                                  >
+                                    Select one
+                                  </p>
+
+                                  <a
+                                    onclick="cancel('<%= findOrder._id %>')"
+                                    class="btn btn-rounded"
+                                  >
+                                    <i class="fa fa-share-square mr-10"></i>
+                                    Submit</a
+                                  >
+                                </div>
+
+                                <% } %>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <a
-                          onclick="placeOrder('<%= cartData._id%>')"
-                          class="btn btn-fill-out btn-block mt-30"
-                        >
-                        </a>
-
-                        <!-- <div class="condition-wrap">
-                                <div class="condition-form mb-25">
-                                    <input type="checkbox" value="COD" id="payment">
-                                    <span>Cash on Delivery<span class="star">*</span></span>
-                                </div>
-                            </div> -->
-                      </div>
-                      <div class="Place-order mt-30">
-                        <a onclick="placeOrder('<%= cartData._id %>')"
-                          >Place Order</a
-                        >
                       </div>
                     </div>
-                  </div>
+                  </section>
+                  <!-- Orders Tab Pane End -->
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-      <script>
-        let selectedAddress;
+    <script>
+      function cancel(id) {
+        var selectedReason = document.querySelector(
+          'input[name="reason1"]:checked'
+        );
 
-        function handleAddressSelection(checkbox) {
-          if (checkbox.checked) {
-            selectedAddress = checkbox.value;
-            alert(selectedAddress);
-          } else {
-            selectedAddress = null;
-          }
-        }
-
-        function placeOrder(cartid) {
-          //    alert(cartid)
-          //    alert(addressId)
-          //    alert(checkedOption)
-          const code = document.getElementById("code").value;
-          alert(code);
-          var paymentMethod = document.querySelector(
-            'input[name="payment_option"]:checked'
-          ).value;
-          alert(paymentMethod);
-          const total = document.getElementById("total").innerHTML;
-          // alert(total)
-
+        if (selectedReason) {
           $.ajax({
-            url: "/placeOrder",
+            url: "/cancelOrder",
             method: "post",
             data: {
-              selectedAddress,
-              cartid,
-              paymentMethod,
-              total,
-              code,
-            },
-            success: (response) => {
-              if (response.status === true) {
-                Swal.fire({
-                  title: "Your order has been placed",
-                  width: 600,
-                  padding: "3em",
-                  color: "#716add",
-                  background: "#fff url(/images/trees.png)",
-                  backdrop: `
-                        rgba(0,0,123,0.4)
-                        url("/images/nyan-cat.gif")
-                        left top
-                        no-repeat
-                    `,
-                  showConfirmButton: true,
-                  confirmButtonColor: "#000000", // Set button color to black
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    window.location.href = "http://localhost:7777/orderSuccess";
-                  }
-                });
-              } else if (response.status == "fill") {
-                Swal.fire({
-                  icon: "error",
-                  title: "Must fill the Options",
-                  showConfirmButton: false,
-                  timer: 1500,
-                });
-              } else if (response.status == "razorpay") {
-                // alert("inside hello")
-                // alert(response.order.amount)
-                // alert(response.order.id)
-                // alert(response.order)
-
-                let orderId = response.order.id;
-                let address = response.address;
-
-                let amount = response.total;
-                let couponCode = response.code;
-
-                // alert(address)
-                let order_id = response.orderNumber;
-                // alert(order_id)
-
-                var options = {
-                  key: "rzp_test_ECB3Zjd1NyXFF9", // Enter the Key ID generated from the Dashboard
-                  amount: 50000, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                  currency: "INR",
-                  name: "Kevin Hills",
-                  description: "Test Transaction",
-                  image: "https://example.com/your_logo",
-                  order_id: response.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                  handler: function (response) {
-                    verifyPayment(
-                      response,
-                      orderId,
-                      selectedAddress,
-                      order_id,
-                      amount,
-                      couponCode
-                    )
-                  },
-                  prefill: {
-                    name: "Gaurav Kumar",
-                    email: "gaurav.kumar@example.com",
-                    contact: "9000090000",
-                  },
-                  notes: {
-                    address: "Razorpay Corporate Office",
-                  },
-                  theme: {
-                    color: "#000000",
-                  },
-                };
-
-                var rzp = new Razorpay(options);
-                rzp.on("payment.failed", function (response) {
-                  //     console.log(couponCode)
-                  //    console.log("hello");
-                  //    console.log(address)
-                  //    console.log(amount)
-
-                  paymentFalid(address, amount, couponCode);
-                });
-                // alert(response.order.id)
-                rzp.open();
-              }
-            },
-          });
-        }
-
-        function verifyPayment(
-          payment,
-          orderId,
-          selectedAddress,
-          order_id,
-          amount,
-          couponCode
-        ) {
-          $.ajax({
-            url: "/verifyPayment",
-            method: "post",
-            data: {
-              payment,
-              order,
-              selectedAddress,
-              order_id,
-              amount,
-              couponCode,
-            },
-            success: (response) => {
-              if (response.status == true) {
-                Swal.fire({
-                  title: "Your order has been placed",
-                  width: 600,
-                  padding: "3em",
-                  color: "#716add",
-                  background: "#fff url(/images/trees.png)",
-                  backdrop: `
-                            rgba(0,0,123,0.4)
-                            url("/images/nyan-cat.gif")
-                            left top
-                            no-repeat
-                        `,
-                  showConfirmButton: true,
-                  confirmButtonColor: "#000000", // Set button color to black
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    window.location.href = "http://localhost:7777/orderSuccess";
-                  }
-                });
-              }
-            },
-          });
-        }
-
-        function apply(id) {
-          const code = document.getElementById("code").value;
-          const amount = document.getElementById("total").innerHTML;
-          alert(amount);
-          // alert(code)
-          // alert(id)
-
-          $.ajax({
-            url: "/applyCoupon",
-            method: "post",
-            data: {
-              code,
               id,
             },
             success: (response) => {
               if (response.status == true) {
-                const Toast = Swal.mixin({
-                  toast: true,
-                  position: "bottom",
-                  showConfirmButton: false,
-                  timer: 1500,
-                  // timerProgressBar: true,
-                  didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                  },
-                });
-                Toast.fire({
-                  icon: "success",
-                  title: "Coupon added",
-                  position: "center",
-                }).then((result) => {
-                  document.getElementById("discount").innerHTML = parseInt(
-                    response.total
-                  );
-                  document.getElementById("total").innerHTML =
-                    parseInt(amount) - parseInt(response.total);
-                  // document.getElementById("remove").style.display = "inline-block"
-                  document.getElementById("apply").style.display = "none";
-                  document.getElementById("code").style.display = "none";
-                  // document.getElementById("text").innerHTML = "<h6>You already added this coupon code </h6> <h4 style='color:#007bff'>" + response.code + "</h4>"
-                  // document.getElementById("show").style.display = "none"
-                });
-              } else if (response.status == "invalid") {
                 Swal.fire({
-                  icon: "error",
-                  title: "Invalid Coupon",
-                  showConfirmButton: false,
-                  timer: 1500,
+                  title: "Are you sure?",
+                  text: "You want to Cancel this Order?!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#000000",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, Cancel it!",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    Swal.fire({
+                      title: "Canceled!",
+                      text: "Your Order has been Canceled.",
+                      icon: "success",
+                    }).then((result) => {
+                      location.href = "/orders";
+                    });
+                  }
                 });
               }
             },
           });
+        } else {
+          document.getElementById("error").style.display = "block";
+
+          setTimeout(() => {
+            document.getElementById("error").style.display = "none";
+          }, 2000);
         }
 
-        function remove() {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "center",
-            showConfirmButton: false,
-            timer: 1500,
-            // timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
+        // alert(id)
+      }
+
+      function Return() {
+        document.getElementById("reason").style.display = "block";
+      }
+
+      function reason() {
+        document.getElementById("reason2").style.display = "block";
+      }
+
+      function submit(id) {
+
+var selectedReason = document.querySelector('input[name="reason"]:checked');
+
+// Check if any radio button is selected
+if (selectedReason) {
+    // Retrieve the value of the selected radio button
+    var reasonValue = selectedReason.value;
+
+    // Do whatever you need with the value (for example, log it)
+    console.log("Selected reason:", reasonValue);
+
+    alert(id)
+
+    $.ajax({
+        url: '/return',
+        method: 'post',
+        data: {
+            reasonValue,
+            id
+        },
+        success: (response) => {
+            if (response.status == true) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "center",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    // timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Request send successfull"
+                }).then((result) => {
+
+                    window.location.href = "/orders"
+                })
+            }
+        }
+    })
+
+} else {
+    document.getElementById("error").style.display = "block"
+
+    setTimeout(() => {
+        document.getElementById("error").style.display = "none"
+    }, 2000)
+}
+
+
+}
+
+function cancelReturn(id){
+$.ajax({
+    url:"/cancelReturn",
+    method:"post",
+    data:{
+        id
+    },
+    success: (response) => {
+              if (response.status == true) {
+                Swal.fire({
+                  title: "Are you sure?",
+                  text: "You want to Cancel this Return?!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#000000",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, Cancel it!",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    Swal.fire({
+                      title: "Canceled!",
+                      text: "Your return has been cancelled..",
+                      icon: "success",
+                    }).then((result) => {
+                      location.href = "/orders";
+                    });
+                  }
+                });
+              }
             },
-          });
-          Toast.fire({
-            icon: "success",
-            title: "Coupon Removed",
-          }).then((result) => {
-            window.location.href = "/checkout";
-          });
-        }
-      </script>
+})
+}
 
-      <%- include('../partials/footer') %>
-    </div>
+const inputElement = document.getElementById('input');
+let timeoutId;
+
+function debounce(func, delay) {
+return function () {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+        func();
+    }, delay);
+};
+}
+
+    </script>
+
+    <%- include('../partials/footer') %>
   </body>
 </html>

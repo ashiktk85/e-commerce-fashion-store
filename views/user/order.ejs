@@ -508,10 +508,12 @@
                                 </div>
                                 <ul>
                                     <li>
-                                        <a href="index.html">Home 01 </a>
-                                    </li>
-                                    <li><span> &gt; </span></li>
-                                    <li class="active" style="font-family: poppins;color: white;"> My Account </li>
+                                        <a href="/" style="color: #ffffff;">Home 01 </a>
+                                      </li>
+                                      <li><span> &gt; </span></li>
+                                      <li class="active" style="font-family: poppins; color: white">
+                                       My Orders
+                                      </li>
                                 </ul>
                             </div>
                         </div>
@@ -614,9 +616,10 @@
                                         <a href="accountDetails" data-bs-toggle="">Dashboard</a>
                                         <a href="#" class="active" data-bs-toggle="">Orders</a>
                                         <a href="userAddress"  data-bs-toggle="">Address</a>
-                                        <a href="#change-password" data-bs-toggle="tab">Change Password</a>
-                                        <a href="#account-info" data-bs-toggle="tab">Account Details</a>
-                                        <a href="login-register.html">Logout</a>
+                                        <a href="changePassword" data-bs-toggle="tab">Change Password</a>
+                                        <a href="viewAccount" data-bs-toggle="tab">Account Details</a>
+                                        <a href="coupon">Coupon</a>
+                                        <a href="wallet"> My Wallet</a>
                                     </div>
                     
                                         <!-- Orders Tab Pane Start -->
@@ -642,7 +645,7 @@
                                                                     <td><%= orderData[i].orderType %></td>
                                                                     <td style="color: green;"><%= orderData[i].status %></td>
                                                                     <td>$<%= orderData[i].totalAmount %></td>
-                                                                    <td><a href="orderAddress" class="check-btn sqr-btn">View</a></td>
+                                                                    <td><a href="/orderView?id=<%= orderData[i]._id %>" class="check-btn sqr-btn">View</a></td>
                                                                 </tr>
                                                             <% } %>
                                                       

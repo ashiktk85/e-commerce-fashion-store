@@ -522,73 +522,86 @@
                             <a href="changePassword" data-bs-toggle="">Change Password</a>
                             <a href="viewAccount" data-bs-toggle=""> Account Details</a>
                             <a href="coupons" class="active" > My coupon</a>
+                            <a href="wallet"> My Wallet</a>
                         </div>
                         <h2 style="font-family: poppins; margin-top: 20px; font-size: 22px;"><b>Available Coupons</b></h2>
         
                         <!-- Coupon Cards -->
                         <div class="row">
+                            <% const displayedCoupons = []; %>
+                            
                             <% if (couponData.length > 0) { %>
-                                <% for( let i = 0; i < couponData.length; i++ ) { %>
-                                    <div class="col-lg-3 col-md-6 mb-4"> <!-- Adjust column width to fit four coupons per row for lg and two coupons per row for md -->
-                                        <div class="card" style="margin-top: 50px;">
-                                            <div class="cross-bg"></div>
-                                            <div class="content">
-                                                <div class="logo">
-                                                    <img src="https://i.imgur.com/w68MQc4.png" width="60">
-                                                </div>
-                                                <div class="text-center text-uppercase text-white off">
-                                                    <span><b style="color: #000000;"><%= couponData[i].name %></b></span>
-                                                    <h1 class="mt-0" style="color: #ffffff;"><%= couponData[i].discount %>% OFF</h1>
-                                                </div>
-                                                <!-- <div class="text-center text-white">
-                                                    <span><%= couponData[i].startDate %>  -</span>
-                                                </div> -->
-                                                <div class="text-center text-uppercase text-white">
-                                                    <span> Valid until :  <%= couponData[i].EndDate %></span>
-                                                </div>
-                                                <div class="px-3 mb-3">
-                                                    <div class="code text-center mt-3">
-                                                        <span><span style="color: red;"><b>code:</b> </span> <b style="font-size: smaller;"><%= couponData[i].couponCode %></b class="fa-regular fa-copy" onclick="copyText()" style="cursor: pointer; margin-left: 5px;"></span>
+                                <% for (let i = 0; i < couponData.length; i++) { %>
+                                    <% const coupon = couponData[i]; %>
+                                    <% if (!displayedCoupons.includes(coupon._id.toString())) { %>
+                                        <% displayedCoupons.push(coupon._id.toString()); %>
+                                        <div class="col-lg-3 col-md-6 mb-4"> 
+                                            <div class="card" style="margin-top: 50px;">
+                                                <div class="cross-bg"></div>
+                                                <div class="content">
+                                                    <div class="logo">
+                                                        <img src="https://i.imgur.com/w68MQc4.png" width="60">
+                                                    </div>
+                                                    <div class="text-center text-uppercase text-white off">
+                                                        <span><b style="color: #000000;"><%= coupon.name %></b></span>
+                                                        <h1 class="mt-0" style="color: #ffffff;"><%= coupon.discount %>% OFF</h1>
+                                                    </div>
+                                                    <div class="text-center text-uppercase text-white">
+                                                        <span> Valid until : <%= coupon.EndDate %></span>
+                                                    </div>
+                                                    <div class="px-3 mb-3">
+                                                        <div class="code text-center mt-3">
+                                                            <span><span style="color: red;"><b>code:</b> </span> <b style="font-size: smaller;"><%= coupon.couponCode %></b></span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    <% } %>
                                 <% } %>
-                            <% } else { %>
-
-                                <% if (readeemCoupon.length > 0) { %>
-                                    <div class="col-lg-3 col-md-6 mb-4"> <!-- Adjust column width to fit four coupons per row for lg and two coupons per row for md -->
-                                        <div class="card" style="margin-top: 50px;">
-                                            <div class="cross-bg"></div>
-                                            <div class="content">
-                                                <div class="logo">
-                                                    <img src="https://i.imgur.com/w68MQc4.png" width="60">
-                                                </div>
-                                                <div class="text-center text-uppercase text-white off">
-                                                    <span><b style="color: #000000;">Redeemed coupon</b></span>
-                                                    <h1 class="mt-0" style="color: #ffffff;"><%= readeemCoupon[i].discount %>% OFF</h1>
-                                                </div>
-                                                <!-- <div class="text-center text-white">
-                                                    <span><%= readeemCoupon[i].startDate %>  -</span>
-                                                </div> -->
-                                                <div class="text-center text-uppercase text-white">
-                                                    <span> Valid until :  <%= readeemCoupon[i].EndDate %></span>
-                                                </div>
-                                                <div class="px-3 mb-3">
-                                                    <div class="code text-center mt-3">
-                                                        <span><span style="color: red;"><b>code:</b> </span> <b style="font-size: smaller;"><%= readeemCoupon[i].couponCode %></b></span>
+                            <% } %>
+                        
+                            <% if (readeemCoupon.length > 0) { %>
+                                <% for (let i = 0; i < readeemCoupon.length; i++) { %>
+                                    <% const coupon = readeemCoupon[i]; %>
+                                    <% if (!displayedCoupons.includes(coupon._id.toString())) { %>
+                                        <% displayedCoupons.push(coupon._id.toString()); %>
+                                        <div class="col-lg-3 col-md-6 mb-4"> 
+                                            <div class="card" style="margin-top: 50px;">
+                                                <div class="cross-bg"></div>
+                                                <div class="content">
+                                                    <div class="logo">
+                                                        <img src="https://i.imgur.com/w68MQc4.png" width="60">
+                                                    </div>
+                                                    <div class="text-center text-uppercase text-white off">
+                                                        <span><b style="color: #000000;">Redeemed coupon</b></span>
+                                                        <h1 class="mt-0" style="color: #ffffff;"><%= coupon.discount %>% OFF</h1>
+                                                    </div>
+                                                    <div class="text-center text-uppercase text-white">
+                                                        <span> Valid until : <%= coupon.EndDate %></span>
+                                                    </div>
+                                                    <div class="px-3 mb-3">
+                                                        <div class="code text-center mt-3">
+                                                            <span><span style="color: red;"><b>code:</b> </span> <b style="font-size: smaller;"><%= coupon.couponCode %></b></span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    <% } %>
                                 <% } %>
-
-                                <% } %>
-
-
+                            <% } %>
+                        
+                            <% if (couponData.length === 0 && readeemCoupon.length === 0) { %>
+                                <div class="col-lg-12 text-center mt-5">
+                                    <h4>No coupons available</h4>
+                                </div>
+                            <% } %>
                         </div>
+                        
+                        
+                        
+                        
                         <!-- Coupon Cards End -->
                     </div>
                 </div>

@@ -435,6 +435,7 @@ const placeOrder = async (req, res) => {
           orderDate: date,
           status: "Processing",
           shippingAddress: addressData,
+          coupon:findCoupon.couponCode,
           discount: findCoupon.discount,
         });
 

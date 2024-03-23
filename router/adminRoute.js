@@ -35,6 +35,9 @@ adminRoute.post("/cat-list", isAdmin, CategoryControler.listCat);
 adminRoute.get("/cat-edit", isAdmin,CategoryControler.loadEdit)
 adminRoute.post("/editCategoryPost", isAdmin, CategoryControler.editCat);
 adminRoute.post("/cat-cancel",isAdmin, CategoryControler.cancelCat)
+adminRoute.get("/catagoryOffer",isAdmin,CategoryControler.loadCategoryOffer)
+adminRoute.get("/addOffer",isAdmin,CategoryControler.addOfferLoad)
+adminRoute.post("/addOfferPost",isAdmin,CategoryControler.addOffer)
 
 // PRODUCT
 
@@ -66,6 +69,8 @@ adminRoute.post("/editCoupon",isAdmin,couponController.editCoupon)
 // SALES 
 
 adminRoute.get('/salesReport', isAdmin, adminController.loadSalesreport)
+adminRoute.get("/salesDate",isAdmin,adminController.dateFilter)
+adminRoute.get("/Date",isAdmin,adminController.sortDate)
 
 
 module.exports = adminRoute;

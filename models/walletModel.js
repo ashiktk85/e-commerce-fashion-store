@@ -1,29 +1,36 @@
 const mongoose = require('mongoose')
 
-const walletSchema = new mongoose.Schema({
-
-    user:{
+const walletSchma=new mongoose.Schema({
+    userId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
+        ref:"users",
+        require:true,
     },
     balance:{
         type:Number,
-        default:0
+        
     },
-    walletdata:[{
-        history:{
-            type:String,
+    transactions:[
+        {   id:{
+            type:Number
+            
+            },
+            date:{
+                type:String,
+                
+            },
+             amount:{
+                type:Number,
+             
+             },
+             orderType:{
+                type:String,
+                
+             }
         },
-        date:{
-            type:Date,
-        },
-        paymentmethod:{
-            type:String,
-        },
-        transactionID:{
-            type:String
-        }
-    }]
-})
+    ],
+    
 
-module.exports = mongoose.model('Wallet',walletSchema)
+},{versionKey:false})
+
+module.exports = mongoose.model('Wallet',walletSchma)

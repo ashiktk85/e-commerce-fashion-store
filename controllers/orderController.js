@@ -2,6 +2,13 @@ const Order = require('../models/orderModel');
 const Product = require("../models/productModel")
 const Address = require('../models/addressModel')
 const Coupon = require('../models/couponModel')
+const Cart =  require('../models/cartModel')
+const wishlist = require('../models/wishlistModel')
+const User = require('../models/userModel')
+const Wallet = require('../models/walletModel')
+
+
+// LOAD ADMIN ORDER PAGE
 
 const loadOrder = async (req, res) => {
   try {
@@ -12,6 +19,8 @@ const loadOrder = async (req, res) => {
     console.log(error.message);
   }
 };
+
+//ADMIN DETAIL ORDER
 
 const loadOrderDetail = async (req, res) => {
   try {
@@ -35,83 +44,243 @@ const loadOrderDetail = async (req, res) => {
   }
 };
 
-//   const saveOrder = async (req, res) => {
-//     try {
-//       const { status, id } = req.body;
+// LOAD USER DETAIL ORDER PAGE
 
-//       console.log(id, status);
+const loadViewOrder = async (req, res) => {
+  try {
+    
+   
+    const id = req.query.id;
+    const findOrder = await Order.findById({ _id: id });
+    console.log(findOrder);
 
-//       const checking = await Order.findById({ _id: id });
+    const proId = [];
 
-//       if (checking.status == status) {
-//         res.json({ status: "notChanged" });
-//       } else {
-//         const updateStatus = await Order.findByIdAndUpdate(
-//           { _id: id },
-//           {
-//             $set: {
-//               status: status,
-//             },
-//           }
-//         );
-//       }
-//       if (status == "Returned") {
-//         const proId = [];
+    for (let i = 0; i < findOrder.items.length; i++) {
+      proId.push(findOrder.items[i].productId);
+    }
 
-//         for (let i = 0; i < checking.items.length; i++) {
-//           proId.push(checking.items[i].productId);
-//         }
+    const proData = [];
 
-//         for (let i = 0; i < proId.length; i++) {
-//           await Product.findByIdAndUpdate(
-//             { _id: proId[i] },
-//             {
-//               $inc: {
-//                 quantity: checking.items[i].quantity,
-//               },
-//             }
-//           );
-//         }
-//       } else if (status == "Canceled") { 
-//         // const findUser = await User.findOne({ email: req.session.email });
-//         const findOrder=await Order.findById({_id:id})
-//         if(findOrder.orderType=="COD"){
+    for (let i = 0; i < proId.length; i++) {
+      proData.push(await Product.findById({ _id: proId[i] }));
+    }
 
-//           const updateOrder = await Order.findByIdAndUpdate(
-//             { _id: id },
-//             {
-//               $set: {
-//                 status: "Canceled",
-//               },
-//             }
-//           );
+    
 
-//           const proId = [];
 
-//           for (let i = 0; i < findOrder.items.length; i++) {
-//             proId.push(findOrder.items[i].productId);
-//           }
 
-//           for (let i = 0; i < proId.length; i++) {
-//             await Product.findByIdAndUpdate(
-//               { _id: proId[i] },
-//               {
-//                 $inc: {
-//                     quantity: findOrder.items[i].quantity,
-//                 },
-//               }
-//             );
-//           }
+    res.render("orderView", { proData, findOrder});
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
-//         }
 
-//       }
+// USER CANCEL ORDER
 
-//       res.json({ status: true });
-//     } catch (error) {
-//       console.log(error.message);
-//     }
-//   };
+const cancelOrder = async (req, res) => {
+  try {
+    const id = req.body.id; 
+    console.log(id)
+
+    const findOrder = await Order.findById({ _id: id });
+    const userData=await User.findOne({email:req.session.email})
+    console.log(findOrder)
+    console.log("inside cancelOrder")
+
+    if (findOrder.orderType == "Cash on Delivery") {
+      const couponId=findOrder.coupon
+      console.log(couponId+"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
+      console.log("inside Cash on delivary");
+      if(!couponId) {
+        const updateOrder = await Order.findByIdAndUpdate(
+          { _id: id },
+          {
+            $set: {
+              status: "Canceled",
+            }
+          }
+        );
+
+        const proId = [];
+
+      for (let i = 0; i < findOrder.items.length; i++) {
+        proId.push(findOrder.items[i].productId);
+      }
+
+      for (let i = 0; i < proId.length; i++) {
+        await Product.findByIdAndUpdate(
+          { _id: proId[i] },
+          {
+            $inc: {
+              stock: findOrder.items[i].quantity,
+            },
+          }
+        );
+      }
+      } else {
+        const updateOrder = await Order.findByIdAndUpdate(
+          { _id: id },
+          {
+            $set: {
+              status: "Canceled",
+            },
+            $unset:{
+              coupon:couponId
+            }
+          }
+        );
+  
+        const proId = [];
+  
+        for (let i = 0; i < findOrder.items.length; i++) {
+          proId.push(findOrder.items[i].productId);
+        }
+  
+        for (let i = 0; i < proId.length; i++) {
+          await Product.findByIdAndUpdate(
+            { _id: proId[i] },
+            {
+              $inc: {
+                size: findOrder.items[i].quantity,
+              },
+            }
+          );
+        }
+  
+        const findCoupon=await Coupon.findByIdAndUpdate({_id:couponId},
+          {
+            $pull:{users:{$eq:userData._id}}
+          })
+  
+          console.log(findCoupon+"wwwwwwwwwwwwwwwwwwwwwwwwwwww")
+      }
+      
+      
+
+      
+    } else if(findOrder.orderType == "Razorpay") {
+       console.log("inside Razorpay")
+      const findUser = await User.findOne({ email: req.session.email });
+      const findOrder=await Order.findById({_id:id})
+      const date = generateDate();
+      const Tid= generateTransaction()
+
+      const updateOrder = await Order.findByIdAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            status: "Canceled",
+          },
+        }
+      );
+
+      const proId = [];
+
+      for (let i = 0; i < findOrder.items.length; i++) {
+        proId.push(findOrder.items[i].productId);
+      }
+
+      for (let i = 0; i < proId.length; i++) {
+        await Product.findByIdAndUpdate(
+          { _id: proId[i] },
+          {
+            $inc: {
+              stock: findOrder.items[i].quantity,
+            },
+          }
+        );
+      }
+
+        const userInWallet= await Wallet.findOne({userId:findUser._id})
+
+        console.log(userInWallet)
+ 
+        if(userInWallet){
+          console.log("inside userWallet")
+          const updateWallet=await Wallet.findOneAndUpdate({userId:findUser._id},
+            {
+              $inc:{
+                balance:findOrder.totalAmount
+              },
+              $push:{
+                transactions:{
+                  id:Tid,
+                  date:date,
+                  amount:findOrder.totalAmount
+                }
+              }
+            })
+        }else{
+          console.log("else worked");
+          const createWallet=new Wallet({
+            userId:findUser._id,
+            balance:findOrder.totalAmount,
+            transactions:[{
+              id:Tid,
+              date:date,
+              amount:findOrder.totalAmount,
+            }]
+          })
+
+          await createWallet.save()
+        }
+    }
+
+    res.json({ status: true });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// USER RETURN ORDER
+
+const returnRequest = async (req, res) => {
+  try {
+    const reason = req.body.reasonValue;
+    const id = req.body.id;
+
+    // console.log("ooooooooorddddddderuid",id)
+    const findOrder = await Order.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          status: "Return proccess",
+        },
+      }
+    );
+
+    res.json({ status: true });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// CANCEL RETURN 
+
+const cancelReturn = async (req, res) => {
+  try {
+    const id = req.body.id;
+
+    const findOrder = await Order.findById({ _id: id });
+
+    const updateOrder = await Order.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          status: "Delivered",
+        },
+      }
+    );
+res.json({status : true})
+   
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// SAVING ORDER
 
 const saveOrder = async (req, res) => {
   try {
@@ -205,7 +374,7 @@ console.log("getting to razor verifyyyyy....");
       const proId = [];
 
       for (let i = 0; i < proData.length; i++) {
-        proId.push(proData[i].productsId);
+        proId.push(proData[i].productId);
       }
 
       for (let i = 0; i < proId.length; i++) {
@@ -332,11 +501,22 @@ console.log("getting to razor verifyyyyy....");
   }
 };
 
+
+
+
+
+
 module.exports = {
   loadOrder,
   loadOrderDetail,
   saveOrder,
   orderSuccess,
-  verifyPayment
+  verifyPayment,
+  loadViewOrder,
+  cancelOrder,
+  returnRequest,
+  cancelReturn,
+  
+  
 
 }

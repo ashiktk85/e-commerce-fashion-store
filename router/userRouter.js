@@ -65,8 +65,16 @@ userRoute.post("/placeOrder",userAuth.isBlocked,userAuth.isLogin,cartController.
 userRoute.get('/orderSuccess', orderController.orderSuccess)
 userRoute.post('/verifyPayment', orderController.verifyPayment)
 
+// order
+userRoute.get("/orderView",userAuth.isBlocked,userAuth.isLogin,orderController.loadViewOrder)
+userRoute.post("/cancelOrder",userAuth.isBlocked,userAuth.isLogin,orderController.cancelOrder)
+userRoute.post("/return",userAuth.isBlocked,userAuth.isLogin,orderController.returnRequest)
+userRoute.post("/cancelReturn",userAuth.isBlocked,userAuth.isLogin,orderController.cancelReturn)
+
 //wallet
 userRoute.get('/wallet', walletController.loadWallet)
+userRoute.post("/addCash",userAuth.isBlocked,userAuth.isLogin,walletController.addWalletCash)
+userRoute.post("/addAmount",userAuth.isBlocked,userAuth.isLogin,walletController.addCash)
 
 // all products
 userRoute.get('/allProducts',userAuth.isBlocked,userAuth.isLogin,userController.allProducts)
