@@ -43,7 +43,7 @@ const cartPage = async (req, res) => {
         proData.push(await Product.findById({ _id: arr[i] }));
       }
 
-      // console.log(proData);
+      console.log(proData);
     }
 
     //   console.log(proData,cartData)
@@ -93,7 +93,8 @@ const loadCart = async (req, res) => {
           }
           if (proCart) {
             console.log("jjjjjjjjsii");
-            res.json({ status: "viewCart" });
+          
+            return res.status(200).json({ status: "alreadyInCart" });
           } else {
             console.log("view cart else");
             await Cart.findOneAndUpdate(
@@ -142,106 +143,48 @@ const loadCart = async (req, res) => {
   }
 };
 
-// const increment = async (req, res) => {
-//   try {
-//     console.log("carrttttyyyyyyyyy");
-//     const { offerprice, proId, qty, size } = req.body;
 
-//     const quantity = parseInt(qty);
-//     const proIdString = proId.toString();
 
-//     const proData = await Product.findById(proId);
-//     const sizeLower = size.toLowerCase();
-
-//     // Check if the specified size exists in the product's size object
-//     if (proData.size && proData.size[sizeLower]) {
-//       const stock = proData.size[sizeLower].quantity;
-
-//       if (stock >= quantity) {
-//         if (quantity < 10) {
-//           // Update cart
-//           const addPrice = await Cart.findOneAndUpdate(
-//             { userId: req.session.userId, "items.productId": proIdString },
-//             {
-//               $inc: {
-//                 "items.$.price": offerprice,
-//                 "items.$.quantity": 1,
-//                 "items.$.subTotal": offerprice,
-//                 totalPrice: offerprice,
-//               },
-//             }
-//           );
-
-//           // Decrease the stock of the product
-//           const updatedStock = stock - quantity;
-//           await Product.findByIdAndUpdate(
-//             proId,
-//             { $set: { [`size.${sizeLower}.quantity`]: updatedStock } },
-//             { new: true }
-//           );
-
-//           // Place order if the cart total is updated successfully
-//           const cartData = await Cart.findOne({ userId: req.session.userId });
-//           const total = cartData.totalPrice;
-//           const code = ""; // Set coupon code if applicable
-
-//           await placeOrder({
-//             selectedAddress: "address_id_here",
-//             paymentMethod: "payment_method_here",
-//             cartid: cartData._id,
-//             total,
-//             code,
-//           });
-
-//           res.json({ status: true, total });
-//         } else {
-//           res.json({ status: "minimum" });
-//         }
-//       } else {
-//         res.json({ status: "stock" });
-//       }
-//     } else {
-//       res.json({ status: "invalid size" });
-//     }
-//   } catch (error) {
-//     console.log(`Error in addCart: ${error}`);
-//     res.json({ status: "error" });
-//   }
-// };
 
 const increment = async (req, res) => {
   try {
-    console.log("getting to increment ...");
-    const email = req.session.email;
-    const user = await User.findOne({ email: email });
-    let { proId, size, qty, price } = req.body;
-    const siz = size;
-    console.log(proId, siz, qty, price);
+    const { offerprice, proId, qty, subtotal, sizeS } = req.body;
+    console.log(offerprice, proId, qty, subtotal, sizeS);
+    const proIdString = proId.toString();
+    const quantity = parseInt(qty);
 
-    const amount = parseInt(price);
-
-    const cart = await Cart.findOne({ userId: user });
-
-    console.log(cart);
-
-    if (cart) {
-      let filter = [];
-      for (let i = 0; i < cart.items.length; i++) {
-        const item = cart.items[i];
-        console.log(
-          `Comparing item ${i}: productId=${item.productId}, size=${item.size}`
-        );
-        console.log(`Target values: proId=${proId}, siz=${siz}`);
-        if (item.productId == proId && item.size == siz.toString()) {
-          filter.push(item);
-        }
-      }
-      console.log("Filtered items: ", filter);
+    // Update the product quantity in the database
+    const product = await Product.findById(proId);
+    if (product) {
+      product.size.quantity -= 1;
+      await product.save();
+    } else {
+      console.error(`Product with ID ${proId} not found`);
+      return res.status(404).json({ status: false, message: "Product not found" });
     }
+
+    const addPrice = await Cart.findOneAndUpdate(
+      { userId: req.session.userId, "items.productId": proIdString },
+      {
+        $inc: {
+          "items.$.price": offerprice,
+          "items.$.quantity": 1,
+          "items.$.subTotal": offerprice,
+          totalPrice: offerprice,
+        },
+      }
+    );
+
+    
+    const findCart = await Cart.findOne({ userId: req.session.userId });
+    res.json({ status: true, total: findCart.totalPrice });
   } catch (error) {
-    console.log(`error in  increment cart : ${error.message}`);
+    console.log(error.message);
+    res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };
+
+
 
 const selectS = async (req, res) => {
   try {

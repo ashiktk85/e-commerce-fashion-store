@@ -99,19 +99,20 @@ const unblockUser = async (req, res) => {
 
 const loadSalesreport = async (req, res) => {
     try {
+        
         const order = await Order.find({
             status: { $nin: ["Ordered", "Canceled", "Shipped"] },
         });
 
-        const calculateOverallSummary = (orders) => {
+        const calculateOverallSummary = (order) => {
             let salesCount = 0;
             let totalOrderAmount = 0;
             let totalDiscount = 0;
 
-            orders.forEach((order) => {
+            order.forEach((order) => {
                 salesCount++;
                 totalOrderAmount += order.totalAmount;
-                totalDiscount += order.discount || 0; // Ensure discount is counted even if it's not present in all orders
+                totalDiscount += order.discount || 0;
             });
 
             return {
@@ -121,13 +122,10 @@ const loadSalesreport = async (req, res) => {
             };
         };
 
-        // Assuming 'orders' is an array of orders retrieved from your database
-        const orders = await Order.find({});
+        
+        const overallSummary = calculateOverallSummary(order);
 
-        // Calculate overall summary
-        const overallSummary = calculateOverallSummary(orders);
-
-        res.render('salesReport', { order ,overallSummary })
+        res.render('salesReport', { order, overallSummary }); 
     } catch (error) {
         console.log(`error in loading sales report : ${error.message}`);
     }
@@ -170,7 +168,7 @@ const dateFilter = async (req, res) => {
             orders.forEach((order) => {
                 salesCount++;
                 totalOrderAmount += order.totalAmount;
-                totalDiscount += order.discount || 0; // Ensure discount is counted even if it's not present in all orders
+                totalDiscount += order.discount || 0; 
             });
 
             return {
@@ -180,10 +178,10 @@ const dateFilter = async (req, res) => {
             };
         };
 
-        // Assuming 'orders' is an array of orders retrieved from your database
+       
         const orders = await Order.find({});
 
-        // Calculate overall summary
+        
         const overallSummary = calculateOverallSummary(orders);
 
         res.render('salesReport', { order ,overallSummary })
@@ -200,24 +198,23 @@ const sortDate = async (req, res) => {
         const sort = req.query.value;
         let orderDateQuery = {};
 
-        // Get the current date
+        
         const currentDate = new Date();
 
-        // Parse the current date into the format "8-3-2024"
+        
         const currentDateString = `${currentDate.getDate()}-${currentDate.getMonth() + 1
             }-${currentDate.getFullYear()}`;
 
-        // Depending on the sort value, adjust the orderDateQuery accordingly
+     
         if (sort === "Day") {
-            // For Day sorting, query orders for the current day
+         
             orderDateQuery = currentDateString;
         } else if (sort === "Week") {
-            // For Week sorting, query orders for the current week
-            // Calculate the start and end dates of the week
+ 
             const firstDayOfWeek = new Date(currentDate);
-            firstDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Start of the current week
+            firstDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); 
             const lastDayOfWeek = new Date(currentDate);
-            lastDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 6); // End of the current week
+            lastDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 6); 
             const firstDayOfWeekString = `${firstDayOfWeek.getDate()}-${firstDayOfWeek.getMonth() + 1
                 }-${firstDayOfWeek.getFullYear()}`;
             const lastDayOfWeekString = `${lastDayOfWeek.getDate()}-${lastDayOfWeek.getMonth() + 1
@@ -227,12 +224,12 @@ const sortDate = async (req, res) => {
                 $lte: lastDayOfWeekString,
             };
         } else if (sort === "Month") {
-            // For Month sorting, query orders for the current month
+           
             orderDateQuery = {
                 $regex: `-${currentDate.getMonth() + 1}-`,
             };
         } else if (sort === "Year") {
-            // For Year sorting, query orders for the current year
+           
             orderDateQuery = {
                 $regex: `-${currentDate.getFullYear()}$`,
             };
@@ -267,7 +264,7 @@ const sortDate = async (req, res) => {
         
         const orders = await Order.find({});
 
-        // Calculate overall summary
+      
         const overallSummary = calculateOverallSummary(orders);
 
         res.render('salesReport', { order ,overallSummary })

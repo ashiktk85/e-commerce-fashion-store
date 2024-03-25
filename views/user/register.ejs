@@ -469,34 +469,53 @@
                                 <% } %>
                             </div>
                             <div class="login-register-form">
-                                <form action="/register" method="post">
+                                <!-- <form action="/register" method="post"> -->
                                     <div class="sin-login-register">
                                         <label>Enter your Name <span>*</span></label>
-                                        <input type="text" name="name" placeholder="Your Name">
+                                        <input type="text" name="name" id="namevalue" placeholder="Your Name" onblur="nameFun()">
+                                        <p id="Name_error" class="text-danger"></p>
                                     </div>
                                     <div class="sin-login-register">
                                         <label>Phone Number <span>*</span></label>
-                                        <input type="text" name="number" placeholder="Your Phone Number">
+                                        <input type="text" name="number" id="mobile" placeholder="Your Phone Number" onblur="mobFun()">
+                                        <p class="text-danger" id="unqiueMO" style="display: none; color: red; font-size: 14px; font-style: italic; margin-left: 130px;">
+                                            This Mobile is Already Exits
+                                        </p>
+                                        <div id="Mobile_error" class="text-danger"></div>
                                     </div>
                             
                                     <div class="sin-login-register">
                                         <label>Email address <span>*</span></label>
-                                        <input type="email" name="email" placeholder="Your Email Address">
+                                        <input type="email" name="email" id="email" placeholder="Your Email Address"  onblur="emailFun()">
+                                        <div id="Email_error" class="text-danger"></div>
+                                        <p class="text-danger" id="unqiueEM" style="display: none; color: red; font-size: 14px; font-style: italic; margin-left: 130px;">
+                                            <strong>
+                                                This Email is Already Exits
+                                            </strong>
+                                           
+                                        </p>
                                     </div>
                             
                                     <div class="sin-login-register">
                                         <label>Password <span>*</span></label>
-                                        <input type="password" name="password" placeholder="Your Password">
+                                        <input type="password" name="password" id="password" placeholder="Your Password" onblur="passFun()">
+                                        <div id="Pass_error" class="text-danger"></div>
                                     </div>
                                     <div class="sin-login-register">
                                         <label>Confirm Password <span>*</span></label>
-                                        <input type="password" name="confirm" placeholder="Confirm Password">
+                                        <input type="password" name="confirm" id="confirm" placeholder="Confirm Password">
+                                        <div id="Conf_error" class="text-danger"></div>
+                                    </div>
+                                    <div class="sin-login-register">
+                                        <label>Refferal Code<span>*</span></label>
+                                        <input type="text" name="confirm" id="referral" placeholder="Refferal code">
+                                        <div id="Referral" class="text-danger" style="display: none;">Invalid Refferral Code</div>
                                     </div>
                                     <p>Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our <a href="#">privacy policy</a></p>
                                     <div class="login-register-btn">
-                                        <a href="/otpVerification"><button type="submit">Register</button></a>
+                                        <a ><button type="submit" id="submitId"  onclick="validation()">Register</button></a>
                                     </div>
-                                </form>
+                                <!-- </form> -->
                             </div>
                             
                         </div>
@@ -908,7 +927,225 @@
     <script src="assets/js/plugins/ajax-mail.js"></script>
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+
+    <script>
+
+
+
+        //******************************************SERVER SIDE VALIDATION************************/
+
+
+
+
+        function nameFun() {
+            // alert("hello")
+            const name = document.getElementById("namevalue").value
+            const nameErr = document.getElementById("Name_error")
+            const nameRegex = /^[A-Za-z\s]+$/;
+
+            if (name.trim() === '') {
+                document.getElementById("Name_error").innerHTML = "Name is Require"
+
+            } else {
+                document.getElementById("Name_error").innerHTML = ""
+            }
+
+            if (!nameRegex.test(name)) {
+                document.getElementById("Name_error").innerHTML = "Name is Invalid"
+            } else {
+                document.getElementById("Name_error").innerHTML = ""
+            }
+        }
+
+
+        function emailFun() {
+
+            const email = document.getElementById("email").value.trim()
+            const emailErr = document.getElementById("Email_error")
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email == '') {
+                document.getElementById("Email_error").innerHTML = "Email is Require"
+
+            } else {
+                document.getElementById("Email_error").innerHTML = ""
+            }
+            if (!emailRegex.test(email)) {
+                document.getElementById("Email_error").innerHTML = "Invalid Email"
+            } else {
+                document.getElementById("Email_error").innerHTML = ""
+            }
+
+        }
+
+        function mobFun() {
+            const mob = document.getElementById("mobile").value.trim()
+           
+            const mobErr = document.getElementById("Mobile_error")
+            const mobileRegex = /^\d{10}$/;
+            if (mob == '') {
+                document.getElementById("Mobile_error").innerHTML = "Mobile is require"
+
+            } else {
+                document.getElementById("Mobile_error").innerHTML = ""
+            }
+            if (!mob.length === 10) {
+                document.getElementById("Mobile_error").innerHTML = "Mobile number must be 10 Digits"
+            } else {
+                document.getElementById("Mobile_error").innerHTML = ""
+            }
+            if (!mobileRegex.test(mob)) {
+                document.getElementById("Mobile_error").innerHTML = "Invalid Number"
+            } else {
+                document.getElementById("Mobile_error").innerHTML = ""
+            }
+        }
+
+        function passFun() {
+            const pass = document.getElementById("password").value.trim()
+            const passErr = document.getElementById("Pass_error")
+            const regex = /^(?=.*\d)(?=.*[a-zA-Z]).{8,20}$/;
+
+            if (pass == '') {
+                document.getElementById("Pass_error").innerHTML = "Password require"
+
+            } else {
+
+                document.getElementById("Pass_error").innerHTML = ""
+            }
+            if (!regex.test(pass)) {
+                document.getElementById("Pass_error").innerHTML = "Password Invalid"
+            }
+            else {
+
+                document.getElementById("Pass_error").innerHTML = ""
+            }
+
+        }
+
+        function validation() {
+
+            const name = document.getElementById("namevalue").value.trim()
+            const email = document.getElementById("email").value.trim()
+            const mob = document.getElementById("mobile").value.trim()
+            const pass = document.getElementById("password").value.trim()
+            const reffer=document.getElementById("referral").value.trim()
+           
+            nameFun()
+            emailFun()
+            mobFun()
+            passFun()
+
+            const nameRegex = /^[A-Za-z\s]+$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const regex = /^(?=.*\d)(?=.*[a-zA-Z]).{8,20}$/;
+
+            if (name == "" || email == "" || mob == "" || pass == "") {
+                document.getElementById("form-error").style.display = "block"
+
+                setTimeout(() => {
+                    document.getElementById("form-error").style.display = "none"
+                }, 2000)
+            } else if (!nameRegex.test(name)) {
+                document.getElementById("Name_error").innerHTML = "Name is Invalid"
+
+                setTimeout(() => {
+                    document.getElementById("Name_error").innerHTML = ""
+                }, 2000)
+            } else if (!emailRegex.test(email)) {
+                document.getElementById("Email_error").innerHTML = "Email is Invalid "
+
+                setTimeout(() => {
+                    document.getElementById("Email_error").innerHTML = ""
+                }, 2000)
+            } else if (!regex.test(pass)) {
+                document.getElementById("Pass_error").innerHTML = " Password is Invalid "
+
+                setTimeout(() => {
+                    document.getElementById("Pass_error").innerHTML = ""
+                }, 2000)
+            } else {
+                const confirm= document.getElementById("confirm").value.trim()
+                // alert(confirm)
+                $.ajax({
+                    url: '/register',
+                    method: 'post',
+                    data: {
+                        email,
+                        mob,
+                        name,
+                        pass,
+                        confirm,
+                        reffer
+
+                    },
+                    success: (response) => {
+
+                        if ( response.status == true) {
+                            window.location.href = "http://localhost:7777/otpVerification"
+
+                        } else if (response.status === 'mobilErr') {
+                            document.getElementById('unqiueMO').style.display = 'block'
+                            setTimeout(() => {
+                                document.getElementById('unqiueMO').style.display = 'none'
+                            }, 2000)
+                        }  else if(response.status=="reffer"){
+                            document.getElementById("Referral").style.display="block"
+                            setTimeout(()=>{
+                                document.getElementById("Referral").style.display="none"
+                            },2000)
+                        }else if (response.status === 'emailErr') {
+                             // alert("hello")
+                             document.getElementById('unqiueEM').style.display = 'block'
+                            setTimeout(() => {
+                                document.getElementById('unqiueEM').style.display = 'none'
+                            }, 2000)
+                        }
+
+                    }
+                })
+
+
+            }
+        }
+
+
+
+
+
+
+
+
+
+        // alert('inside validate')
+
+
+        // const email = document.getElementById("email").value
+        // const mobile = document.getElementById("mobile").value
+        // const name = document.getElementById("namevalue").value
+        // const password = document.getElementById("password").value
+        // const confirm = document.getElementById("confirm").value
+
+        // //    alert(email)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
 </body>
 
 

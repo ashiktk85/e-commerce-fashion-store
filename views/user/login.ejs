@@ -32,6 +32,8 @@
     <link rel="stylesheet" href="assets/css/plugins/jquery-ui.css">
     <link rel="stylesheet" href="assets/css/plugins/select2.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-xrhc+XXkrtmz7eyv1n2SmtXDcsbBlhms86/iFhI0wPgj4F0z+9yfHjHXuVvTlAFJbBjpEDqU3xfGx7gCziRO+g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
 </head>
 
@@ -467,26 +469,8 @@
                                 <form action="/login" method="post">
                                     <div class="sin-login-register">
                                         <label>Email address <span>*</span></label>
-                                        <input type="text" name="email"  value="lakshmans218@gmail.com">
+                                        <input type="text" name="email" value="lakshmans218@gmail.com">
                                     </div>
-                                    <!-- <div class="sin-login-register">
-                                        <label>Password <span>*</span></label>
-                                        <input type="password" name="password">+-
-                                    </div> -->
-                                    <style>
-                                        #togglePassword {
-                                        cursor: pointer;
-                                         position: absolute;
-                                            right: 10px;
-                                            top: 50%;
-                                            transform: translateY(-50%);
-                                        }
-
-                                        #togglePassword i {
-                                        font-size: 1.2rem;
-                                        }
-
-                                    </style>
                                     <div class="sin-login-register">
                                         <label>Password <span>*</span></label>
                                         <div class="password-container">
@@ -506,9 +490,25 @@
                                             <label>Remember me</label>
                                         </div>
                                     </div>
-                                    <a href="forgotPassword"style="color: black;">Lost your password?</a>
+                                    <a href="forgotPassword" style="color: black;">Lost your password?</a>
                                     <a href="register" style="color: black;margin-left: 10px;">Don't have an account? Create one.</a>
                                 </form>
+                                
+                                <script>
+                                    function togglePasswordVisibility() {
+                                        const passwordInput = document.getElementById("passwordInput");
+                                        const toggleIcon = document.getElementById("togglePassword");
+                                        
+                                        if (passwordInput.type === "password") {
+                                            passwordInput.type = "text";
+                                            toggleIcon.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                                        } else {
+                                            passwordInput.type = "password";
+                                            toggleIcon.innerHTML = '<i class="fas fa-eye"></i>';
+                                        }
+                                    }
+                                </script>
+                                
                                 <br>
                                 <div style="padding-left: 70px;">
                                     <% if (typeof passErr !== 'undefined') { %>
@@ -930,7 +930,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Main JS -->
     <script src="assets/js/main.js"></script>
-    <script>
+    <!-- <script>
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById("passwordInput");
             const toggleIcon = document.getElementById("togglePassword").querySelector("i");
@@ -944,10 +944,10 @@
                 toggleIcon.classList.remove("fa-eye-slash");
                 toggleIcon.classList.add("fa-eye");
             }
-        }
+        } -->
 
     </script>
-    <script>
+    <!-- <script>
         async function submitForm() {
             const email = document.getElementsByName('email')[0].value;
             const password = document.getElementsByName('password')[0].value;
@@ -963,18 +963,18 @@
     
                 const data = await response.json();
     
-                // Display the response message in the added HTML element
+                
                 document.getElementById('responseMessage').innerHTML = data.message;
     
-                // If successful, you might want to redirect or perform other actions
+                
                 if (response.ok) {
-                    // Redirect or other actions
+                  
                 }
             } catch (error) {
                 console.error('Error:', error);
             }
         }
-    </script>
+    </script> -->
     
 
 </body>

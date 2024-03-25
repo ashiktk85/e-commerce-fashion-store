@@ -11,7 +11,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
   <!-- All CSS is here
@@ -686,124 +688,133 @@
             <div class="row">
               <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                 <!-- <form action="#"> -->
-                  <div class="row">
-                    <div class="col-lg-8">
-                      
-                      <div class="table-content table-responsive cart-table-content">
-                        <table>
-                          <thead>
-                            <tr>
-                              <th></th>
-                              <th></th>
-                              <th>Product</th>  
-                              <th> Price</th>
-                              <th style="padding-left: 70px;">Size</th>
-                              <th>Quantity</th>
-                              <th style="padding-left: 20px;">total</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <% if (cartData && proData) { %>
-                              <% for (let i=0; i < proData.length; i++) { %>
-                                <tr>
-                                  <td class="product-remove">
-                                    <a href="/cartremove?id=<%= cartData.items[i].productId %>&size=<%= cartData.items[i].size %>"><i class="dlicon ui-1_simple-remove"></i></a>
-                                  </td>
+                <div class="row">
+                  <div class="col-lg-8">
 
-                                  <td class="product-img sm">
-                                    <a href="/productDetails?id=<%= proData[i]._id %>">
-                                      <img src="/uploads/<%= proData[i].image[1] %>" alt="pro img"
-                                        style="width: 50px; height: 50px;">
-                                    </a>
-                                  </td>
+                    <div class="table-content table-responsive cart-table-content">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Product</th>
+                            <th> Price</th>
+                            <th style="padding-left: 70px;">Size</th>
+                            <th>Quantity</th>
+                            <th style="padding-left: 20px;">total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (cartData) { %>
+                            <% if(proData.length > 0)  %>
+                            <% for (let i=0; i < proData.length; i++) { %>
+                              <tr>
+                                <td class="product-remove">
+                                  <a
+                                    href="/cartremove?id=<%= cartData.items[i].productId %>&size=<%= cartData.items[i].size %>"><i
+                                      class="dlicon ui-1_simple-remove"></i></a>
+                                </td>
 
-                                  <td class="product-name">
-                                    <a id="name" href="/productDetails?id=<%= proData[i]._id %>">
-                                      <%= proData[i].name %>
-                                    </a>
-                                  </td>
+                                <td class="product-img sm">
+                                  <a href="/productDetails?id=<%= proData[i]._id %>">
+                                    <img src="/uploads/<%= proData[i].image[1] %>" alt="pro img"
+                                      style="width: 50px; height: 50px;">
+                                  </a>
+                                </td>
 
-                                  <td class="product-price">₹
-                                    <span id="offerprice<%=i%>" class="amount"><%= proData[i].offerPrice %></span>
-                                  </td>
-                                
-                                  <td class="product-name" style="padding-left: 80px;">
-                                    <b><span id="size<%=i%>"><%= cartData.items[i].size %>
+                                <td class="product-name">
+                                  <a id="name" href="/productDetails?id=<%= proData[i]._id %>">
+                                    <%= proData[i].name %>
+                                  </a>
+                                </td>
+
+                                <td class="product-price">₹
+                                  <span id="offerprice<%=i%>" class="amount">
+                                    <%= proData[i].offerPrice %>
+                                  </span>
+                                </td>
+
+                                <td class="product-name" style="padding-left: 80px;">
+                                  <b><span id="size<%=i%>">
+                                      <%= cartData.items[i].size %>
                                     </span>
-                             </b>
-                                  </td>
+                                  </b>
+                                </td>
 
-                                  <td class="cart-quality">
-                                    <button
+                                <td class="cart-quality">
+                                  <button
                                     onclick="increment('<%= proData[i]._id%>','1','<%=i%>','<%= proData[i].offerPrice %>','<%=cartData.items[i].subTotal %>')"
                                     style="background-color: rgb(0, 0, 0);width: 50px; height: 25px; border: none; color: white; ">+</button>
-                                   
-
-                                    
-                                    <div class="detail-qty border radius  m-auto">
-
-                                      <span id="quantity<%= i %>">
-                                        <%= cartData.items[i].quantity %>
-                                      </span>
 
 
-                                    </div>
-                                    <button   onclick="decrement('<%= proData[i]._id%>','1','<%=i%>','<%= proData[i].offerPrice %>','<%=cartData.items[i].subTotal %>')"
-                                       style="background-color: rgb(0, 0, 0);width: 50px; height: 25px; border: none; color: white; ">-</button>
-                                    
-                                  </td>
+
+                                  <div class="detail-qty border radius  m-auto">
+
+                                    <span id="quantity<%= i %>">
+                                      <%= cartData.items[i].quantity %>
+                                    </span>
 
 
-                                  <td class="product-total" style="padding-left: 20px;">₹
-                                    <span id="subtotal<%=i%>"><%=cartData.items[i].subTotal %></span>
-                                  </td>
-                                </tr>
+                                  </div>
+                                  <button
+                                    onclick="decrement('<%= proData[i]._id%>','1','<%=i%>','<%= proData[i].offerPrice %>','<%=cartData.items[i].subTotal %>')"
+                                    style="background-color: rgb(0, 0, 0);width: 50px; height: 25px; border: none; color: white; ">-</button>
+
+                                </td>
+
+
+                                <td class="product-total" style="padding-left: 20px;">₹
+                                  <span id="subtotal<%=i%>">
+                                    <%=cartData.items[i].subTotal %>
+                                  </span>
+                                </td>
+                              </tr>
+                              <% } %>
                                 <% } %>
-                                <% } %>
-                                
-                          </tbody>
 
-                        </table>
-                      </div>
-                      <div class="cart-shiping-update-wrapper">
-                        <div class="discount-code">
-                          <input type="text"  name="name" placeholder="Coupon code">
-                          <button class="coupon-btn" type="submit">Apply coupon</button>
-                        </div>
-                        <div class="cart-clear">
-                          <% if (cartData && cartData._id) { %>
-                              <a href="/clearCart?id=<%= cartData._id %>">Clear Cart</a>
-                          <% } else { %>
-                              <b style="font-family: poppins;">CART IS EMPTY</b>
-                              
-                          <% } %>
-                      </div>
-                      </div>
+                        </tbody>
+
+                      </table>
                     </div>
-                    <div class="col-lg-4">
-                      <div class="grand-total-wrap">
+                    <div class="cart-shiping-update-wrapper">
+                      <div class="discount-code">
+                        <input type="text" name="name" placeholder="Coupon code">
+                        <button class="coupon-btn" type="submit">Apply coupon</button>
+                      </div>
+                      <div class="cart-clear">
+                        <% if (cartData && cartData._id) { %>
+                          <a href="/clearCart?id=<%= cartData._id %>">Clear Cart</a>
+                          <% } else { %>
+                            <b style="font-family: poppins;">CART IS EMPTY</b>
 
-                        <h4>Cart totals</h4>
-                        <div class="grand-total-content">
-                          <ul>
-                            <% if (cartData && cartData.totalPrice) { %>
-                              <li>Subtotal <span id="cartSub">₹<%= cartData.totalPrice %> </span></li>
-                              <li>Total <span id="total">₹<%= cartData.totalPrice %></span> </li>
-                            <% } else { %>
-                          
-                              <li>Subtotal <span id="cartSub">N/A</span></li>
-                              <li>Total <span id="total">N/A</span></li>
                             <% } %>
-                            
-                          </ul>
-                        </div>
-                        <div class="grand-btn" id="proceed-btn">
-                          <a href="checkout">Proceed to checkout</a>
-                        </div>
-                       
                       </div>
                     </div>
                   </div>
+                  <div class="col-lg-4">
+                    <div class="grand-total-wrap">
+
+                      <h4>Cart totals</h4>
+                      <div class="grand-total-content">
+                        <ul>
+                          <% if (cartData && cartData.totalPrice) { %>
+                            <li>Subtotal ₹<span id="cartSub"><%= cartData.totalPrice %> </span></li>
+                            <li>Total ₹<span id="total"><%= cartData.totalPrice %></span> </li>
+                            <% } else { %>
+
+                              <li>Subtotal <span id="cartSub">N/A</span></li>
+                              <li>Total <span id="total">N/A</span></li>
+                              <% } %>
+
+                        </ul>
+                      </div>
+                      <div class="grand-btn" id="proceed-btn">
+                        <a href="checkout">Proceed to checkout</a>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
                 <!-- </form> -->
               </div>
             </div>
@@ -811,193 +822,165 @@
         </div>
       </div>
     </div>
-    </div>
   </div>
   </div>
-  
-  
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      // alert("hhuiui") 
-    
-      function increment(proId, quantity, index, offerprice, subTotal) {
-  const qty = document.getElementById("quantity" + index).innerHTML;
-  const price = document.getElementById("offerprice" + index).innerHTML;
-  const subtotal = document.getElementById("subtotal" + index).innerHTML;
-  const size = document.getElementById("size" + index).innerHTML;
 
-//   $.ajax({
-//     url: "/increment",
-//     method: "post",
-//     data: {
-//       offerprice,
-//       proId,
-//       qty,
-//       size: sizeS
-//     },
-//     success: (response) => {
-//       if (response.status === true) {
-//         document.getElementById("subtotal" + index).innerHTML = parseInt(price) + parseInt(subtotal);
-//         document.getElementById("quantity" + index).innerHTML = parseInt(qty) + 1;
-//         document.getElementById("cartSub").innerHTML = response.total;
-//         document.getElementById("total").innerHTML = response.total;
-//       } else if (response.status === "stock") {
-//         Swal.fire({
-//           icon: "error",
-//           title: "Oops...",
-//           text: "Out of Stock!",
-//         });
-//       } else if (response.status === "invalid size") {
-//         Swal.fire({
-//           icon: "error",
-//           title: "Oops...",
-//           text: "Invalid Size!",
-//         });
-//       } else if (response.status === "unauthenticated") {
-//         Swal.fire({
-//           icon: "error",
-//           title: "Oops...",
-//           text: "You are not authenticated!",
-//         });
-//       } else if (response.status === "invalid input") {
-//         Swal.fire({
-//           icon: "error",
-//           title: "Oops...",
-//           text: "Invalid Input!",
-//         });
-//       } else {
-//         Swal.fire({
-//           icon: "error",
-//           title: "Oops...",
-//           text: "An error occurred!",
-//         });
-//       }
-//     },
-//     error: (xhr, status, error) => {
-//       Swal.fire({
-//         icon: "error",
-//         title: "Oops...",
-//         text: "An error occurred!",
-//       });
-//     }
-//   });
-// }
 
-$.ajax({
-        url: '/increment',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ proId, size, price ,qty}),
-        success: function(data) {
-            if (data.success) {
-                // Increment the quantity in the DOM
-                const qty = document.getElementById('quantity');
-                qty.innerText = parseInt(qty.innerText) + 1;
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // alert("hhuiui") 
 
-                // Show success message using SweetAlert
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Quantity incremented successfully.',
-                }).then(function() {
-                    // Reload the page after the alert is closed
-                    window.location.reload();
-                });
-            } else {
-                // Show error message using SweetAlert
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.message || 'An error occurred while incrementing quantity.',
-                });
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', error);
-            // Show error message using SweetAlert
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An unexpected error occurred.',
-            });
-        }
+    function increment(proId, quantity, index, offerprice, subTotal) {
+  const qty = parseInt(document.getElementById("quantity" + index).innerHTML);
+  const price = parseInt(document.getElementById("offerprice" + index).innerHTML);
+  const subtotal = parseInt(document.getElementById("subtotal" + index).innerHTML);
+  const sizeS = document.getElementById("size" + index).innerHTML;
+  const total = parseInt(document.getElementById("total").innerHTML);
+
+  // Check if quantity exceeds the stock limit of 10
+  if (qty >= 10) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Stock Limit Exceeded!",
     });
+    return; // Exit the function
+  }
+
+  $.ajax({
+    url: "/increment",
+    method: "post",
+    data: {
+      offerprice,
+      proId,
+      qty,
+      sizeS
+    },
+    success: (response) => {
+      if (response.status === true) {
+        document.getElementById("subtotal" + index).innerHTML = price + subtotal;
+        document.getElementById("quantity" + index).innerHTML = qty + 1;
+        document.getElementById("cartSub").innerHTML = response.total;
+        document.getElementById("total").innerHTML = response.total;
+      } else if (response.status === "stock") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Out of Stock!",
+        });
+      } else if (response.status === "invalid size") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Invalid Size!",
+        });
+      } else if (response.status === "unauthenticated") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "You are not authenticated!",
+        });
+      } else if (response.status === "invalid input") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Invalid Input!",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "An error occurred!",
+        });
+      }
+    },
+    error: (xhr, status, error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "An error occurred!",
+      });
+    }
+  });
 }
 
 
+     
     
-    function decrement(proId,quantity, index,offerprice,subTotal) {
-
-        // alert("hello")
-        const qty = document.getElementById("quantity" +index ).innerHTML;
-        // alert(qty)
-        const price = document.getElementById("offerprice" + index).innerHTML;
-        // alert(price)
-        const subtotal = document.getElementById("subtotal" + index).innerHTML;
-        // alert(subtotal)
-        const sizeS = document.getElementById("size" + index).innerHTML;
-        // alert(sizeS)
-        const ttl = document.getElementById("total").innerHTML
-        // alert(prc)
-
-        $.ajax({
-            url: "/decrement",
-            method: "post",
-            data: {
-                 offerprice,
-                proId,
-                qty,
-                subtotal,
-                sizeS
-            },
-            success: (response) => {
-                if (response.status == true) {
-
-                  document.getElementById("subtotal" + index).innerHTML = parseInt(subtotal) -parseInt(price) 
-                    document.getElementById("quantity" + index).innerHTML = parseInt(qty) - 1
-    
-                    document.getElementById("cartSub").innerHTML = response.total
-                    document.getElementById("total").innerHTML = response.total
 
 
-                } else if (response.status == "minimum") {
+
+    function decrement(proId, quantity, index, offerprice, subTotal) {
+
+      // alert("hello")
+      const qty = document.getElementById("quantity" + index).innerHTML;
+      // alert(qty)
+      const price = document.getElementById("offerprice" + index).innerHTML;
+      // alert(price)
+      const subtotal = document.getElementById("subtotal" + index).innerHTML;
+      // alert(subtotal)
+      const sizeS = document.getElementById("size" + index).innerHTML;
+      // alert(sizeS)
+      const ttl = document.getElementById("total").innerHTML
+      // alert(prc)
+      $.ajax({
+        url: "/decrement",
+        method: "post",
+        data: {
+          offerprice,
+          proId,
+          qty,
+          subtotal,
+          sizeS
+        },
+        success: (response) => {
+          if (response.status == true) {
+
+            document.getElementById("subtotal" + index).innerHTML = parseInt(subtotal) - parseInt(price)
+            document.getElementById("quantity" + index).innerHTML = parseInt(qty) - 1
+
+            document.getElementById("cartSub").innerHTML = response.total
+            document.getElementById("total").innerHTML = response.total
 
 
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops...",
-                        text: "Minimum Quantity!",
-
-                    });
-
-                }
-            }
-        })
+          } else if (response.status == "minimum") {
 
 
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Minimum Quantity!",
+
+            });
+
+          }
+        }
+      })
+
+
+
+      document.getElementById('proceed-btn').addEventListener('click', function (event) {
+        event.preventDefault();
+
+        var cartSubtotal = document.getElementById('cartSub').textContent.trim();
+        if (cartSubtotal === 'N/A') {
+          // Using SweetAlert2 for the alert
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'You need to add items to proceed to checkout.',
+            background: '#ffffff',
+            confirmButtonColor: '#000000'
+          });
+        } else {
+          window.location.href = this.querySelector('a').getAttribute('href');
+        }
+      });
     }
 
 
-    
-
-document.getElementById('proceed-btn').addEventListener('click', function(event) {
-  event.preventDefault();
-
-  var cartSubtotal = document.getElementById('cartSub').textContent.trim();
-  if (cartSubtotal === 'N/A') {
-    // Using SweetAlert2 for the alert
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'You need to add items to proceed to checkout.',
-      background: '#ffffff',
-      confirmButtonColor: '#000000'
-    });
-  } else {
-    window.location.href = this.querySelector('a').getAttribute('href');
-  }
-});
 
 
 
@@ -1005,14 +988,5 @@ document.getElementById('proceed-btn').addEventListener('click', function(event)
 
 
 
-
-
-    </script>
-           <%- include('../partials/footer') %> 
-
-
-    
-
-
-
-
+  </script>
+  <%- include('../partials/footer') %>

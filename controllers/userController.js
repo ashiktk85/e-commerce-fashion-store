@@ -1,6 +1,5 @@
 const User = require("../models/userModel");
-const otpGnerator = require("./otpGenerator");
-const otp = require("./otpGenerator");
+const generateOTP = require("./otpGenerator");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const Category = require("../models/categoryModel");
@@ -9,7 +8,11 @@ const Address = require("../models/addressModel");
 const Cart = require("../models/cartModel");
 const Orders = require("../models/orderModel");
 const Wishlist = require("../models/wishlistModel");
-const Coupon = require('../models/couponModel')
+const Coupon = require("../models/couponModel");
+const referralCode = require("./referralCode");
+const generateDate = require("../controllers/dateGenerator");
+const generateTransaction = require("./transactionId");
+const Wallet = require('../models/walletModel')
 
 // NODEMAILER
 
@@ -44,7 +47,7 @@ const home = async (req, res) => {
   try {
     const catData = await Category.find({});
 
-    const proData = await Product.find({});
+    const proData = await Product.find({}).limit(8);
 
     const cartData = await Cart.find({});
 
@@ -60,98 +63,88 @@ const home = async (req, res) => {
 
 const userSignupPost = async (req, res) => {
   try {
-    let { email, password, name, number, confirm } = req.body;
+    const name = req.body.name;
+    const email = req.body.email;
+    const mobile = req.body.mob;
+    const password = req.body.pass;
+    const confirm = req.body.confirm;
+    const reffer = req.body.reffer;
+    console.log(req.body, "bodyyyyy");
 
-    name = name.trim();
-    email = email.trim();
-    password = password.trim();
-    number = number.trim();
-    confirm = confirm.trim();
-
-    const { otp, otpTime } = otpGnerator.otpGnerator();
+    const otp = generateOTP.otpGnerator(); // Generate OTP
     console.log(otp);
+    const otpTime = Date.now(); // Record current time as OTP creation time
 
-    if (
-      name === "" ||
-      email === "" ||
-      password === "" ||
-      number === "" ||
-      confirm === ""
-    ) {
-      res.render("register", { message: "Feilds should not be empty." });
-    } else if (password !== confirm) {
-      res.render("register", { message: "Passwords do not match." });
-    } else if (!/^\d{10}$/.test(number)) {
-      res.render("register", { message: "Number is invalid." });
-    } else if (
-      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
-    ) {
-      res.render("register", { message: "Email is invalid." });
-    } else if (!/^[A-Z][a-z\s]*([A-Z][a-z\s]*)?$/.test(name)) {
-      res.render("register", { message: "Name is invalid." });
-    } else if (password.length < 8) {
-      res.render("register", {
-        message: "Password should contain minimum 8 characters.",
-      });
+    const existsEmail = await User.findOne({ email: email });
+    const existsMobile = await User.findOne({ mobile: mobile });
+
+    if (existsEmail) {
+      res.json({ status: "emailErr" });
+    } else if (existsMobile) {
+      res.json({ status: "mobilErr" });
     } else {
-   
-      const existsEmail = await User.findOne({ email }).catch((err) =>
-        console.log(`Error finding email: ${err}`)
-      );
-      const existMobile = await User.findOne({ mobile: number }).catch((err) =>
-        console.log(`Error finding mobile: ${err}`)
-      );
-      console.log("exist email", existsEmail);
+      if (reffer != "") {
+        const searchReffer = await User.findOne({ referralCode: reffer });
+        if (searchReffer) {
+          const data = {
+            name,
+            email,
+            mobile,
+            password,
+            confirm,
+            reffer,
+            otp,
+            otpTime, // Store OTP creation time in session data
+          };
 
-      if (existsEmail) {
-        res.render("register", { message: "Email already in use." });
-      } else if (existMobile) {
-        res.render("register", { message: "Mobile already in use." });
+          req.session.Data = data;
+          req.session.save();
+          res.json({ status: true });
+        } else {
+          res.json({ status: "reffer" });
+        }
       } else {
-        console.log(" working just fine...");
-
-        const newUser = {
+        const data = {
           name,
           email,
-          number,
+          mobile,
           password,
           confirm,
           otp,
-          otpTime,
+          otpTime, // Store OTP creation time in session data
         };
-
-        req.session.Data = req.session.Data || {};
-
-      
-        Object.assign(req.session.Data, newUser);
+        req.session.Data = data;
         req.session.save();
-
-        
-        const mailOptions = {
-          from: Email,
-          to: req.body.email,
-          subject: "Your OTP Verification",
-          text: `Your OTP: ${otp}`,
-        };
-
-        transporter.sendMail(mailOptions, (err) => {
-          if (err) {
-            console.log(err.message);
-          } else {
-            console.log("Mail sent successfully");
-          }
-        });
-
-        console.log("User added successfully");
-        res.redirect("otpVerification");
+        res.json({ status: true });
       }
     }
-  } catch (error) {
-    console.log(error.message);
-    res.json({
-      status: "Failed",
-      message: "An unexpected error occurred during user registration.",
+
+    // Send OTP to user's email
+    const mailOptions = {
+      from: Email,
+      to: req.body.email,
+      subject: "Your OTP for Verification",
+      html: `
+        <div style="font-family: Helvetica, Arial, sans-serif; min-width: 100px; overflow: auto; line-height: 2">
+            <div style="margin: 50px auto; width: 70%; padding: 20px 0">
+                <p style="font-size: 1.1em">Hi ${email},</p>
+                <p>This message from Kevin Hills. Use the following OTP to complete your register procedures. OTP is valid for 1 minute</p>
+                <h2 style="background: #00466a; margin: 0 auto; width: max-content; padding: 0 10px; color: #fff; border-radius: 4px;">${otp.otp}</h2>
+                <p style="font-size: 0.9em;">Regards,<br />KEVIN HILLS</p>
+                <hr style="border: none; border-top: 1px solid #eee" />
+            </div>
+        </div>`,
+    };
+
+    transporter.sendMail(mailOptions, (err) => {
+      if (err) {
+        console.log(err.message);
+      } else {
+        console.log("Mail sent successfully");
+      }
     });
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -172,14 +165,19 @@ const resendOtp = async (req, res) => {
     console.log("hello");
 
     const email = req.session.Data.email;
-    const resendOtpGen = otpGnerator.otpGnerator();
+
+    const resendOtpGen = generateOTP.otpGnerator();
+
+    // Update the session data with the new OTP
     req.session.Data.otp = resendOtpGen;
-    console.log(resendOtpGen);
+    req.session.save();
+
+    console.log("new resend otp", resendOtpGen);
 
     const mailOptions = {
       form: Email,
       to: email,
-      subject: "Your OTP for Verification",
+      subject: "Your new OTP for Verification",
       text: `your otp ${resendOtpGen}`,
     };
     if (mailOptions) {
@@ -204,32 +202,94 @@ const verifyOtp = async (req, res) => {
   try {
     const getOtp = req.body.otp;
     console.log(getOtp);
+    const date = generateDate();
+    const Tid= generateTransaction()
 
     if (req.session.Data) {
-      const storedOtpData = req.session.Data.otp;
+      const storedOtpData = req.session.Data.otp.otp;
       const otpTime = req.session.Data.otpTime;
+      console.log("lxnvklsbv", storedOtpData, otpTime);
 
       const currentTime = Date.now();
-      const otpExpiryDuration = 60000; 
+      const otpExpiryDuration = 60000;
 
-      
       if (getOtp === storedOtpData) {
-        
         if (currentTime - otpTime < otpExpiryDuration) {
+          // OTP verification successful
+          // Proceed with user registration
+          const refferal=referralCode(8)
+        console.log(refferal, "referral")
           const securePass = await passwordHashing(req.session.Data.password);
-
-         
           const user = new User({
             name: req.session.Data.name,
             email: req.session.Data.email,
             mobile: req.session.Data.number,
             password: securePass,
+            referralCode:refferal
           });
 
           const userData = await user.save();
           console.log(userData);
 
-          delete req.session.otpData;
+          if (req.session.Data.reffer) {
+            const findUser=await User.findOne({referralCode:req.session.Data.reffer})
+            const findUserWallet=await Wallet.findOne({userId:findUser._id})
+            if(findUserWallet){
+              const updateWallet=await Wallet.findOneAndUpdate({userId:findUser._id},
+                {
+                  $inc:{
+                    balance:200
+                  },
+                  $push:{
+                    transactions:{
+                      id:Tid,
+                      date:date,
+                      amount:200
+                    }
+                  }
+                })
+  
+                const newUser=await User.findOne({email:req.session.Data.email})
+                const forNewWallet =new Wallet({
+                  userId:newUser._id,
+                  balance:100,
+                  transactions:[{
+                    id:Tid,
+                    date:date,
+                    amount:100
+                  }]
+                })
+                await forNewWallet.save()
+  
+            }else{
+              console.log("else worked");
+              const createWallet=new Wallet({
+                userId:findUser._id,
+                balance:200,
+                transactions:[{
+                  id:Tid,
+                  date:date,
+                  amount:200
+                }]
+              })
+  
+              await createWallet.save()
+              const newUser=await User.findOne({email:req.session.Data.email})
+              const forNewWallet =new Wallet({
+                userId:newUser._id,
+                balance:100,
+                transactions:[{
+                  id:Tid,
+                  date:date,
+                  amount:100
+                }]
+              })
+              await forNewWallet.save()
+            }
+            }
+
+          // Delete user registration data from session
+          delete req.session.Data;
 
           return res.render("login", {
             success: "OTP verified. You can now log in.",
@@ -329,56 +389,75 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+// OTP SEND FOR FORGOT PASS (POST)
+const sendOtpForgotpass = async (req, res) => {
+  try {
+    console.log("getting to forgot pass otp");
+    const { email } = req.body;
+
+    console.log(email);
+
+    const existEmail = await User.findOne({ email: email });
+    console.log(existEmail);
+
+    if (!existEmail) {
+      console.log("inside exists");
+      return res.json({ status: "email_error" });
+    } else {
+      const otp = generateOTP.otpGnerator();
+      console.log("otp is", otp.otp);
+      req.session.OTP = otp.otp;
+      req.session.F_EMAIL = req.body;
+      req.session.save();
+
+      const mailOptions = {
+        from: Email,
+        to: email,
+        subject: `Your otp for forgot password : ${otp.otp} `,
+      };
+      transporter.sendMail(mailOptions, (err) => {
+        if (err) {
+          console.log(err.message);
+          return res.json({ status: "error_sending_mail" });
+        } else {
+          console.log("Mail sent successfully");
+          return res.json({ status: "success" });
+        }
+      });
+    }
+  } catch (error) {
+    console.log("error in sending otp forget password:", error.message);
+    return res.json({ status: "server_error" });
+  }
+};
+
 // POST FORGOT PASSWORD
 
 const PostForgotpass = async (req, res) => {
   try {
-    const email = req.body.email;
-    const newpassword = req.body.forgotPassword;
-    const confirmPassword = req.body.confirmPassword;
+    const { email, otp } = req.body;
+    console.log(email, otp, "bodyyyy");
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.render("forgotPassword", { message: "Invalid email format." });
+    const realOtp = req.session.OTP;
+    console.log(realOtp);
+
+    if (realOtp == otp) {
+      return res.json({ status: true });
+    } else {
+      return res.json({ status: "wrong_otp" });
     }
-
-    if (newpassword.length < 8) {
-      return res.render("forgotPassword", {
-        message: "Password must be at least 8 characters long.",
-      });
-    }
-
-    if (newpassword !== confirmPassword) {
-      return res.render("forgotPassword", {
-        message: "Passwords do not match.",
-      });
-    }
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.render("forgotPassword", { message: "User not found." });
-    }
-
-    const hashedPassword = await passwordHashing(newpassword);
-    user.password = hashedPassword;
-
-    await user.save();
-
-    if (req.session.Data) {
-      req.session.Data.password = hashedPassword;
-      req.session.save();
-    }
-
-    return res.render("forgotPassword", {
-      success: "Password has been updated.",
-    });
   } catch (error) {
-    console.log(`There was an error in post forgot password : ${error}`);
-    return res.status(500).json({
-      status: false,
-      message: "Internal Server Error",
-    });
+    console.log("error in post forgot password otp", error.message);
+  }
+};
+
+// LOAD FORGET PASS
+
+const loadForget = async (req, res) => {
+  try {
+    res.render("forgetpassVerification");
+  } catch (error) {
+    console.log(`error in loadng forget pass page : ${error.message}`);
   }
 };
 
@@ -408,7 +487,8 @@ const productDetails = async (req, res) => {
 
     const fullData = await Product.find({});
     const category = await Category.findById(proData.category);
-  console.log("looooo");
+
+    console.log("looooo");
     res.render("productDetails", {
       proData,
       fullData,
@@ -421,8 +501,6 @@ const productDetails = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
-
 
 //DASHBOARD
 
@@ -647,6 +725,47 @@ const changePass = async (req, res) => {
   }
 };
 
+// POST VERIFY FORGOT PASS
+
+const verifyForgotpass = async (req, res) => {
+  try {
+    console.log("Getting to post verify forgot password...");
+    const { password } = req.body;
+    console.log(password, "password");
+
+    if (!req.session.F_EMAIL || !req.session.F_EMAIL.email) {
+      return res.status(400).json({ error: "Email not found in session." });
+    }
+
+    const email = req.session.F_EMAIL.email;
+    console.log(email, "email");
+
+    const user = await User.findOne({ email: email });
+    console.log(user);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const passwordHash = await passwordHashing(password);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: user._id },
+      { $set: { password: passwordHash } },
+      { new: true }
+    );
+
+    if (updatedUser) {
+      return res.json({ success: true });
+    } else {
+      return res.status(500).json({ error: "Failed to update password." });
+    }
+  } catch (error) {
+    console.log(`Error in post verify forgot password: ${error.message}`);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
+
 //            VIEW ACCOUNT
 
 const viewAccount = async (req, res) => {
@@ -702,44 +821,61 @@ const postEditAccount = async (req, res) => {
 
 const allProducts = async (req, res) => {
   try {
+    const categories = await Category.find({});
     const sort = req.query.sort;
+    const categoryName = req.query.category;
 
+    let proData;
     if (sort == "lowToHigh") {
-      const proData = await Product.find({}).sort({ offerPrice: 1 }).limit(6);
-      const catData = await Category.find({});
-      const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
-
-      res.render("allProducts", { proData, catData, newPro });
+      proData = await Product.find({}).sort({ offerPrice: 1 }).limit(12);
     } else if (sort == "highToLow") {
-      const proData = await Product.find({}).sort({ offerPrice: -1 }).limit(6);
-      const catData = await Category.find({});
-      const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
-
-      res.render("allProducts", { proData, catData, newPro });
+      proData = await Product.find({}).sort({ offerPrice: -1 }).limit(12);
     } else if (sort == "aA-zZ") {
-      const proData = await Product.find({}).sort({ name: 1 }).limit(6);
-      const catData = await Category.find({});
-      const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
-
-      res.render("allProducts", { proData, catData, newPro });
+      proData = await Product.find({}).sort({ name: 1 }).limit(12);
     } else if (sort == "zZ-aA") {
-      const proData = await Product.find({}).sort({ name: -1 }).limit(6);
-      const catData = await Category.find({});
-      const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
-
-      res.render("allProducts", { proData, catData, newPro });
+      proData = await Product.find({}).sort({ name: -1 }).limit(12);
+    } else {
+      // Check if category is specified
+      if (categoryName) {
+        const category = await Category.findOne({ name: categoryName }).select('_id');
+        if (!category) {
+          return res.status(404).send("Category not found");
+        }
+        proData = await Product.find({ category: category._id }).limit(12);
+      } else {
+        proData = await Product.find({}).limit(12);
+      }
     }
 
-    const proData = await Product.find({}).limit(6);
-    const catData = await Category.find({});
     const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
 
-    res.render("allProducts", { proData, catData, newPro });
+    res.render("allProducts", { categories, proData, newPro });
   } catch (error) {
-    console.log(`error in logging all products page : ${error}`);
+    console.log(`Error in logging all products page: ${error}`);
+    res.status(500).send("Internal Server Error");
   }
 };
 
+
+// SEARCH PRODUCTS
+
+const searchProducts = async (req, res) => {
+  try {
+    console.log("hello");
+    const { searchDataValue } = req.body;
+    const searchProducts = await Product.find({
+      name: {
+        $regex: searchDataValue,
+        $options: "i",
+      },
+    });
+    // console.log(searchProducts);
+    console.log(searchProducts);
+    res.json({ status: "searched", searchProducts });
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 // WISHLIST
 
@@ -748,9 +884,7 @@ const whishlist = async (req, res) => {
     const user = await User.findOne({ email: req.session.email });
     const wishData = await Wishlist.findOne({ user_id: user._id });
 
-   
     if (!wishData || wishData.products.length === 0) {
-    
       return res.render("wishlist", { wishData, proData: [] });
     }
 
@@ -773,7 +907,6 @@ const whishlist = async (req, res) => {
     res.render("error", { error });
   }
 };
-
 
 // ADD WISHLIST
 
@@ -851,25 +984,27 @@ const removeWishlist = async (req, res) => {
 
 // LOAD COUPON
 
-const loadCoupon = async(req, res) => {
+const loadCoupon = async (req, res) => {
   try {
-      const user = await User.findOne({ email: req.session.email });
+    const user = await User.findOne({ email: req.session.email });
 
-      const allCoupons = await Coupon.find();
+    const allCoupons = await Coupon.find();
 
-      const couponData = allCoupons.filter(coupon => !coupon.users.includes(user.id));
-      const readeemCoupon = allCoupons.filter(coupon => coupon.users.includes(user.id));
+    const couponData = allCoupons.filter(
+      (coupon) => !coupon.users.includes(user.id)
+    );
+    const readeemCoupon = allCoupons.filter((coupon) =>
+      coupon.users.includes(user.id)
+    );
 
-      console.log(couponData);
-      console.log(readeemCoupon);
+    console.log(couponData);
+    console.log(readeemCoupon);
 
-      res.render('coupons', { couponData, readeemCoupon });
+    res.render("coupons", { couponData, readeemCoupon });
   } catch (error) {
-     console.log(`error in loading coupon: ${error}`); 
+    console.log(`error in loading coupon: ${error}`);
   }
-}
-
-
+};
 
 //  LOGOUT
 
@@ -913,5 +1048,9 @@ module.exports = {
   whishlist,
   addWishlist,
   removeWishlist,
-  loadCoupon
+  loadCoupon,
+  sendOtpForgotpass,
+  loadForget,
+  verifyForgotpass,
+  searchProducts
 };

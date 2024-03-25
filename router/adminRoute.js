@@ -38,6 +38,7 @@ adminRoute.post("/cat-cancel",isAdmin, CategoryControler.cancelCat)
 adminRoute.get("/catagoryOffer",isAdmin,CategoryControler.loadCategoryOffer)
 adminRoute.get("/addOffer",isAdmin,CategoryControler.addOfferLoad)
 adminRoute.post("/addOfferPost",isAdmin,CategoryControler.addOffer)
+adminRoute.post("/deleteOffer",isAdmin,CategoryControler.deleteOffer)
 
 // PRODUCT
 

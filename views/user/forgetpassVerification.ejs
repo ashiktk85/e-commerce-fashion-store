@@ -672,29 +672,27 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6">
                         <div class="login-register-wrap mr-70" style="margin-right: -234px; margin-left: 375px;">
-                            <h3><i class="fa fa-user-o" style="margin-left: 100px;"></i>Forgot Password</h3>
+                            <h3><i class="fa fa-user-o" style="margin-left: 50px;"></i>Enter your new password</h3>
                         
                             <div class="login-register-form">
                                 <!-- <form id="forgotPasswordForm" method="post"> -->
                                     <div class="sin-login-register">
-                                        <label>Email address <span>*</span></label>
-                                        <input type="text" name="email" id="email" onkeyup="emailverify()">
-                                        <p type="button" id="resendOTP" onclick="sendOtp()">Send OTP</p>
-                                        <div id="email_err" class="text-danger"></div>
-                                        <p class="text-danger" id="unqiueEM" style="display: none; color: red; font-size: 14px; font-style: italic; margin-left: 130px;">
-                                            <strong>This Email is Already Exits</strong>
-                                        </p>
+                                        <label>New Password <span>*</span></label>
+                                        <input type="password" name="email" id="password" onkeyup="passverify()">
+                                        
+                                        <div id="pass_err" class="text-danger"></div>
+                                        
                                     </div>
                                     
                                     <div class="sin-login-register">
-                                        <label>Enter OTP <span>*</span></label>
-                                        <input type="text" name="otp" id="otp" onkeydown="verifyOtp()">
+                                        <label>Confirm Password <span>*</span></label>
+                                        <input type="password" name="email" id="confirm" onkeyup="converify()">
                                         
-                                        <div id="otp_err" class="text-danger"></div>
+                                        <div id="con_err" class="text-danger"></div>
                                     </div>
                                     <div class="login-register-btn-remember" style="margin-top: 20px;margin-left: 45px;">
                                         <div class="login-register-btn">
-                                            <button type="submit" onclick="verify()">Verify</button>
+                                            <button type="submit" onclick="submit()">Submit</button>
                                         </div>
                                         <a href='/login' style="color: black;margin-left: 30px;">Back to login</a>
                                     </div>
@@ -1138,86 +1136,51 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
         <script>
-            function emailverify() {
-                const emailInput = document.getElementById("email");
-                const email = emailInput.value.trim(); 
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            function passverify() {
+                const passwordInput = document.getElementById("password");
+                const password = passwordInput.value.trim();
+                const regex = /^(?=.*\d)(?=.*[a-zA-Z]).{8,20}$/;
         
-                if (!email) {
-                    document.getElementById("email_err").innerHTML = "Email is required";
-                } else if (!emailRegex.test(email)) {
-                    document.getElementById("email_err").innerHTML = "Invalid email format.";
+                if (!password) {
+                    document.getElementById("pass_err").innerHTML = "Password must not be empty.";
+                } else if (!regex.test(password)) {
+                    document.getElementById("pass_err").innerHTML = "Invalid password.";
                 } else {
-                    document.getElementById("email_err").innerHTML = ""; 
+                    document.getElementById("pass_err").innerHTML = ""; // Clear error message
                 }
             }
         
-            function sendOtp() {
-                const emailInput = document.getElementById("email");
-                const email = emailInput.value.trim();
-                const emailError = document.getElementById("email_err");
+            function converify() {
+                const passwordInput = document.getElementById("password");
+                const password = passwordInput.value.trim();
+                const confirmInput = document.getElementById("confirm");
+                const confirm = confirmInput.value.trim();
         
-                // Reset previous error messages
-                emailError.innerText = "";
-        
-                // Validate email format
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!email) {
-                    emailError.innerText = "Email is required";
-                    return;
-                } else if (!emailRegex.test(email)) {
-                    emailError.innerText = "Invalid email format.";
-                    return;
+                if (password !== confirm) {
+                    document.getElementById("con_err").innerHTML = "Passwords do not match.";
+                } else {
+                    document.getElementById("con_err").innerHTML = ""; // Clear error message
                 }
+            }
         
-                // Send AJAX request to server to send OTP to the provided email
+            function submit() {
+                passverify();
+                converify();
+        
+                const passwordInput = document.getElementById("password");
+                const password = passwordInput.value.trim();
+                const confirmInput = document.getElementById("confirm");
+                const confirm = confirmInput.value.trim();
+        
                 $.ajax({
-                    url: "/sendOtp",
+                    url: "verify-forgotpass",
                     method: "post",
-                    data: { email: email },
-                    success: function(response) {
-                        if (response.status === "email_error") {
-                            alert("This email dosent exists.please sign up.");
-                        } else if (response.status === "success") {
-                            alert("OTP sent successfully to your email.");
-                        } else {
-                            alert("Failed to send OTP. Please try again later.");
-                        }
+                    data: {
+                        password: password
                     },
-                    error: function(xhr, status, error) {
-                        console.error("Failed to send OTP:", error);
-                        alert("An error occurred while sending OTP. Please try again later.");
-                    }
-                });
-            }
-        
-            function verifyOtp() {
-                const otpInput = document.getElementById("otp");
-                const otp = otpInput.value.trim();
-                const otpError = document.getElementById("otp_err");
-        
-                if (!otp) {
-                    otpError.innerHTML = "OTP is required.";
-                } else if (!/^\d+$/.test(otp)) {
-                    otpError.innerHTML = "OTP must only contain digits.";
-                } else {
-                    otpError.innerHTML = ""; // Clear error message if OTP is valid
-                }
-            }
-        
-            function verify() {
-                emailverify();
-                verifyOtp();
-        
-                const email = document.getElementById("email").value;
-                const otp = document.getElementById("otp").value;
-        
-                $.ajax({
-                    url: "/forgotOtp-post",
-                    method: "post",
-                    data: { email, otp },
-                    success: function(response) {
-                        if (response.status == true) {
+                    success: (response) => {
+                        alert("here")
+                        if (response.success == true) {
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: "center",
@@ -1230,18 +1193,18 @@
                             });
                             Toast.fire({
                                 icon: "success",
-                                title: "OTP verified"
+                                title: "Password changed"
                             }).then((result) => {
-                                window.location.href = "http://localhost:7777/forgetpassVerification"
+                                window.location.href = "http://localhost:7777/login";
                             });
-                            
-                        } else if (response.status == "wrong_otp") {
-                            alert("wrong otp try again")
+                        } else {
+                            alert("error")
                         }
                     }
                 });
             }
         </script>
+        
         
     
 

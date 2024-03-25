@@ -17,13 +17,16 @@ userRoute.set("views", "./views/user")
 userRoute.get('/', userAuth.isBlocked,userController.home)
 userRoute.get('/login', userAuth.isBlocked,userAuth.isLogOut, userController.userLogin)
 userRoute.post('/login', userController.verifyLogin)
-userRoute.get('/register',userAuth.isLogOut, userAuth.isLogOut,userController.userSignup)
-userRoute.post("/register",userAuth.isLogOut ,userAuth.isLogOut,userController.userSignupPost)
+userRoute.get('/register',userAuth.isLogOut,userController.userSignup)
+userRoute.post("/register",userAuth.isLogOut ,userController.userSignupPost)
 userRoute.get('/otpVerification',userAuth.isLogOut , userAuth.isLogOut,userController.loadOtp)
 userRoute.post('/otpVerification', userAuth.isLogOut,userAuth.isLogOut, userController.verifyOtp)
 userRoute.get('/resendOtp',userAuth.isLogOut, userController.resendOtp);
-userRoute.get('/forgotPassword',userAuth.isLogOut ,userAuth.isLogOut, userController.forgotPassword)
-userRoute.post('/forgotPassword',userAuth.isLogOut ,userAuth.isLogOut, userController.PostForgotpass);
+userRoute.get('/forgotPassword',userAuth.isLogOut , userController.forgotPassword)
+userRoute.post('/sendOtp',userAuth.isLogOut , userController.sendOtpForgotpass)
+userRoute.post('/forgotOtp-post',userAuth.isLogOut , userController.PostForgotpass);
+userRoute.get('/forgetpassVerification',userAuth.isLogOut,userController.loadForget);
+userRoute.post('/verify-forgotpass', userAuth.isLogOut, userController.verifyForgotpass)
 userRoute.get('/productDetails', userAuth.isBlocked,userAuth.isLogin, userController.productDetails)
 userRoute.get('/logout', userAuth.isLogin, userController.logOut)
 
@@ -72,12 +75,13 @@ userRoute.post("/return",userAuth.isBlocked,userAuth.isLogin,orderController.ret
 userRoute.post("/cancelReturn",userAuth.isBlocked,userAuth.isLogin,orderController.cancelReturn)
 
 //wallet
-userRoute.get('/wallet', walletController.loadWallet)
+userRoute.get('/wallet', userAuth.isLogin,walletController.loadWallet)
 userRoute.post("/addCash",userAuth.isBlocked,userAuth.isLogin,walletController.addWalletCash)
 userRoute.post("/addAmount",userAuth.isBlocked,userAuth.isLogin,walletController.addCash)
 
 // all products
 userRoute.get('/allProducts',userAuth.isBlocked,userAuth.isLogin,userController.allProducts)
+userRoute.post("/search",userController.searchProducts)
 
 //wishlist 
 userRoute.get("/wishlist", userAuth.isLogin,userAuth.isBlocked, userController.whishlist)

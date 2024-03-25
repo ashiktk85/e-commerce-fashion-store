@@ -226,7 +226,7 @@ const addOffer = async (req, res) => {
 
 
         const findCat = await Category.findOne({ name: catname })
-        // console.log(findCat)
+        console.log(findCat)
 
         const updateCat = await Category.findByIdAndUpdate({ _id: findCat._id }, {
             $set: {

@@ -1120,7 +1120,7 @@
                   timer: 1500,
                 });
               } else if (response.status == "razorpay") {
-                // alert("inside hello")
+                alert("inside hello")
                 // alert(response.order.amount)
                 // alert(response.order.id)
                 // alert(response.order)
@@ -1131,9 +1131,9 @@
                 let amount = response.total;
                 let couponCode = response.code;
 
-                // alert(address)
-                let order_id = response.orderNumber;
-                // alert(order_id)
+                
+                var order_id = response.orderNumber;
+              
 
                 var options = {
                   key: "rzp_test_ECB3Zjd1NyXFF9", // Enter the Key ID generated from the Dashboard
@@ -1142,8 +1142,10 @@
                   name: "Kevin Hills",
                   description: "Test Transaction",
                   image: "https://example.com/your_logo",
-                  order_id: response.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                  order_id: orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                   handler: function (response) {
+                    alert(response)
+                    
                     verifyPayment(
                       response,
                       orderId,
@@ -1195,7 +1197,7 @@
             method: "post",
             data: {
               payment,
-              order,
+              orderId,
               selectedAddress,
               order_id,
               amount,

@@ -351,22 +351,27 @@ function catDis(){
 
 
 function add(){
-    // alert("submit")
+    alert("submit")
     startDate()
+    
     endDate()
     catDis()
 
     const startErr=document.getElementById('startDateError').innerText
     const endErr= document.getElementById('endDateError').innerText
     const disErr=document.getElementById("discountErr").innerHTML
+  
 
     if(startErr||endErr||disErr){
         document.getElementById("common").innerHTML="Enter valid offer"
     }else{
-        document.getElementById("common").innerHTML=""
-
+        alert("common")
+        
+alert("loiii")
         const discount=document.getElementById("discount").value
+        alert(discount)
         const startDate=document.getElementById('startDate').value
+        alert(startDate)
         const endDate=document.getElementById('endDate').value
         const catname=document.getElementById('catNameSelect').value
         alert(catname)
@@ -384,7 +389,24 @@ function add(){
             },
             success:(response)=>{
                 if(response.status==true){
-                    window.location.href="/admin/categoryOffer"
+                    const Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            showConfirmButton: false,
+            timer: 1500,
+            // timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          });
+          Toast.fire({
+            icon: "success",
+            title:  "Category offer added.",
+          }).then((result) => {
+            window.location.href="/admin/catagoryOffer"
+          });
+                    
                 }
             }
         })

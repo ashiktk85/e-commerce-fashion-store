@@ -1243,67 +1243,56 @@ function selectSizeL(size, pdtID) {
 
 
 
-    function addCart() {
+function addCart() {
+    const id = document.getElementById("proId").value;
+    const proPrice = document.getElementById("offerPrice").innerHTML;
+    const selectedSize = document.querySelector('input[name="size"]:checked').value;
 
-
-        const id = document.getElementById("proId").value
-        alert(id);
-        
-        const proPrice = document.getElementById("offerPrice").innerHTML
-        alert(proPrice)
-
-        const selectedSize = document.querySelector('input[name="size"]:checked').value;
-        alert(selectedSize)
-
-
-
-
-
-        $.ajax({
-            url: "/addcartLoad",
-            method: "post",
-            data: {
-                id,
-                proPrice,
-                 selectedSize
-            },
-            success: (response) => {
-                if (response.status == true) {
-                    Swal.fire({
-
-                        icon: "success",
-                        title: "Add to Cart",
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then((result) => {
-                        window.location.href = "http://localhost:7777/cart"
-                    })
-
-                } else if (response.status == "viewCart") {
-                    window.location.href = "http://localhost:7777/cart"
-                } else if (response.status == "login") {
-
-                    Swal.fire({
-
-                        text: "You want to login the page?!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Go to login!"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "/login"
-                        }
-                    })
-                }
+    $.ajax({
+        url: "/addcartLoad",
+        method: "post",
+        data: {
+            id,
+            proPrice,
+            selectedSize
+        },
+        success: (response) => {
+            if (response.status == true) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Add to Cart",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then((result) => {
+                    window.location.href = "http://localhost:7777/cart";
+                });
+            } else if (response.status == "viewCart") {
+                window.location.href = "http://localhost:7777/cart";
+            } else if (response.status == "alreadyInCart") {
+                Swal.fire({
+                    icon: "warning",
+                    title: "This item is already in the cart",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else if (response.status == "login") {
+                Swal.fire({
+                    text: "You want to login the page?!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Go to login!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/login";
+                    }
+                });
             }
+        }
+    });
+}
 
-        })
-
-
-
-    }
 
     function outOfStock() {
         Swal.fire({
