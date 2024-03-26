@@ -309,6 +309,7 @@ const placeOrder = async (req, res) => {
     const { selectedAddress, paymentMethod, cartid, total, code } = req.body;
     console.log(selectedAddress, paymentMethod, cartid);
     console.log(selectedAddress, paymentMethod, cartid);
+    
 
     const findCoupon = await Coupon.findOne({ couponCode: code });
 

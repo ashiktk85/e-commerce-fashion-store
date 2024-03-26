@@ -551,9 +551,18 @@
                                                     </div>
                                                     <div class="px-3 mb-3">
                                                         <div class="code text-center mt-3">
-                                                            <span><span style="color: red;"><b>code:</b> </span> <b style="font-size: smaller;"><%= coupon.couponCode %></b></span>
+                                                            <span>
+                                                                <span style="color: red;"><b>code:</b> </span> 
+                                                                <b style="font-size: smaller;" id="couponCode"><%= coupon.couponCode %></b>
+                                                            </span>
+                                                            <span class="copy-icon" onclick="copyToClipboard()">
+                                                                <!-- Replace "fa fa-copy" with the appropriate Font Awesome class for the copy icon -->
+                                                                <i class="fa fa-copy"></i>
+                                                            </span>
                                                         </div>
                                                     </div>
+                                                    
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -582,9 +591,17 @@
                                                     </div>
                                                     <div class="px-3 mb-3">
                                                         <div class="code text-center mt-3">
-                                                            <span><span style="color: red;"><b>code:</b> </span> <b style="font-size: smaller;"><%= coupon.couponCode %></b></span>
+                                                            <span>
+                                                                <span style="color: red;"><b>code:</b> </span> 
+                                                                <b style="font-size: smaller;" id="couponCode"><%= coupon.couponCode %></b>
+                                                            </span>
+                                                            <span class="copy-icon" onclick="copyToClipboard()">
+                                                                <!-- Replace "fa fa-copy" with the appropriate Font Awesome class for the copy icon -->
+                                                                <i class="fa fa-copy"></i>
+                                                            </span>
                                                         </div>
                                                     </div>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -616,15 +633,27 @@
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
-function copyText() {
-            // alert("helllo")
-         const code =document.getElementById("couponCode").innerHTML
-       
-         navigator.clipboard.writeText
-             (code);
-            
-            
-     }
+function copyToClipboard() {
+    var couponCode = document.getElementById("couponCode").innerText;
+    var range = document.createRange();
+    range.selectNode(document.getElementById("couponCode"));
+    window.getSelection().removeAllRanges(); 
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    window.getSelection().removeAllRanges(); 
+    
+   
+    Swal.fire({
+        icon: 'success',
+        title: 'Coupon Code Copied',
+        toast: true,
+        position: 'center',
+        showConfirmButton: false,
+        timer: 3000 
+    });
+}
+
+
         </script>
         
         <%- include('../partials/footer') %>

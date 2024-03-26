@@ -1275,7 +1275,21 @@
               } else if (response.status == "invalid") {
                 Swal.fire({
                   icon: "error",
-                  title: "Invalid Coupon",
+                  title: "Cannot find coupon.",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              } else if(response.status == "Limit") {
+                Swal.fire({
+                  icon: "error",
+                  title: "Minimum Spending Required.",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+              } else if (response.status == "used") {
+                Swal.fire({
+                  icon: "error",
+                  title: "You have already used this coupon.",
                   showConfirmButton: false,
                   timer: 1500,
                 });

@@ -945,7 +945,8 @@
             // alert("hello")
             const name = document.getElementById("namevalue").value
             const nameErr = document.getElementById("Name_error")
-            const nameRegex = /^[A-Za-z\s]+$/;
+            const nameRegex =/^[A-Za-z]+(?:\s[A-Za-z]+)*\s*$/
+;
 
             if (name.trim() === '') {
                 document.getElementById("Name_error").innerHTML = "Name is Require"

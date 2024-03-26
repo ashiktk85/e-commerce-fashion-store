@@ -741,6 +741,8 @@
                                   </b>
                                 </td>
 
+                         
+
                                 <td class="cart-quality">
                                   <button
                                     onclick="increment('<%= proData[i]._id%>','1','<%=i%>','<%= proData[i].offerPrice %>','<%=cartData.items[i].subTotal %>')"
@@ -778,8 +780,8 @@
                     </div>
                     <div class="cart-shiping-update-wrapper">
                       <div class="discount-code">
-                        <input type="text" name="name" placeholder="Coupon code">
-                        <button class="coupon-btn" type="submit">Apply coupon</button>
+                        <a href="allProducts"><button class="coupon-btn" type="submit">click here to shop more.</button></a>
+                        
                       </div>
                       <div class="cart-clear">
                         <% if (cartData && cartData._id) { %>
@@ -790,6 +792,7 @@
                             <% } %>
                       </div>
                     </div>
+                    
                   </div>
                   <div class="col-lg-4">
                     <div class="grand-total-wrap">

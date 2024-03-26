@@ -153,7 +153,7 @@ const applyCoupon = async (req, res) => {
         });
         console.log(userInsidecoupon);
         if (userInsidecoupon) {
-          res.json({ status: "invalid" });
+          res.json({ status: "used" });
         } else {
           const amount = (cart.totalPrice / 100) * coupon.discount;
           console.log(amount);
@@ -166,7 +166,7 @@ const applyCoupon = async (req, res) => {
         }
       } else {
         console.log("invaliddddyyyy");
-        res.json({ status: "invalid" });
+        res.json({ status: "Limit" });
       }
     } else {
       console.log("its main invalidh");
