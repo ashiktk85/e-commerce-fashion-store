@@ -57,10 +57,7 @@ userRoute.get('/cartremove', userAuth.isBlocked,userAuth.isLogin, cartController
 userRoute.get('/clearCart', userAuth.isBlocked,userAuth.isLogin,cartController.clearCart)
 
 
-// size 
-userRoute.post('/selects',cartController.selectS)
-userRoute.post('/selectm',cartController.selectM)
-userRoute.post('/selectl',cartController.selectL)
+
 
 //checkout
 userRoute.get('/checkout',userAuth.isLogin,userAuth.isBlocked, cartController.checkout)

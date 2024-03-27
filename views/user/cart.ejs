@@ -832,25 +832,30 @@
 
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
   <script>
     // alert("hhuiui") 
 
     function increment(proId, quantity, index, offerprice, subTotal) {
+ 
   const qty = parseInt(document.getElementById("quantity" + index).innerHTML);
+
+  
+ 
   const price = parseInt(document.getElementById("offerprice" + index).innerHTML);
+
+
   const subtotal = parseInt(document.getElementById("subtotal" + index).innerHTML);
+  
+
   const sizeS = document.getElementById("size" + index).innerHTML;
+
   const total = parseInt(document.getElementById("total").innerHTML);
 
-  // Check if quantity exceeds the stock limit of 10
-  if (qty >= 10) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Stock Limit Exceeded!",
-    });
-    return; // Exit the function
-  }
 
   $.ajax({
     url: "/increment",
@@ -867,47 +872,34 @@
         document.getElementById("quantity" + index).innerHTML = qty + 1;
         document.getElementById("cartSub").innerHTML = response.total;
         document.getElementById("total").innerHTML = response.total;
-      } else if (response.status === "stock") {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Out of Stock!",
-        });
-      } else if (response.status === "invalid size") {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Invalid Size!",
-        });
-      } else if (response.status === "unauthenticated") {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "You are not authenticated!",
-        });
-      } else if (response.status === "invalid input") {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Invalid Input!",
-        });
       } else {
+        // Display appropriate error message based on the response status
+        let errorMessage = "An error occurred!";
+        switch (response.status) {
+          case "stock":
+            errorMessage = "Out of Stock!";
+            break;
+          case "invalid size":
+            errorMessage = "Invalid Size!";
+            break;
+          case "unauthenticated":
+            errorMessage = "You are not authenticated!";
+            break;
+          case "invalid input":
+            errorMessage = "Invalid Input!";
+            break;
+        }
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "An error occurred!",
+          text: errorMessage,
         });
       }
     },
-    error: (xhr, status, error) => {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "An error occurred!",
-      });
-    }
+   
   });
 }
+
 
 
      

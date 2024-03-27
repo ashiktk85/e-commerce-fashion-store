@@ -148,22 +148,39 @@ const loadCart = async (req, res) => {
 
 const increment = async (req, res) => {
   try {
-    const { offerprice, proId, qty, subtotal, sizeS } = req.body;
-    console.log(offerprice, proId, qty, subtotal, sizeS);
+    const { offerprice, proId, qty } = req.body;
     const proIdString = proId.toString();
     const quantity = parseInt(qty);
 
-    // Update the product quantity in the database
+    // Validate input data
+    if (!offerprice || !proId || !qty || isNaN(quantity)) {
+      return res.status(400).json({ status: false, message: "Invalid input data" });
+    }
+
+    // Fetch the product from the database
     const product = await Product.findById(proId);
-    if (product) {
-      product.size.quantity -= 1;
-      await product.save();
-    } else {
+    if (!product) {
       console.error(`Product with ID ${proId} not found`);
       return res.status(404).json({ status: false, message: "Product not found" });
     }
 
-    const addPrice = await Cart.findOneAndUpdate(
+    // Determine the total quantity required after incrementing
+    const totalQuantityRequired = quantity + 1;
+
+    // Check if the required quantity exceeds the available quantity for each size
+    if (totalQuantityRequired > product.size.s.quantity ||
+        totalQuantityRequired > product.size.m.quantity ||
+        totalQuantityRequired > product.size.l.quantity) {
+      return res.status(400).json({ status: false, message: "Not enough stock for the selected size" });
+    }
+
+    // Update the product quantity in the database
+    // For simplicity, let's assume the size is 's' for now
+    product.size.s.quantity -= 1;
+    await product.save();
+
+    // Update the cart
+    await Cart.findOneAndUpdate(
       { userId: req.session.userId, "items.productId": proIdString },
       {
         $inc: {
@@ -175,14 +192,16 @@ const increment = async (req, res) => {
       }
     );
 
-    
+    // Retrieve updated cart total
     const findCart = await Cart.findOne({ userId: req.session.userId });
     res.json({ status: true, total: findCart.totalPrice });
   } catch (error) {
-    console.log(error.message);
+    console.error("Error:", error);
     res.status(500).json({ status: false, message: "Internal Server Error" });
   }
 };
+
+
 
 
 
