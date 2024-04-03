@@ -1266,6 +1266,13 @@ function addCart() {
                 }).then((result) => {
                     window.location.href = "http://localhost:7777/cart";
                 });
+            } else if (response.status == "Out of stock") {
+                Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "This size is out of stock currently.",
+
+            });
             } else if (response.status == "viewCart") {
                 window.location.href = "http://localhost:7777/cart";
             } else if (response.status == "alreadyInCart") {

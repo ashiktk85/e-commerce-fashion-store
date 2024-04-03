@@ -844,23 +844,7 @@
                   <section class="mt-60 mb-60">
                     <div class="container">
                       <div class="row">
-                        <div class="col-12">
-                          <!-- <% if (findOrder.status=="Delivered") { %>
-                                                            <button style="background-color: #0d6efd; /* Blue */
-                                                            border: none;
-                                                            color: white;
-                                                            padding: 15px 32px;
-                                                            text-align: center;
-                                                            text-decoration: none;
-                                                            display: inline-block;
-                                                            font-size: 16px;
-                                                            margin: 4px 2px;
-                                                            margin-left: 1000px;
-                                                            margin-bottom: 30px;
-                                                            cursor: pointer;
-                                                            border-radius: 10px;" onclick="invoice('<%=findOrder._id%>')">Invoice</button>
-                                                        <% } %> -->
-
+                        
                           <div class="card border border-dark mb-3">
                             <div class="card-header bg-dark text-white">
                               Order Summary
@@ -1067,6 +1051,8 @@
                                   Delivered
                                 </p>
 
+
+
                                 <button
                                   onclick="Return()"
                                   style="
@@ -1082,6 +1068,14 @@
                                 >
                                   Request Return
                                 </button>
+
+                                <a href = "/invoice"> <div class="login-register-btn" style="width: 100px;">
+                                            <button type="submit">Download Invoice</button>
+                                        </div></a>
+
+                               
+                          
+                        
 
                                 <div id="reason" style="display: none">
                                   <input
@@ -1208,15 +1202,24 @@
                                 >
                                   The Order Returned
                                 </p>
-                                <% }else if(findOrder.status=="Payment Failed"){
+                                <% }else if(findOrder.status=="Payment Pending"){
                                 %>
-                                <a
-                                  onclick="payment('<%= findOrder._id %>')"
-                                  class="btn btn-rounded"
-                                >
-                                  <i class="fa fa-share-square mr-10"></i
-                                  >Continue Payment</a
-                                >
+                                <button
+                                    onclick="payment('<%=findOrder._id%>')"
+                                    style="
+                                      padding: 6px 8px;
+                                      font-size: 14px;
+                                      background-color: #000000;
+                                      color: white;
+                                      border: none;
+                                      border-radius: 4px;
+                                      cursor: pointer;
+                                      margin-bottom: 30px;
+                                      margin-top: 20px;
+                                    "
+                                  >
+                                    Pay now
+                                  </button>
 
                                 <% }else { %>
 
@@ -1330,8 +1333,11 @@
                                   >
                                 </div>
 
+                            
+
                                 <% } %>
                               </div>
+                              
                             </div>
                           </div>
                         </div>
@@ -1352,7 +1358,10 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
     <script>
       function cancel(id) {
@@ -1510,6 +1519,74 @@ return function () {
     }, delay);
 };
 }
+
+function payment(id) {
+  $.ajax({
+            url:"/continue-Payment",
+            method:"post",
+            data:{
+                id
+            },
+            success:(response)=>{
+                if(response.status===true){
+                    console.log("working")
+                    alert("hello")
+                    let orderId=response.orderId
+
+                    var options = {
+                        "key": "rzp_test_ECB3Zjd1NyXFF9", // Enter the Key ID generated from the Dashboard
+                        "amount": response.order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "currency": "INR",
+                        "name": "Kevin Hills",
+                        "description": "Test Transaction",
+                        "image": "https://example.com/your_logo",
+                        "order_id": response.order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                        "handler": function (response) {
+
+                            
+                           
+                            verifyPayment(response, orderId)
+                        },
+                        "prefill": {
+                            "name": "Gaurav Kumar",
+                            "email": "gaurav.kumar@example.com",
+                            "contact": "9000090000"
+                        },
+                        "notes": {
+                            "address": "Razorpay Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#000000"
+                        }
+                    };
+
+                    var rzp = new Razorpay(options);
+                    rzp.open();
+
+
+
+                }
+            }
+        })
+}
+
+function verifyPayment(response,order){
+        $.ajax({
+            url:"/payment-sucess",
+            method:"post",
+            data:{
+                response,
+                order
+            },
+            success:(data)=>{
+                if(data.status==true){
+                  alert("Your payment is successful.")
+
+                    window.location.href="/orders"
+                }
+            }
+        })
+    }
 
     </script>
 

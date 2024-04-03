@@ -58,7 +58,8 @@ const cartPage = async (req, res) => {
 // ADD TO CART post loading
 const loadCart = async (req, res) => {
   try {
-    console.log("getting to load carttttttttttttttttttttttttttttt");
+    console.log("Getting to load cart...");
+
     let { id, proPrice, selectedSize } = req.body;
     selectedSize = selectedSize.toLowerCase();
     const price = parseInt(proPrice);
@@ -66,37 +67,28 @@ const loadCart = async (req, res) => {
     if (req.session.email) {
       const userData = await User.findOne({ email: req.session.email });
       const userCart = await Cart.findOne({ userId: userData._id });
-      const proData = await Product.findById({ _id: id });
+      const proData = await Product.findById(id);
 
       if (proData) {
-        if (proData.size[selectedSize].quantity <= 0) {
-          return res
-            .status(200)
-            .json({ success: false, message: "out of stock" });
+        const availableQuantity = proData.size[selectedSize].quantity;
+
+        if (availableQuantity <= 0) {
+          return res.status(200).json({ status: "Out of stock" });
         }
 
         if (userCart) {
           let proCart = false;
-          console.log("usercart");
+
           for (let i = 0; i < userCart.items.length; i++) {
-            console.log(
-              "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
-            );
-            if (
-              id == userCart.items[i].productId &&
-              selectedSize == userCart.items[i].size
-            ) {
-              console.log("product in userCart");
+            if (id == userCart.items[i].productId && selectedSize == userCart.items[i].size) {
               proCart = true;
               break;
             }
           }
+
           if (proCart) {
-            console.log("jjjjjjjjsii");
-          
             return res.status(200).json({ status: "alreadyInCart" });
           } else {
-            console.log("view cart else");
             await Cart.findOneAndUpdate(
               { userId: userData._id },
               {
@@ -115,7 +107,6 @@ const loadCart = async (req, res) => {
             );
           }
         } else {
-          console.log("big if else");
           const cartData = new Cart({
             userId: userData._id,
             items: [
@@ -133,7 +124,7 @@ const loadCart = async (req, res) => {
 
         res.json({ status: true });
       } else {
-        res.json({ status: "login" });
+        res.status(401).json({ status: "login" });
       }
     }
   } catch (error) {
@@ -146,116 +137,73 @@ const loadCart = async (req, res) => {
 
 
 
+
+
 const increment = async (req, res) => {
   try {
-    const { offerprice, proId, qty } = req.body;
+    const { offerprice, proId, qty, subtotal, sizeS } = req.body;
+    console.log(offerprice, proId, qty, subtotal, sizeS);
     const proIdString = proId.toString();
+    const sizee = String(sizeS).trim();
+    console.log(sizee);
+    console.log('the proid is', proIdString);
     const quantity = parseInt(qty);
-
-    // Validate input data
-    if (!offerprice || !proId || !qty || isNaN(quantity)) {
-      return res.status(400).json({ status: false, message: "Invalid input data" });
-    }
-
-    // Fetch the product from the database
-    const product = await Product.findById(proId);
-    if (!product) {
-      console.error(`Product with ID ${proId} not found`);
-      return res.status(404).json({ status: false, message: "Product not found" });
-    }
-
-    // Determine the total quantity required after incrementing
-    const totalQuantityRequired = quantity + 1;
-
-    // Check if the required quantity exceeds the available quantity for each size
-    if (totalQuantityRequired > product.size.s.quantity ||
-        totalQuantityRequired > product.size.m.quantity ||
-        totalQuantityRequired > product.size.l.quantity) {
-      return res.status(400).json({ status: false, message: "Not enough stock for the selected size" });
-    }
-
-    // Update the product quantity in the database
-    // For simplicity, let's assume the size is 's' for now
-    product.size.s.quantity -= 1;
-    await product.save();
-
-    // Update the cart
-    await Cart.findOneAndUpdate(
-      { userId: req.session.userId, "items.productId": proIdString },
-      {
-        $inc: {
-          "items.$.price": offerprice,
-          "items.$.quantity": 1,
-          "items.$.subTotal": offerprice,
-          totalPrice: offerprice,
-        },
-      }
-    );
-
-    // Retrieve updated cart total
     const findCart = await Cart.findOne({ userId: req.session.userId });
-    res.json({ status: true, total: findCart.totalPrice });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ status: false, message: "Internal Server Error" });
-  }
-};
 
+    let response;
 
+    if (quantity > 9) {
+      response = { status: "maximum" };
+    } else {
+    
+      const product = await Product.findOne({ _id: proIdString });
+      console.log(product);
 
+      const cart = await Cart.findOne({ userId: req.session.userId });
+      console.log(cart);
 
+      if (cart) {
+        const stock = cart.items.find(val => val.productId.equals(proIdString) && val.size == sizee);
+        console.log(stock, "stocksss..........");
 
-const selectS = async (req, res) => {
-  try {
-    const datafrom = req.body.s;
-    const id = req.body.pdtID;
-    console.log("the id is ", id);
-    const product = await Product.findOne({ _id: id });
-    const stock = product.size.s.quantity;
-    console.log("the stock is ", stock);
-    if (datafrom) {
-      res.status(200).json({ size: "s", stock: stock });
+        const productStock = product ? product.size[sizee] : 0;
+        const proQuantity = parseInt(stock.quantity);
+        const availableQuantity = parseInt(productStock.quantity);
+
+        if (availableQuantity > proQuantity) {
+          const addPrice = await Cart.findOneAndUpdate(
+            { userId: req.session.userId, "items.productId": proIdString },
+            {
+              $inc: {
+                "items.$.price": offerprice,
+                "items.$.quantity": 1,
+                "items.$.subTotal": offerprice,
+                totalPrice: offerprice,
+              },
+            }
+          );
+          response = { status: true, total: findCart.totalPrice };
+        } else {
+          response = { status: "lowStock" };
+        }
+      }
     }
+
+    res.json(response);
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
+    res.json({ status: false, error: error.message });
   }
 };
 
-const selectM = async (req, res) => {
-  try {
-    const datafrom = req.body.m;
-    console.log(" the data form is ", datafrom);
-    const id = req.body.pdtID;
-    console.log("the id is ", id);
-    const product = await Product.findOne({ _id: id });
-    const stock = product.size.m.quantity;
-    console.log("the stock is ", stock);
-    console.log(product);
-    if (datafrom) {
-      // const quantity = product.size.m
-      // console.log(quantity);
-      res.status(200).json({ size: "m", stock: stock });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
 
-const selectL = async (req, res) => {
-  try {
-    const datafrom = req.body.l;
-    const id = req.body.pdtID;
-    console.log("the id is ", id);
-    const product = await Product.findOne({ _id: id });
-    const stock = product.size.l.quantity;
-    console.log("the stock is ", stock);
-    if (datafrom) {
-      res.status(200).json({ size: "l", stock: stock });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
+
+
+
+
+
+
+
 
 const decrement = async (req, res) => {
   try {
@@ -348,6 +296,14 @@ const placeOrder = async (req, res) => {
         const selectedSize = proData[i].size.toLowerCase();
 
         const product = await Product.findById(proId);
+
+        const productSize = product.size[selectedSize];
+
+        if (!productSize || productSize.quantity < quantity) {
+          res.json({ status: "lowStock" });
+          return;
+        }
+        
 
         if (product) {
           console.log("Product size:", product.size);
@@ -543,7 +499,4 @@ module.exports = {
   placeOrder,
   removeItemCart,
   clearCart,
-  selectL,
-  selectM,
-  selectS,
 };

@@ -17,18 +17,15 @@ const addCategory = async (req, res) => {
         const catData = await Category.find({});
 
         const name = req.body.name;
+        name.trim()
         const dis = req.body.dis;
+        dis.trim()
 
-        // Check if the name is empty or contains only spaces
-        if (!name || name.trim() === '') {
-            return res.render('adminCategory', { nameError: "Name cannot be empty", catData });
-        }
-        if (!dis || dis.trim() === " ") {
-            return res.render('adminCategory', { nameError: "Description cannot be empty", catData });
-        }
+       
+       
 
         // Use filter to exclude undefined or null names
-        const validNames = catData.filter((x) => x && x.name).map((x) => x.name.toLowerCase());
+        const validNames = catData.filter((x) => x && x.name.trim()).map((x) => x.name.trim().toLowerCase());
 
         const isUnique = !validNames.includes(name.toLowerCase());
 
@@ -42,9 +39,9 @@ const addCategory = async (req, res) => {
             const savedCat = await cat.save();
             console.log(savedCat);
 
-            return res.render('adminCategory', { nameError: "Category added", catData: [savedCat, ...catData] });
+            return res.json({ status : true , catData: [savedCat, ...catData] });
         } else {
-            return res.render('adminCategory', { nameError: "Category name already exists", catData });
+            return res.json({ status : "exists", catData });
         }
 
     } catch (error) {

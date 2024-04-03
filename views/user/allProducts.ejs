@@ -35,18 +35,23 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         .product-image img {
-    width: 100px; /* Adjust the width as desired */
-    height: auto; /* Maintain aspect ratio */
-}
-.product-row {
-    display: flex; /* Use flexbox */
-    align-items: center; /* Vertically center the items */
-}
+            width: 100px;
+            /* Adjust the width as desired */
+            height: auto;
+            /* Maintain aspect ratio */
+        }
 
-.product-image {
-    margin-right: 10px; /* Adjust spacing between image and info */
-}
+        .product-row {
+            display: flex;
+            /* Use flexbox */
+            align-items: center;
+            /* Vertically center the items */
+        }
 
+        .product-image {
+            margin-right: 10px;
+            /* Adjust spacing between image and info */
+        }
     </style>
 
 </head>
@@ -713,20 +718,27 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="search-style-2" style="width: 300px;margin-left: 600px;margin-top: 25px; position: relative;">
+                        <div class="search-style-2"
+                            style="width: 300px;margin-left: 600px;margin-top: 25px; position: relative;">
                             <div style="background-color: #ffffff;">
-                                <input type="text" id="input" style="width: 300px;background-color: #ffffff;border-color: #000000;border-width: 1.5px;" placeholder="Search" onkeyup="SearchProduct()">
+                                <input type="text" id="input"
+                                    style="width: 300px;background-color: #ffffff;border-color: #000000;border-width: 1.5px;"
+                                    placeholder="Search" onkeyup="SearchProduct()">
                             </div>
-                            <div class="search-result" style="position: absolute; top: 100%; left: 0; z-index: 999; background-color: rgb(255, 255, 255);color: #ffffff;width: 300px;padding-left: 30px;" >
+                            <div class="search-result"
+                                style="position: absolute; top: 100%; left: 0; z-index: 999; background-color: rgb(255, 255, 255);color: #ffffff;width: 300px;padding-left: 30px;">
                                 <div id="searchResultsContainer"></div>
                             </div>
                         </div>
                         <div class="shop-top-bar-right">
                             <div class="shop-filter ml-50">
-                                <a class="shop-filter-active" href="#">Filters <i class="fa fa-angle-down angle-down"></i> <i class="fa fa-angle-up angle-up"></i></a>
+                                <a class="shop-filter-active" href="#">Filters <i
+                                        class="fa fa-angle-down angle-down"></i> <i
+                                        class="fa fa-angle-up angle-up"></i></a>
                             </div>
                             <div class="shop-short-by ml-50">
-                                <span>Sort by <i class="fa fa-angle-down angle-down"></i> <i class="fa fa-angle-up angle-up"></i></span>
+                                <span>Sort by <i class="fa fa-angle-down angle-down"></i> <i
+                                        class="fa fa-angle-up angle-up"></i></span>
                                 <ul>
                                     <li class="active"><a href="#">Default sorting</a></li>
                                     <li><a href="/allProducts?sort=lowToHigh">Price: Low to High</a></li>
@@ -738,7 +750,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="product-filter-wrapper">
                         <div class="row">
                             <!-- Product Filter -->
@@ -755,35 +767,37 @@
                                 </div>
                             </div>
                             <!-- Product Filter -->
-                            
+
                             <!-- Product Filter -->
                             <div class="col-md-3 col-sm-6 col-xs-12 mb-20">
                                 <div class="product-filter">
-                                  <h5>Categories</h5>
-                                  <div class="category-links">
-                                    <div class="category-link">
-                                      <a href="/allProducts">All Products</a>
+                                    <h5>Categories</h5>
+                                    <div class="category-links">
+                                        <div class="category-link">
+                                            <a href="/allProducts">All Products</a>
+                                        </div>
+                                        <% categories.forEach(category=> { %>
+                                            <div class="category-link">
+                                                <a href="/allProducts?category=<%= category.name %>">
+                                                    <%= category.name %>
+                                                </a>
+                                            </div>
+                                            <% }); %>
                                     </div>
-                                    <% categories.forEach(category => { %>
-                                      <div class="category-link">
-                                        <a href="/allProducts?category=<%= category.name %>"><%= category.name %></a>
-                                      </div>
-                                    <% }); %>
-                                  </div>
                                 </div>
-                              </div>
-                              
-                              
+                            </div>
+
+
 
                         </div>
                     </div>
                 </div>
             </div>
             <div class="no-products-message">
-                <% if (proData.length === 0 && req.query.category) { %>
-                  <p>No products available for <%= req.query.category %> right now.</p>
-                <% } %>
-              </div>
+                <% if (proData.length===0 && req.query.category) { %>
+                    <p>No products available for <%= req.query.category %> right now.</p>
+                    <% } %>
+            </div>
             <div class="tab-content jump-3 pt-30">
                 <div id="shop-1" class="tab-pane active">
                     <div class="row g-0 grid-3"> <!-- Change grid-2 to grid-3 -->
@@ -1305,9 +1319,17 @@
                 </div>
                 <div class="pro-pagination-style text-center mt-50">
                     <ul>
-                        <li><a class="active" href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#"><i class="dlicon arrows-1_tail-right"></i></a></li>
+                        <% if(previous) { %>
+                            <li><a class="active"
+                                    href="/allProducts?sort=<%=locals.sort?locals.sort : ''%>&pre=<%=newNum%>"></a></li>
+                            <% } %>
+                                <li><a href="#" id="pageNumber">
+                                        <%= newNum %>
+                                    </a></li>
+                                <% if(nextPage) { %>
+                                    <li><a href="/allProducts?sort=<%=locals.sort?locals.sort : ''%>&next=<%=newNum%>"><i
+                                                class="dlicon arrows-1_tail-right"></i></a></li>
+                                    <% } %>
                     </ul>
                 </div>
             </div>
@@ -1355,7 +1377,6 @@
             function SearchProduct() {
                 const searchDataValue = inputElement.value.trim();
 
-
                 if (searchDataValue !== "") {
                     showSearchResult();
                     debounce(() => {
@@ -1367,8 +1388,8 @@
                                 searchDataValue
                             },
                             success: (response) => {
-                                const searchResultsContainer = document.getElementById('searchResultsContainer')
-                                searchResultsContainer.innerHTML = ""
+                                const searchResultsContainer = document.getElementById('searchResultsContainer');
+                                searchResultsContainer.innerHTML = "";
 
                                 if (response.searchProducts.length > 0) {
                                     response.searchProducts.forEach(element => {
@@ -1377,37 +1398,87 @@
 
                                         const productElement = document.createElement('div');
                                         productElement.innerHTML = `
-    <a href="/productDetails?id=${element._id}" class="product-link">
-        <div class="product-row">
-            <div class="product-image" style="padding-top : 20px"> <!-- Added a wrapping div for the image -->
-                <img src="/uploads/${element.image[0]}" alt="product">
-            </div>
-            <div class="product-info">
-                <p style="color: black;">${element.name}</p>
-                <p style="color: black;">₹${element.offerPrice}</p>
-            </div>
-        </div>
-    </a>
-`;
-
+                                <a href="/productDetails?id=${element._id}" class="product-link">
+                                    <div class="product-row">
+                                        <div class="product-image" style="padding-top : 20px">
+                                            <img src="/uploads/${element.image[0]}" alt="product">
+                                        </div>
+                                        <div class="product-info">
+                                            <p style="color: black;">${element.name}</p>
+                                            <p style="color: black;">₹${element.offerPrice}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            `;
 
                                         productContainer.appendChild(productElement);
                                         searchResultsContainer.appendChild(productContainer);
                                     });
                                     hideNoProductFound();
-                                }
-                                else {
+                                } else {
                                     hideSearchResult();
                                     showNoProductFound();
                                 }
                             }
-                        })
+                        });
                     }, 500)();
                 } else {
                     hideSearchResult();
                     hideNoProductFound();
                 }
             }
+
+            function increase() {
+
+                const number = document.getElementById("pageNumber").innerHTML
+
+
+                // $.ajax({
+                //     url:"/next-page",
+                //     method:"post",
+                //     data:{
+                //         number
+                //     },
+                //     success:(response)=>{
+                //         if(response.status==true){
+                //             window.location.href=
+                //         }
+                //     }
+                // })
+                // alert(number)
+
+                //    window.location.href=`/next-page?num=${number}`
+
+            }
+
+
+            function decrease() {
+                const number = document.getElementById("pageNumber").innerHTML
+
+                window.location.href = `/previous-page?num=${number}`
+            }
+
+
+            // function key() {
+            //     const search = document.getElementById("search").value
+            //     $.ajax({
+            //         url: "/shop-search",
+            //         method: "post",
+            //         data: {
+            //             search
+            //         },
+            //         success: (response) => {
+            //             if (response.status == true) {
+            //                 document.getElementById("result").style.display = "block"
+            //             }
+            //         }
+            //     })
+            // }
+
+            function catagory(id) {
+                window.location.href = `/catagory?id=${id}`
+            }
+
         </script>
 
         <%- include('../partials/footer') %>

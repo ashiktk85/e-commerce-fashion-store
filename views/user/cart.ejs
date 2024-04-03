@@ -876,11 +876,11 @@
         // Display appropriate error message based on the response status
         let errorMessage = "An error occurred!";
         switch (response.status) {
-          case "stock":
-            errorMessage = "Out of Stock!";
+          case "maximum":
+            errorMessage = "Limit only upto 10.";
             break;
-          case "invalid size":
-            errorMessage = "Invalid Size!";
+          case "lowStock":
+            errorMessage = "Out of stock";
             break;
           case "unauthenticated":
             errorMessage = "You are not authenticated!";

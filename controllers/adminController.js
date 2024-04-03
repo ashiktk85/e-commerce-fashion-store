@@ -1,6 +1,8 @@
 // const admin = require('../')
 const User = require('../models/userModel')
 const Order = require('../models/orderModel')
+const Product = require("../models/productModel")
+const Category = require('../models/categoryModel')
 const adminEmail = process.env.adminEmail;
 const adminPassword = process.env.adminPassword;
 
@@ -45,11 +47,141 @@ const verifyAdmin = async (req, res) => {
 
 const adminHome = async (req, res) => {
     try {
-        res.render('adminhome');
+      const yValues = [0, 0, 0, 0, 0, 0, 0];
+      const order = await Order.find({
+        status: { $nin: ["Ordered", "Processing", "Canceled", "Shipped"] },
+      });
+  
+      const productQuantityMap = new Map();
+  
+      order.forEach((order) => {
+        order.items.forEach((item) => {
+          const productId = item.productId.valueOf();
+          const quantity = item.quantity;
+          productQuantityMap.set(
+            productId,
+            (productQuantityMap.get(productId) || 0) + quantity
+          );
+        });
+      });
+  
+      const productQuantityArray = [...productQuantityMap.entries()].map(
+        ([productId, quantity]) => ({ productId, quantity })
+      );
+  
+      productQuantityArray.sort((a, b) => b.quantity - a.quantity);
+  
+      const allData = await Category.find({});
+      const sales = new Array(allData.length).fill(0);
+      const allName = allData.map((x) => x.name);
+  
+      let productId = [];
+      let quantity = [];
+  
+      for (let i = 0; i < order.length; i++) {
+        for (let j = 0; j < order[i].items.length; j++) {
+          productId.push(order[i].items[j].productId);
+          quantity.push(order[i].items[j].quantity);
+        }
+      }
+  
+      const productData = [];
+      for (let i = 0; i < productId.length; i++) {
+        productData.push(await Product.findById(productId[i]));
+      }
+  
+      for (let i = 0; i < productData.length; i++) {
+        for (let j = 0; j < allData.length; j++) {
+          if (allData[j]._id.toString() === productData[i].category.toString()) {
+            sales[j] += quantity[i];
+          }
+        }
+      }
+  
+      const topProduct = [];
+  
+      const month = await Order.aggregate([
+        {
+          $project: {
+            _id: { $dateToString: { format: "%m-%Y", date: "$createdAt" } },
+            totalAmount: 1,
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            totalEarnings: { $sum: "$totalAmount" },
+          },
+        },
+        {
+          $sort: { _id: 1 },
+        },
+      ]);
+  
+      let array = new Array(12).fill(0);
+      const months = [
+        "01-2024", "02-2024", "03-2024", "04-2024", "05-2024", "06-2024",
+        "07-2024", "08-2024", "09-2024", "10-2024", "11-2024", "12-2024",
+      ];
+  
+      for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < month.length; j++) {
+          if (month[j]._id === months[i]) {
+            array[i] += month[j].totalEarnings;
+          }
+        }
+      }
+  
+      const orderData = await Order.find({ status: "Delivered" });
+      let sum = orderData.reduce((acc, curr) => acc + curr.totalAmount, 0);
+      const product = await Product.find({});
+      const category = await Category.find({});
+  
+      if (order.length > 0) {
+        const proLength = product.length;
+        const catLength = category.length;
+        const orderLength = order.length;
+        res.render("adminhome", {
+          sum,
+          proLength,
+          catLength,
+          orderLength,
+          month,
+          yValues,
+          allName,
+          sales,
+          productData,
+          productQuantityArray,
+          topProduct,
+          array,
+        });
+      } else {
+        const proLength = product.length;
+        const catLength = category.length;
+        const orderLength = order.length;
+        const month = null;
+        res.render("adminDash", {
+          sum,
+          proLength,
+          catLength,
+          orderLength,
+          month,
+          yValues,
+          allName,
+          sales,
+          productData,
+          productQuantityArray,
+          topProduct,
+          array,
+        });
+      }
     } catch (error) {
-        console.log(`There was an error in loading admin dashboard : ${error}`);
+      console.log(error.message);
+      res.status(500).send("Internal Server Error");
     }
-}
+  };
+  
+  
 
 // LOADING USER DETAILS PAGE 
 
@@ -101,7 +233,7 @@ const loadSalesreport = async (req, res) => {
     try {
         
         const order = await Order.find({
-            status: { $nin: ["Ordered", "Canceled", "Shipped"] },
+            status: { $in : ["Delivered"] },
         });
 
         const calculateOverallSummary = (order) => {

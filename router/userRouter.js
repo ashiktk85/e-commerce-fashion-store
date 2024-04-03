@@ -62,14 +62,18 @@ userRoute.get('/clearCart', userAuth.isBlocked,userAuth.isLogin,cartController.c
 //checkout
 userRoute.get('/checkout',userAuth.isLogin,userAuth.isBlocked, cartController.checkout)
 userRoute.post("/placeOrder",userAuth.isBlocked,userAuth.isLogin,cartController.placeOrder)
-userRoute.get('/orderSuccess', orderController.orderSuccess)
-userRoute.post('/verifyPayment', orderController.verifyPayment)
+userRoute.get('/orderSuccess',userAuth.isBlocked,userAuth.isLogin, orderController.orderSuccess)
+userRoute.post('/verifyPayment', userAuth.isBlocked,userAuth.isLogin,orderController.verifyPayment)
+userRoute.post('/paymentFaild', userAuth.isBlocked,userAuth.isLogin,orderController.failedPayment)
+userRoute.post("/continue-Payment",userAuth.isBlocked,userAuth.isLogin, orderController.continuePayment)
+userRoute.post("/payment-sucess",userAuth.isBlocked,userAuth.isLogin, orderController.successPayment)
 
 // order
 userRoute.get("/orderView",userAuth.isBlocked,userAuth.isLogin,orderController.loadViewOrder)
 userRoute.post("/cancelOrder",userAuth.isBlocked,userAuth.isLogin,orderController.cancelOrder)
 userRoute.post("/return",userAuth.isBlocked,userAuth.isLogin,orderController.returnRequest)
 userRoute.post("/cancelReturn",userAuth.isBlocked,userAuth.isLogin,orderController.cancelReturn)
+userRoute.get('/invoice', userAuth.isBlocked, userAuth.isLogin, orderController.invoice)
 
 //wallet
 userRoute.get('/wallet', userAuth.isLogin,walletController.loadWallet)
@@ -79,6 +83,7 @@ userRoute.post("/addAmount",userAuth.isBlocked,userAuth.isLogin,walletController
 // all products
 userRoute.get('/allProducts',userAuth.isBlocked,userAuth.isLogin,userController.allProducts)
 userRoute.post("/search",userController.searchProducts)
+userRoute.get("/next-page",userController.nextPage)
 
 //wishlist 
 userRoute.get("/wishlist", userAuth.isLogin,userAuth.isBlocked, userController.whishlist)

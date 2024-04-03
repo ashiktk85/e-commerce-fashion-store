@@ -231,34 +231,23 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form action="/admin/category" method="post">
+                            <!-- <form action="/admin/category" method="post"> -->
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="product_name" name="name" />
+                                    <div id="nameErr" class="text-danger"></div>
                                 </div>
-                                <% if(typeof nameError !== 'undefined')  { %>
-
-                                    <small style="color: red;"><%= nameError %></small>
-                               <% } %>
-                                <!-- <div class="mb-4">
-                                    <label for="product_slug" class="form-label">Slug</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
-                                </div> -->
-                                <!-- <div class="mb-4">
-                                    <label class="form-label">Parent</label>
-                                    <select class="form-select">
-                                        <option>Clothes</option>
-                                        <option>T-Shirts</option>
-                                    </select>
-                                </div> -->
+                            
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control" name="dis"></textarea>
+                                    <textarea placeholder="Type here" class="form-control" name="dis" id="dis"></textarea>
+                                    <div id="disErr" class="text-danger"></div>
                                 </div>
                                 <div class="d-grid">
-                                    <button class="btn " type="submit" style="background-color: black; color: #ffffff;">Create category</button>
+                                    <button class="btn " type="submit" style="background-color: black; color: #ffffff;" onclick="add()">Create category</button>
+                                    
                                 </div>
-                            </form>
+                            <!-- </form> -->
                         </div>
                         <div class="col-md-9">
                             <div class="table-responsive">
@@ -370,6 +359,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Main Script -->
     <script src="//js/main.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         function list(id){
             
@@ -390,6 +381,93 @@
             
    
         }
+
+        function nameFun() {
+             const name = document.getElementById("product_name").value.trim();
+             const nameErr = document.getElementById("nameErr")
+             const nameRegex =/^[A-Za-z]+(?:\s[A-Za-z]+)*\s*$/
+
+             if (name.trim() === '') {
+                document.getElementById("nameErr").innerHTML = "Name is Require"
+
+            } else {
+                document.getElementById("nameErr").innerHTML = ""
+            }
+
+            if (!nameRegex.test(name)) {
+                document.getElementById("nameErr").innerHTML = "Name is Invalid"
+            } else {
+                document.getElementById("nameErr").innerHTML = ""
+            }
+        }
+
+        function funDis() {
+            const dis = document.getElementById("dis").value.trim()
+            const disErr = document.getElementById("nameErr")
+
+            if(dis.trim() == '') {
+                document.getElementById("disErr").innerHTML = "Discription Required."
+            } else {
+                document.getElementById("disErr").innerHTML = ""
+            }
+
+            if(dis.length < 10) {
+                document.getElementById("disErr").innerHTML = "Minimum 10 charachters required."
+            } else {
+                document.getElementById("disErr").innerHTML = ""
+            }
+
+        }
+
+        function add() {
+   
+
+    const name = document.getElementById("product_name").value.trim();
+    const dis = document.getElementById("dis").value.trim();
+    const nameErr = document.getElementById("nameErr");
+    const disErr = document.getElementById("disErr");
+
+    nameFun();
+    funDis();
+
+    if (name === "" || dis === "") {
+        alert("Name and description are required.");
+        return; 
+    }
+
+    $.ajax({
+        url: "/admin/category",
+        method: "post",
+        data: {
+            name,
+            dis
+        },
+        success: (response) => {
+            if (response.status == true) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "center",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Category added."
+                }).then((result) => {
+                    window.location.reload();
+                });
+            } else if (response.status == "exists") {
+                alert("This category name already exists.");
+            }
+        }
+    });
+}
+
 
 
 
