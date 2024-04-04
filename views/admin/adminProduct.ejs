@@ -210,31 +210,18 @@
             <div class="content-header">
                 <div>
                     <h2 class="content-title card-title">Products</h2>
-                    <!-- <p>Lorem ipsum dolor sit amet.</p> -->
                 </div>
-                <!-- <h5 style="margin-left: 650px;">Add a product</h5>  -->
                 <div>
-                    
-                    <a href="/admin/addProduct" class="btn  btn-sm rounded" style="background-color: black; color: rgb(255, 255, 255);width: 150px;height: 38px;"><b>Add new Product +</b></a>
+                    <a href="/admin/addProduct" class="btn btn-sm rounded" style="background-color: black; color: rgb(255, 255, 255);width: 150px;height: 38px;"><b>Add new Product +</b></a>
                 </div>
             </div>
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row gx-3">
-                        <div class="col-lg-4 col-md-6 me-auto">
-                            <input type="text" placeholder="Search..." class="" style="width: 200px; height: 30px;margin-right: 100px;">
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="" name="catName" style="width: 150px; height: 30px;margin-right: 100px;" aria-placeholder="Catagory">
-                                <% if(locals.catData){%>
-                                    
-                                <% catData.forEach(element =>{%>
-                                
-                                    <option value="<%=element._id%>"> <%= element.name %></option>
-                                     <%})%>
-                                     <%}%>
-                            </select>
-                        </div>
+                        <!-- Search and Filter -->
+                        <!-- Your search and filter inputs here -->
+        
+                        <!-- Product Table -->
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm">
                                 <thead>
@@ -248,57 +235,65 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% for (let i = 0; i < proData.length; i++) { %>
+                                    <% proData.forEach(product => { %>
                                         <tr>
                                             <td class="align-middle text-center" style="width: 100px;">
-                                                <img style="width: 100%;" src="/uploads/<%= proData[i].image[0] %>" alt="Product">
+                                                <img style="width: 100%;" src="/uploads/<%= product.image[0] %>" alt="Product">
                                             </td>
                                             <td class="align-middle text-center">
-                                                <a href="#" class="text-truncate"><%= proData[i].name %></a>
+                                                <a href="#" class="text-truncate"><%= product.name %></a>
                                             </td>
                                             <td class="align-middle text-center">
-                                                $<%= proData[i].regularPrice %>
+                                                $<%= product.regularPrice %>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <% if (proData[i].offerPrice === null) { %>
-                                                 <span>Nill</span>
+                                                <% if (product.offerPrice === null) { %>
+                                                    <span>Nill</span>
                                                 <% } else { %>
-                                                $<%= proData[i].offerPrice %>
+                                                    $<%= product.offerPrice %>
                                                 <% } %>
                                             </td>
                                             <td class="align-middle text-center">
-                                                <% if (proData[i].is_blocked == true) { %>
-                                                    <a href="/admin/block-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm btn-light rounded unlist-btn">
+                                                <% if (product.is_blocked == true) { %>
+                                                    <a href="/admin/block-pro?id=<%= product._id %>" class="btn btn-sm font-sm btn-light rounded unlist-btn">
                                                         <i class="material-icons md-delete_forever"></i> Unlist
                                                     </a>
                                                 <% } else { %>
-                                                    <a href="/admin/edit-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand" style="background-color: black;">
+                                                    <a href="/admin/edit-pro?id=<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand" style="background-color: black;">
                                                         <i class="material-icons md-edit"></i> Edit
                                                     </a>
-                                                    <a href="/admin/unblock-pro?id=<%= proData[i]._id %>" class="btn btn-sm font-sm btn-light rounded" >
+                                                    <a href="/admin/unblock-pro?id=<%= product._id %>" class="btn btn-sm font-sm btn-light rounded" >
                                                         <i class="material-icons md-delete_forever"></i> List
                                                     </a>
                                                 <% } %>
                                             </td>
-                                            <td class="align-middle text-center" >
-                                                <a href="/admin/edit-detailedView?id=<%= proData[i]._id %>" class="btn btn-sm font-sm rounded btn-brand" style="background-color: black;">
+                                            <td class="align-middle text-center">
+                                                <a href="/admin/edit-detailedView?id=<%= product._id %>" class="btn btn-sm font-sm rounded btn-brand" style="background-color: black;">
                                                     <i class="material-icons"></i> View
                                                 </a>
                                             </td>
                                         </tr>
-                                    <% } %>
+                                    <% }) %>
                                 </tbody>
                             </table>
                         </div>
-                        
-                        
-                        
-                        
                     </div>
-                </header> <!-- card-header end// -->
-                 <!-- card end// -->
-     
+                </header>
+            </div>
+            <!-- Pagination -->
+            <div class="pagination-area mt-30 mb-50">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-start">
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+            </div>
         </section>
+        
        <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">

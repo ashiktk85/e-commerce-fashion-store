@@ -111,7 +111,7 @@ const userSignupPost = async (req, res) => {
           password,
           confirm,
           otp,
-          otpTime, // Store OTP creation time in session data
+          otpTime, 
         };
         req.session.Data = data;
         req.session.save();
@@ -223,7 +223,7 @@ const verifyOtp = async (req, res) => {
           const user = new User({
             name: req.session.Data.name,
             email: req.session.Data.email,
-            mobile: req.session.Data.number,
+            mobile: req.session.Data.mobile,
             password: securePass,
             referralCode:refferal
           });
@@ -819,107 +819,12 @@ const postEditAccount = async (req, res) => {
 
 //   PRODUCTS PAGE ALL
 
-// const allProducts = async (req, res) => {
-//   try {
-//     const categories = await Category.find({});
-//     const sort = req.query.sort;
-//     const categoryName = req.query.category;
-
-//     let proData;
-//     if (sort == "lowToHigh") {
-//       proData = await Product.find({}).sort({ offerPrice: 1 }).limit(12);
-//     } else if (sort == "highToLow") {
-//       proData = await Product.find({}).sort({ offerPrice: -1 }).limit(12);
-//     } else if (sort == "aA-zZ") {
-//       proData = await Product.find({}).sort({ name: 1 }).limit(12);
-//     } else if (sort == "zZ-aA") {
-//       proData = await Product.find({}).sort({ name: -1 }).limit(12);
-//     } else {
-//       // Check if category is specified
-//       if (categoryName) {
-//         const category = await Category.findOne({ name: categoryName }).select('_id');
-//         if (!category) {
-//           return res.status(404).send("Category not found");
-//         }
-//         proData = await Product.find({ category: category._id }).limit(12);
-//       } else {
-//         proData = await Product.find({}).limit(12);
-//       }
-//     }
-
-//     const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
-
-//     res.render("allProducts", { categories, proData, newPro });
-//   } catch (error) {
-//     console.log(`Error in logging all products page: ${error}`);
-//     res.status(500).send("Internal Server Error");
-//   }
-// };
-
 const allProducts = async (req, res) => {
-  try {
-
-
-    const page = req.query.next || 0;
-    const pre = req.query.pre || 0;
-    let number = 0;
-    if (page != 0) {
-      number = parseInt(page);
-    } else if (pre != 0) {
-      number = parseInt(pre) - 2;
-    }
-    console.log("PAGE", page);
-
-    const skip = number * 6;
-    console.log("SKIP", skip);
-    const sort = req.query.sort;
-    const rating = req.query.rating;
-
-    let newNum;
-    let previous;
-    if (skip == 0) {
-      previous = false;
-      newNum = 1;
-    } else {
-      previous = true;
-      newNum = number + 1;
-    }
-
-    let proData;
-    if (sort == "lowToHigh") {
-      proData = await Product.find({}).sort({ regularPrice: 1 }).skip(skip).limit(12);
-    } else if (sort == "highToLow") {
-      proData = await Product.find({}).sort({ regularPrice: -1 }).skip(skip).limit(12);
-    } else if (sort == "aA-zZ") {
-      proData = await Product.find({}).sort({ name: 1 }).skip(skip).limit(12);
-    } else if (sort == "zZ-aA") {
-      proData = await Product.find({}).sort({ name: -1 }).skip(skip).limit(12);
-    } else if (rating) {
-      proData = await Product.find({ rating }).limit(12);
-    } else {
-      proData = await Product.find({}).skip(skip).limit(12);
-    }
-
-    const categories = await Category.find({});
-    const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
-    let nextPage = proData.length >= 6;
-
-    res.render("allProducts", { proData, categories, newPro, newNum, previous, nextPage });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-
-
-// PAGINATION
-
-const nextPage = async (req, res) => {
   try {
     const cart = req.session.cart;
     const wish = req.session.wish;
    
-    const page = req.query.next || 0;
+    const page = req.query.next || 1; // Default page is 1
     const pre = req.query.pre || 0;
 
     let number = 0;
@@ -928,35 +833,66 @@ const nextPage = async (req, res) => {
     } else if (pre != 0) {
       number = parseInt(pre) - 2;
     }
-    const skip = number * 6;
+    const skip = (number - 1) * 8; // Assuming 12 items per page
 
-    console.log("NUMBER");
-    console.log(skip);
+    console.log("PAGE", page);
+    console.log("SKIP", skip);
 
-    const proData = await Product.find({ is_blocked: false })
-      .skip(skip)
-      .limit(6);
+    const sort = req.query.sort;
+    const categoryName = req.query.category;
 
-    console.log(proData);
+    let proData;
+    let totalProducts;
 
-    const categories = await Category.find({ is_blocked: false });
+    if (categoryName) {
+      const category = await Category.findOne({ name: categoryName }).select('_id');
+      if (!category) {
+        return res.status(404).send("Category not found");
+      }
+
+      totalProducts = await Product.countDocuments({ category: category._id });
+
+      if (sort == "lowToHigh") {
+        proData = await Product.find({ category: category._id }).sort({ offerPrice: 1 }).skip(skip).limit(8);
+      } else if (sort == "highToLow") {
+        proData = await Product.find({ category: category._id }).sort({ offerPrice: -1 }).skip(skip).limit(8);
+      } else if (sort == "aA-zZ") {
+        proData = await Product.find({ category: category._id }).sort({ name: 1 }).skip(skip).limit(8);
+      } else if (sort == "zZ-aA") {
+        proData = await Product.find({ category: category._id }).sort({ name: -1 }).skip(skip).limit(8);
+      } else {
+        proData = await Product.find({ category: category._id }).skip(skip).limit(8);
+      }
+    } else {
+      totalProducts = await Product.countDocuments({});
+      
+      if (sort == "lowToHigh") {
+        proData = await Product.find({}).sort({ offerPrice: 1 }).skip(skip).limit(12);
+      } else if (sort == "highToLow") {
+        proData = await Product.find({}).sort({ offerPrice: -1 }).skip(skip).limit(12);
+      } else if (sort == "aA-zZ") {
+        proData = await Product.find({}).sort({ name: 1 }).skip(skip).limit(12);
+      } else if (sort == "zZ-aA") {
+        proData = await Product.find({}).sort({ name: -1 }).skip(skip).limit(12);
+      } else {
+        proData = await Product.find({}).skip(skip).limit(12);
+      }
+    }
+
+    const categories = await Category.find({});
     const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
 
-    let previous = true;
-
-    let nextPage;
-    if (proData.length >= 6) {
-      nextPage = true;
-    } else {
-      nextPage = false;
-    }
+    let previous = skip > 0;
+    let nextPage = (skip + 8) < totalProducts;
     let newNum = number + 1;
 
-    res.render("allProducts", { proData, categories, newPro, newNum, previous, nextPage });
+    res.render("allProducts", { cart, wish, categories, proData, newPro, newNum, previous, nextPage, sort, categoryName });
   } catch (error) {
-    console.log(error.message);
+    console.log(`Error in logging all products page: ${error}`);
+    res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 // SEARCH PRODUCTS
@@ -1155,5 +1091,4 @@ module.exports = {
   loadForget,
   verifyForgotpass,
   searchProducts,
-  nextPage
 };

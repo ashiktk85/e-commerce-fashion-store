@@ -83,7 +83,7 @@ userRoute.post("/addAmount",userAuth.isBlocked,userAuth.isLogin,walletController
 // all products
 userRoute.get('/allProducts',userAuth.isBlocked,userAuth.isLogin,userController.allProducts)
 userRoute.post("/search",userController.searchProducts)
-userRoute.get("/next-page",userController.nextPage)
+// userRoute.get("/next-page",userController.nextPage)
 
 //wishlist 
 userRoute.get("/wishlist", userAuth.isLogin,userAuth.isBlocked, userController.whishlist)

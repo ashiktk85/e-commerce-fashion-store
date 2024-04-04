@@ -45,142 +45,222 @@ const verifyAdmin = async (req, res) => {
 
 // LOADING ADMIN HOME
 
-const adminHome = async (req, res) => {
+// const adminHome = async (req, res) => {
+//     try {
+//       const yValues = [0, 0, 0, 0, 0, 0, 0];
+//       const order = await Order.find({
+//         status: { $nin: ["Ordered", "Processing", "Canceled", "Shipped"] },
+//       });
+  
+//       const productQuantityMap = new Map();
+  
+//       order.forEach((order) => {
+//         order.items.forEach((item) => {
+//           const productId = item.productId.valueOf();
+//           const quantity = item.quantity;
+//           productQuantityMap.set(
+//             productId,
+//             (productQuantityMap.get(productId) || 0) + quantity
+//           );
+//         });
+//       });
+  
+//       const productQuantityArray = [...productQuantityMap.entries()].map(
+//         ([productId, quantity]) => ({ productId, quantity })
+//       );
+  
+//       productQuantityArray.sort((a, b) => b.quantity - a.quantity);
+  
+//       const allData = await Category.find({});
+//       const sales = new Array(allData.length).fill(0);
+//       const allName = allData.map((x) => x.name);
+  
+//       let productId = [];
+//       let quantity = [];
+  
+//       for (let i = 0; i < order.length; i++) {
+//         for (let j = 0; j < order[i].items.length; j++) {
+//           productId.push(order[i].items[j].productId);
+//           quantity.push(order[i].items[j].quantity);
+//         }
+//       }
+  
+//       const productData = [];
+//       for (let i = 0; i < productId.length; i++) {
+//         productData.push(await Product.findById(productId[i]));
+//       }
+  
+//       for (let i = 0; i < productData.length; i++) {
+//         for (let j = 0; j < allData.length; j++) {
+//           if (allData[j]._id.toString() === productData[i].category.toString()) {
+//             sales[j] += quantity[i];
+//           }
+//         }
+//       }
+  
+//       const topProduct = [];
+  
+//       const month = await Order.aggregate([
+//         {
+//           $project: {
+//             _id: { $dateToString: { format: "%m-%Y", date: "$createdAt" } },
+//             totalAmount: 1,
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: "$_id",
+//             totalEarnings: { $sum: "$totalAmount" },
+//           },
+//         },
+//         {
+//           $sort: { _id: 1 },
+//         },
+//       ]);
+  
+//       let array = new Array(12).fill(0);
+//       const months = [
+//         "01-2024", "02-2024", "03-2024", "04-2024", "05-2024", "06-2024",
+//         "07-2024", "08-2024", "09-2024", "10-2024", "11-2024", "12-2024",
+//       ];
+  
+//       for (let i = 0; i < array.length; i++) {
+//         for (let j = 0; j < month.length; j++) {
+//           if (month[j]._id === months[i]) {
+//             array[i] += month[j].totalEarnings;
+//           }
+//         }
+//       }
+  
+//       const orderData = await Order.find({ status: "Delivered" });
+//       let sum = orderData.reduce((acc, curr) => acc + curr.totalAmount, 0);
+//       const product = await Product.find({});
+//       const category = await Category.find({});
+  
+//       if (order.length > 0) {
+//         const proLength = product.length;
+//         const catLength = category.length;
+//         const orderLength = order.length;
+//         res.render("adminhome", {
+//           sum,
+//           proLength,
+//           catLength,
+//           orderLength,
+//           month,
+//           yValues,
+//           allName,
+//           sales,
+//           productData,
+//           productQuantityArray,
+//           topProduct,
+//           array,
+//         });
+//       } else {
+//         const proLength = product.length;
+//         const catLength = category.length;
+//         const orderLength = order.length;
+//         const month = null;
+//         res.render("adminDash", {
+//           sum,
+//           proLength,
+//           catLength,
+//           orderLength,
+//           month,
+//           yValues,
+//           allName,
+//           sales,
+//           productData,
+//           productQuantityArray,
+//           topProduct,
+//           array,
+//         });
+//       }
+//     } catch (error) {
+//       console.log(error.message);
+//       res.status(500).send("Internal Server Error");
+//     }
+//   };
+  
+
+  const adminHome = async (req, res) => {
     try {
-      const yValues = [0, 0, 0, 0, 0, 0, 0];
-      const order = await Order.find({
-        status: { $nin: ["Ordered", "Processing", "Canceled", "Shipped"] },
-      });
-  
-      const productQuantityMap = new Map();
-  
-      order.forEach((order) => {
-        order.items.forEach((item) => {
-          const productId = item.productId.valueOf();
-          const quantity = item.quantity;
-          productQuantityMap.set(
-            productId,
-            (productQuantityMap.get(productId) || 0) + quantity
-          );
-        });
-      });
-  
-      const productQuantityArray = [...productQuantityMap.entries()].map(
-        ([productId, quantity]) => ({ productId, quantity })
-      );
-  
-      productQuantityArray.sort((a, b) => b.quantity - a.quantity);
-  
-      const allData = await Category.find({});
-      const sales = new Array(allData.length).fill(0);
-      const allName = allData.map((x) => x.name);
-  
-      let productId = [];
-      let quantity = [];
-  
-      for (let i = 0; i < order.length; i++) {
-        for (let j = 0; j < order[i].items.length; j++) {
-          productId.push(order[i].items[j].productId);
-          quantity.push(order[i].items[j].quantity);
+        const [user, category, product, order] = await Promise.all([
+            User.find({}),
+            Category.find({}),
+            Product.find({}),
+            
+            Order.find({ status: { $nin: ["Ordered", "Shipped", "Cancelled"] } })
+        ]);
+        let revenue = 0;
+        for(let i=0 ; i< order.length ; i++){
+            revenue += order[i].totalAmount
         }
-      }
-  
-      const productData = [];
-      for (let i = 0; i < productId.length; i++) {
-        productData.push(await Product.findById(productId[i]));
-      }
-  
-      for (let i = 0; i < productData.length; i++) {
-        for (let j = 0; j < allData.length; j++) {
-          if (allData[j]._id.toString() === productData[i].category.toString()) {
-            sales[j] += quantity[i];
-          }
+        // line chart user line
+        const UserdayArray = [0,0,0,0,0,0,0];
+        for (let i = 0; i < user.length; i++) {
+            let createddate = new Date(user[i].createdOn);
+            createddate = createddate.getDay(); // [sun monday , tue]
+            UserdayArray[createddate] += 1;
+        };
+        // line chart order counting each day
+        const orderData = await Order.find({});
+        const orderdayArray = [0,0,0,0,0,0,0];
+        for (let i = 0; i < orderData.length; i++) {
+            let dateOfOrder = new Date(orderData[i].date);
+            dateOfOrder = dateOfOrder.getDay();
+            orderdayArray[dateOfOrder] += 1
+        };
+        // Bar chart weekly revenew
+        const revenewDayaArray = [0,0,0,0,0,0,0,0,0,0,0,0];
+        for (let i = 0; i < orderData.length; i++) {
+            if(orderData[i].paymentMethod === "Cash on delivery"){
+                if(orderData[i].status === "Delivered" || orderData[i].status === "Return order cancel" || orderData[i].status === "Return order cancel"){
+                    let monthOfOrder = new Date(orderData[i].date);
+                    monthOfOrder = monthOfOrder.getMonth();
+                    revenewDayaArray[monthOfOrder] += orderData[i].total;
+                }
+            }
+            if(orderData[i].paymentMethod === "Razorpay"){
+                if(orderData[i].status === "Ordered" || orderData[i].status === "Shipped" || orderData[i].status === "Delivered" || orderData[i].status === "Return order processing" || orderData[i].status === "Return order cancel"){
+                    let monthOfOrder = new Date(orderData[i].date);
+                    monthOfOrder = monthOfOrder.getMonth();
+                    revenewDayaArray[monthOfOrder] += orderData[i].total;
+                }
+            }
         }
-      }
-  
-      const topProduct = [];
-  
-      const month = await Order.aggregate([
-        {
-          $project: {
-            _id: { $dateToString: { format: "%m-%Y", date: "$createdAt" } },
-            totalAmount: 1,
-          },
-        },
-        {
-          $group: {
-            _id: "$_id",
-            totalEarnings: { $sum: "$totalAmount" },
-          },
-        },
-        {
-          $sort: { _id: 1 },
-        },
-      ]);
-  
-      let array = new Array(12).fill(0);
-      const months = [
-        "01-2024", "02-2024", "03-2024", "04-2024", "05-2024", "06-2024",
-        "07-2024", "08-2024", "09-2024", "10-2024", "11-2024", "12-2024",
-      ];
-  
-      for (let i = 0; i < array.length; i++) {
-        for (let j = 0; j < month.length; j++) {
-          if (month[j]._id === months[i]) {
-            array[i] += month[j].totalEarnings;
-          }
+
+        // top 5 products
+        const productCounts = await Order.aggregate([
+            { $unwind: "$product" },{ $group: { _id: "$product.name", count: { $sum: 1 } } },
+            { $sort: { count: -1 } }, { $limit: 5 },{ $project: { _id: 0, product: "$_id" } }
+        ]);
+        const productList = productCounts.map(item => item.product);
+        const top5products = await Product.find({ name: { $in: productList } });
+
+        
+
+        // top 5 category
+        const productCategoryCounts = await Order.aggregate([
+            { $unwind: "$product" },
+            { $group: { _id: "$product.categoryName", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 5 },
+            { $project: { _id: 0, category: "$_id", count: 1 } }
+        ]);
+        let productcatList = productCategoryCounts.map(item => item.category);
+        for (const categoryItem of category) {
+            if (productcatList.length >= 5) break;
+            if (!productcatList.includes(categoryItem.name)) {
+                productcatList.push(categoryItem.name);
+            }
         }
-      }
-  
-      const orderData = await Order.find({ status: "Delivered" });
-      let sum = orderData.reduce((acc, curr) => acc + curr.totalAmount, 0);
-      const product = await Product.find({});
-      const category = await Category.find({});
-  
-      if (order.length > 0) {
-        const proLength = product.length;
-        const catLength = category.length;
-        const orderLength = order.length;
-        res.render("adminhome", {
-          sum,
-          proLength,
-          catLength,
-          orderLength,
-          month,
-          yValues,
-          allName,
-          sales,
-          productData,
-          productQuantityArray,
-          topProduct,
-          array,
-        });
-      } else {
-        const proLength = product.length;
-        const catLength = category.length;
-        const orderLength = order.length;
-        const month = null;
-        res.render("adminDash", {
-          sum,
-          proLength,
-          catLength,
-          orderLength,
-          month,
-          yValues,
-          allName,
-          sales,
-          productData,
-          productQuantityArray,
-          topProduct,
-          array,
-        });
-      }
+
+        
+        res.render("adminHome" , {user , category , product , order , revenue , UserdayArray , orderdayArray , revenewDayaArray , top5products , productcatList })
     } catch (error) {
-      console.log(error.message);
-      res.status(500).send("Internal Server Error");
+        console.log(error);
     }
-  };
-  
+}
   
 
 // LOADING USER DETAILS PAGE 

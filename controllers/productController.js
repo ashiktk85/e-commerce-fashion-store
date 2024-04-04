@@ -6,15 +6,25 @@ const Cart = require("../models/cartModel")
 
 const loadProduct = async (req, res) => {
     try {
-        const proData = await Product.find({});
-        const catData = await Category.find({})
+       
+        const page = parseInt(req.query.page) || 1;
+       
+        const productsPerPage = 5;
+      
+        const skip = (page - 1) * productsPerPage;
 
-        console.log()
+        
+        const proData = await Product.find({}).skip(skip).limit(productsPerPage);
+        const catData = await Category.find({});
 
+       
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / productsPerPage);
 
-        res.render('adminProduct', { proData, catData })
+        res.render('adminProduct', { proData, catData, currentPage: page, totalPages });
     } catch (error) {
         console.log(`Error in loading admin products page ${error}`);
+        res.status(500).send('Internal Server Error');
     }
 }
 

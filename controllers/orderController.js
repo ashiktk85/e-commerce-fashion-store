@@ -23,13 +23,25 @@ var instance = new Razorpay({
 
 const loadOrder = async (req, res) => {
   try {
-    const orderData = await Order.find({}).sort({ _id: -1 });
+      const page = parseInt(req.query.page) || 1;
+      const ordersPerPage = 5; 
+      const skip = (page - 1) * ordersPerPage;
 
-    res.render("adminOrders", { orderData });
+
+      const orderData = await Order.find({})
+
+   
+      const totalOrders = await Order.countDocuments({});
+      const totalPages = Math.ceil(totalOrders / ordersPerPage);
+
+      res.render("adminOrders", { orderData, totalPages, currentPage: page, ordersPerPage });
   } catch (error) {
-    console.log(error.message);
+      console.log(`Error in loading orders: ${error}`);
+      res.status(500).send("Internal Server Error");
   }
 };
+
+
 
 //ADMIN DETAIL ORDER
 
@@ -412,9 +424,7 @@ const failedPayment = async (req, res) => {
     orderData.save();
     const deleteCart = await Cart.findByIdAndDelete({ _id: cartData._id });
 
-    res.json({ status: "failed" })
-
-
+    res.json({ status: "failed" });
   } catch (error) {
     console.log(`error in failed payment post ${error.message}`);
   }
@@ -429,17 +439,21 @@ const continuePayment = async (req, res) => {
 
     const findOrder = await Order.findById(id);
     if (!findOrder) {
-      return res.status(404).json({ status: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ status: false, message: "Order not found" });
     }
 
     const proData = findOrder.items;
-    const quantity = proData.map(item => item.quantity);
+    const quantity = proData.map((item) => item.quantity);
 
     const products = [];
     for (let i = 0; i < proData.length; i++) {
       const product = await Product.findById(proData[i].productId);
       if (!product) {
-        return res.status(404).json({ status: false, message: "Product not found" });
+        return res
+          .status(404)
+          .json({ status: false, message: "Product not found" });
       }
       products.push(product);
     }
@@ -452,7 +466,12 @@ const continuePayment = async (req, res) => {
       const currentQuantity = products[i].size[size].quantity;
       const orderedQuantity = quantity[i];
       if (currentQuantity < orderedQuantity) {
-        return res.status(400).json({ status: false, message: `Not enough stock for product ${products[i].name}` });
+        return res
+          .status(400)
+          .json({
+            status: false,
+            message: `Not enough stock for product ${products[i].name}`,
+          });
       }
       products[i].size[size].quantity -= orderedQuantity;
       await products[i].save();
@@ -463,7 +482,7 @@ const continuePayment = async (req, res) => {
     var options = {
       amount: findOrder.totalAmount * 100,
       currency: "INR",
-      receipt: stringOrder_id
+      receipt: stringOrder_id,
     };
 
     console.log(options);
@@ -473,11 +492,17 @@ const continuePayment = async (req, res) => {
       console.log(razorpayOrder);
       if (!error) {
         console.log("without ERROR");
-        res.json({ status: true, order: razorpayOrder, orderId: findOrder._id });
+        res.json({
+          status: true,
+          order: razorpayOrder,
+          orderId: findOrder._id,
+        });
       } else {
         console.log("full error");
         console.error(error);
-        res.status(500).json({ status: false, message: "Failed to create order" });
+        res
+          .status(500)
+          .json({ status: false, message: "Failed to create order" });
       }
     });
   } catch (error) {
@@ -490,41 +515,63 @@ const continuePayment = async (req, res) => {
 
 const successPayment = async (req, res) => {
   try {
-    const { response, order } = req.body
-    console.log(response, order)
+    const { response, order } = req.body;
+    console.log(response, order);
 
-    let hmac = crypto.createHmac("sha256",  "iEgLaQf47PbHbiIodSNL8NvV");
-    hmac.update(response.razorpay_order_id + "|" + response.razorpay_payment_id);
+    let hmac = crypto.createHmac("sha256", "iEgLaQf47PbHbiIodSNL8NvV");
+    hmac.update(
+      response.razorpay_order_id + "|" + response.razorpay_payment_id
+    );
     hmac = hmac.digest("hex");
 
     if (hmac == response.razorpay_signature) {
-      const updateOrder = await Order.findByIdAndUpdate({ _id: order }, {
-        $set: {
-          status: "Processing"
+      const updateOrder = await Order.findByIdAndUpdate(
+        { _id: order },
+        {
+          $set: {
+            status: "Processing",
+          },
         }
-      })
+      );
 
-      res.json({ status: true })
-
+      res.json({ status: true });
     }
-
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
-
+};
 
 // ORDER INVOICE
 
 const invoice = async (req, res) => {
   try {
-    res.render('invoice')
+    const id = req.query.id;
+    console.log(id);
+    const findOrder = await Order.findById({ _id: id });
+
+    const userData = await User.findById({ _id : findOrder.userId })
+    console.log(userData);
+
+    const proId = [];
+
+    for (let i = 0; i < findOrder.items.length; i++) {
+      proId.push(findOrder.items[i].productId);
+    }
+
+    const proData = [];
+
+    for (let i = 0; i < proId.length; i++) {
+      proData.push(await Product.findById({ _id: proId[i] }));
+    }
+
+    console.log("productssssssssss.s.s.s..s.s.s.s.", proData)
+    console.log(findOrder)
+
+    res.render("invoice", { proData, findOrder , userData});
   } catch (error) {
     console.log(`error in invoice ${error.message}`);
   }
-}
-
-
+};
 
 module.exports = {
   loadOrder,
@@ -539,5 +586,5 @@ module.exports = {
   failedPayment,
   continuePayment,
   successPayment,
-  invoice
+  invoice,
 };

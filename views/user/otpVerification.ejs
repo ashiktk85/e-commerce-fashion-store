@@ -1268,31 +1268,47 @@
         // }
 
         // window.onload = updateTimer;
-        function callmycount(){
-        document.getElementById("timer").innerHTML = "01" + ":" + "00";
-        let myTimer = setInterval(startTimer, 1000);
+        let myTimer; // Define myTimer globally to store the interval ID
 
-        function startTimer(){
-            var presentTime = document.getElementById('timer').innerHTML;
-            var timeArray = presentTime.split(/[:]+/);
-            var m = parseInt(timeArray[0]);
-            var s = checkSecond((parseInt(timeArray[1]) - 1));
-            if( m === 0 && s === "00"){
-                clearTimeout(myTimer);
-                document.getElementById("timer").innerHTML = "00:00";
-                document.getElementById("resendOTP").style.display = "block";
-            }else{
-            if(s==59){m=m-1}
-            if(m<0 && s==59){alert("Timeout for otp");clearTimeout(myTimer)}
-            document.getElementById('timer').innerHTML =  m + ":" + s;
+function callmycount() {
+    document.getElementById("timer").innerHTML = "01" + ":" + "00";
+    clearInterval(myTimer); // Clear the interval before setting a new one
+    myTimer = setInterval(startTimer, 1000);
+
+    function startTimer() {
+        var presentTime = document.getElementById('timer').innerHTML;
+        var timeArray = presentTime.split(/[:]+/);
+        var m = parseInt(timeArray[0]);
+        var s = checkSecond((parseInt(timeArray[1]) - 1));
+        if (m === 0 && s === "00") {
+            clearInterval(myTimer); // Clear the interval when timer reaches 00:00
+            document.getElementById("timer").innerHTML = "00:00";
+            document.getElementById("resendOTP").style.display = "block";
+        } else {
+            if (s == 59) {
+                m = m - 1;
             }
-        } 
-        function checkSecond(sec){
-                if (sec < 10 && sec>= 0){sec = "0" + sec}
-                if(sec< 0){sec = "59"}
-                return sec;}
+            if (m < 0 && s == 59) {
+                alert("Timeout for otp");
+                clearInterval(myTimer); // Clear the interval on timeout
+            }
+            document.getElementById('timer').innerHTML = m + ":" + s;
+        }
     }
-    callmycount();
+
+    function checkSecond(sec) {
+        if (sec < 10 && sec >= 0) {
+            sec = "0" + sec;
+        }
+        if (sec < 0) {
+            sec = "59";
+        }
+        return sec;
+    }
+}
+
+callmycount();
+
     </script>
     
 

@@ -1069,8 +1069,8 @@
                                   Request Return
                                 </button>
 
-                                <a href = "/invoice"> <div class="login-register-btn" style="width: 100px;">
-                                            <button type="submit">Download Invoice</button>
+                                 <div class="login-register-btn" style="width: 100px;">
+                                            <button type="submit"  onclick="invoice('<%=findOrder._id%>')" >Download Invoice</button>
                                         </div></a>
 
                                
@@ -1586,6 +1586,10 @@ function verifyPayment(response,order){
                 }
             }
         })
+    }
+    
+    function invoice(id) {
+      window.location.href = '/invoice?id='+id
     }
 
     </script>
