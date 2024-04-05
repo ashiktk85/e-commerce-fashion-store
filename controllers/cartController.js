@@ -25,7 +25,6 @@ var instance = new Razorpay({
 const cartPage = async (req, res) => {
   try {
     const email = req.session.email;
-    // const userData = req.
     const userData = await User.findOne({ email: email });
 
     const cartData = await Cart.findOne({ userId: userData._id });
@@ -37,23 +36,23 @@ const cartPage = async (req, res) => {
       for (let i = 0; i < cartData.items.length; i++) {
         arr.push(cartData.items[i].productId.toString());
       }
-      // console.log(arr);
 
       for (let i = 0; i < arr.length; i++) {
-        proData.push(await Product.findById({ _id: arr[i] }));
+        const product = await Product.findById(arr[i]);
+       
+        if (product && product.is_blocked == false) {
+          proData.push(product);
+        }
       }
-
-      console.log(proData);
     }
 
-    //   console.log(proData,cartData)
     res.render("cart", { proData, cartData });
-
-    // console.log(cartData)
   } catch (error) {
     console.log(error.message);
+    res.status(500).send("Internal Server Error");
   }
 };
+
 
 // ADD TO CART post loading
 const loadCart = async (req, res) => {
@@ -61,7 +60,7 @@ const loadCart = async (req, res) => {
     console.log("Getting to load cart...");
 
     let { id, proPrice, selectedSize } = req.body;
-    selectedSize = selectedSize.toLowerCase();
+    selectedSize = selectedSize.toLowerCase().trim();
     const price = parseInt(proPrice);
 
     if (req.session.email) {
@@ -69,12 +68,14 @@ const loadCart = async (req, res) => {
       const userCart = await Cart.findOne({ userId: userData._id });
       const proData = await Product.findById(id);
 
-      if (proData) {
+      if (proData && !proData.is_blocked) {
         const availableQuantity = proData.size[selectedSize].quantity;
 
         if (availableQuantity <= 0) {
           return res.status(200).json({ status: "Out of stock" });
         }
+
+        let subtotal = price * 1; // Assuming quantity is always 1
 
         if (userCart) {
           let proCart = false;
@@ -89,21 +90,21 @@ const loadCart = async (req, res) => {
           if (proCart) {
             return res.status(200).json({ status: "alreadyInCart" });
           } else {
+            const cartItem = {
+              productId: id,
+              subTotal: subtotal,
+              quantity: 1,
+              size: selectedSize,
+            };
+            
+            // Update or add the cart item
             await Cart.findOneAndUpdate(
               { userId: userData._id },
               {
-                $push: {
-                  items: {
-                    productId: id,
-                    subTotal: proPrice,
-                    quantity: 1,
-                    size: selectedSize,
-                  },
-                },
-                $inc: {
-                  totalPrice: proPrice,
-                },
-              }
+                $push: { items: cartItem },
+                $inc: { totalPrice: subtotal },
+              },
+              { upsert: true } // Create new cart if not exists
             );
           }
         } else {
@@ -112,19 +113,19 @@ const loadCart = async (req, res) => {
             items: [
               {
                 productId: id,
-                subTotal: proPrice,
+                subTotal: subtotal,
                 quantity: 1,
                 size: selectedSize,
               },
             ],
-            totalPrice: proPrice,
+            totalPrice: subtotal,
           });
           await cartData.save();
         }
 
         res.json({ status: true });
       } else {
-        res.status(401).json({ status: "login" });
+        res.status(401).json({ status: "Product not available" });
       }
     }
   } catch (error) {
@@ -133,6 +134,8 @@ const loadCart = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 
 
 
@@ -455,26 +458,36 @@ const removeItemCart = async (req, res) => {
   try {
     const id = req.query.id;
     const size = req.query.size;
-    console.log(id, size);
     const email = req.session.email;
 
     const user = await User.findOne({ email: email });
-    const data = await Cart.findOne({ userId: user._id });
+    const cart = await Cart.findOne({ userId: user._id });
 
-    console.log(data);
+    // Find the item to be removed
+    const removedItem = cart.items.find(item => item.productId.toString() === id && item.size.trim() === size);
+
+    if (!removedItem) {
+      // If item not found, return error or handle accordingly
+      return res.status(404).send("Item not found in cart.");
+    }
 
     const deleteOne = await Cart.findOneAndUpdate(
       { userId: user._id },
       {
         $pull: {
-          items: { productId: id, size: size },
+          items: { productId: removedItem.productId, size: size },
         },
-      }
+        $inc: {
+          totalPrice: -removedItem.subTotal // Subtract the subtotal of removed item from totalPrice
+        }
+      },
+      { new: true } // Return updated document
     );
 
     res.redirect("/cart");
   } catch (error) {
-    console.log(`error in removing single cart item : ${error}`);
+    console.log(`Error in removing single cart item: ${error}`);
+    res.status(500).send("Internal Server Error");
   }
 };
 

@@ -47,7 +47,7 @@ const home = async (req, res) => {
   try {
     const catData = await Category.find({});
 
-    const proData = await Product.find({}).limit(8);
+    const proData = await Product.find().sort({ is_blocked: 1 }).limit(8);
 
     const cartData = await Cart.find({});
 
@@ -465,16 +465,16 @@ const loadForget = async (req, res) => {
 
 const productDetails = async (req, res) => {
   try {
-    console.log("getting to product details postttttttt");
+    console.log("Getting product details");
 
     const userData = await User.findOne({ email: req.session.email });
     const id = req.query.id;
 
     const viewCart = await Cart.find();
 
-    const user = await User.findById({ _id: id });
-    if (user && user.is_blocked) {
-      res.redirect("/login");
+    const proData = await Product.findById(id);
+    if (proData && proData.is_blocked) {
+      res.redirect("/");
       return;
     }
 
@@ -483,15 +483,10 @@ const productDetails = async (req, res) => {
       "items.productsId": id,
     });
 
-    const proData = await Product.findById({ _id: id });
-
-    const fullData = await Product.find({});
     const category = await Category.findById(proData.category);
 
-    console.log("looooo");
     res.render("productDetails", {
       proData,
-      fullData,
       categoryName: category.name,
       cartData,
       viewCart,
@@ -501,6 +496,7 @@ const productDetails = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 //DASHBOARD
 
