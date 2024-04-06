@@ -1180,16 +1180,30 @@
                                   </button>
                                 </div>
 
-                                <% }else if(findOrder.status=="Return proccess"
+                                <% }else if(findOrder.status=="Return process"
                                 ){ %>
 
-                                <a
-                                  onclick="cancelReturn('<%= findOrder._id %>')"
-                                  class="btn btn-rounded"
-                                >
-                                  <i class="fa fa-share-square mr-10"></i>
-                                  Cancel Return</a
-                                >
+                                
+                                  
+                              
+                                <button
+                                    onclick="cancelReturn('<%=findOrder._id%>')"
+                                    style="
+                                      padding: 6px 8px;
+                                      font-size: 14px;
+                                      background-color: #000000;
+                                      color: white;
+                                      border: none;
+                                      border-radius: 4px;
+                                      cursor: pointer;
+                                      margin-bottom: 30px;
+                                      margin-top: 20px;
+                                    "
+                                  >
+                                  Cancel Return
+                                  </button>
+                                 
+                                
 
                                 <%}else if(findOrder.status=="Returned"){%>
                                 <p

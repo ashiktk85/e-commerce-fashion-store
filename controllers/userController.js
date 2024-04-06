@@ -49,6 +49,8 @@ const home = async (req, res) => {
 
     const proData = await Product.find().sort({ is_blocked: 1 }).limit(8);
 
+
+
     const cartData = await Cart.find({});
 
     const isAuthenticated = req.session.email;
@@ -1022,7 +1024,7 @@ const loadCoupon = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.session.email });
 
-    const allCoupons = await Coupon.find();
+    const allCoupons = await Coupon.find({isActive : true });
 
     const couponData = allCoupons.filter(
       (coupon) => !coupon.users.includes(user.id)

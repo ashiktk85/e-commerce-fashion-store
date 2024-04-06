@@ -25,8 +25,10 @@ var instance = new Razorpay({
 const cartPage = async (req, res) => {
   try {
     const email = req.session.email;
-    const userData = await User.findOne({ email: email });
+    const cart = req.session.cart;
+    const wish = req.session.wish;
 
+    const userData = await User.findOne({ email: email });
     const cartData = await Cart.findOne({ userId: userData._id });
     const proData = [];
 
@@ -38,20 +40,31 @@ const cartPage = async (req, res) => {
       }
 
       for (let i = 0; i < arr.length; i++) {
-        const product = await Product.findById(arr[i]);
-       
-        if (product && product.is_blocked == false) {
-          proData.push(product);
-        }
+        proData.push(await Product.findById(arr[i]));
       }
+
+      let total = 0; // Initialize total price to 0
+
+      for (let i = 0; i < proData.length; i++) {
+        if (proData[i].offerPrice * cartData.items[i].quantity !== cartData.items[i].subTotal) {
+          cartData.items[i].subTotal = proData[i].offerPrice * cartData.items[i].quantity;
+        }
+        
+        total += cartData.items[i].subTotal; // Accumulate subtotal to calculate total
+      }
+
+      cartData.totalPrice = total; // Update totalPrice field
+      await cartData.save(); // Save the updated cart data
     }
 
-    res.render("cart", { proData, cartData });
+    res.render("cart", { proData, cartData, cart, wish });
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");
   }
 };
+
+
 
 
 // ADD TO CART post loading
@@ -278,8 +291,6 @@ const placeOrder = async (req, res) => {
   try {
     const { selectedAddress, paymentMethod, cartid, total, code } = req.body;
     console.log(selectedAddress, paymentMethod, cartid);
-    console.log(selectedAddress, paymentMethod, cartid);
-    
 
     const findCoupon = await Coupon.findOne({ couponCode: code });
 
@@ -291,7 +302,6 @@ const placeOrder = async (req, res) => {
       const cartData = await Cart.findOne({ userId: userData._id });
 
       const proData = cartData.items;
-      console.log(proData);
 
       for (let i = 0; i < proData.length; i++) {
         const proId = proData[i].productId;
@@ -299,43 +309,13 @@ const placeOrder = async (req, res) => {
         const selectedSize = proData[i].size.toLowerCase();
 
         const product = await Product.findById(proId);
+        const offerPrice = product.offerPrice || product.regularPrice;
 
-        const productSize = product.size[selectedSize];
-
-        if (!productSize || productSize.quantity < quantity) {
-          res.json({ status: "lowStock" });
-          return;
-        }
-        
-
-        if (product) {
-          console.log("Product size:", product.size);
-          console.log("Selected size:", selectedSize);
-
-          if (
-            product.size &&
-            product.size[selectedSize] &&
-            product.size[selectedSize].quantity >= quantity
-          ) {
-            product.size[selectedSize].quantity -= quantity;
-            await product.save();
-            console.log(`Stock updated for product with ID ${proId}`);
-          } else {
-            console.error(
-              `Invalid size or insufficient stock for product with ID ${proId}`
-            );
-            res.json({
-              status: "error",
-              message: "Invalid size or insufficient stock",
-            });
-            return;
-          }
-        } else {
-          console.error(`Product with ID ${proId} not found`);
-          res.json({ status: "error", message: "Product not found" });
-          return;
-        }
+        const subtotal = offerPrice * quantity;
+        proData[i].subTotal = subtotal;
       }
+
+      const newTotal = proData.reduce((acc, item) => acc + item.subTotal, 0);
 
       const orderNum = generateOrder.generateOrder();
       console.log(orderNum);
@@ -346,24 +326,24 @@ const placeOrder = async (req, res) => {
       const date = generateDate();
 
       if (findCoupon) {
-        console.log("insise find coupon");
+        console.log("inside find coupon");
         const orderData = new Order({
           userId: userData._id,
           userEmail: userData.email,
           orderNumber: orderNum,
           items: proData,
-          totalAmount: total,
+          totalAmount: newTotal - findCoupon.discount,
           orderType: paymentMethod,
           orderDate: date,
           status: "Processing",
           shippingAddress: addressData,
-          coupon:findCoupon.couponCode,
+          coupon: findCoupon.couponCode,
           discount: findCoupon.discount,
         });
 
         orderData.save();
 
-        const updateCouppon = await Coupon.findByIdAndUpdate(
+        const updateCoupon = await Coupon.findByIdAndUpdate(
           { _id: findCoupon._id },
           {
             $push: {
@@ -377,7 +357,7 @@ const placeOrder = async (req, res) => {
           userEmail: userData.email,
           orderNumber: orderNum,
           items: proData,
-          totalAmount: total,
+          totalAmount: newTotal,
           orderType: paymentMethod,
           orderDate: date,
           status: "Processing",
@@ -399,13 +379,11 @@ const placeOrder = async (req, res) => {
       }
 
       const quantity = [];
-
       for (let i = 0; i < proData.length; i++) {
         quantity.push(proData[i].quantity);
       }
 
       const proId = [];
-
       for (let i = 0; i < proData.length; i++) {
         proId.push(proData[i].productId);
       }
@@ -433,7 +411,7 @@ const placeOrder = async (req, res) => {
           console.log("Order ID:", razorpayOrder.id);
           console.log("Amount:", razorpayOrder.amount);
 
-            res.json({
+          res.json({
             status: "razorpay",
             order: razorpayOrder,
             address: selectedAddress,
@@ -452,6 +430,7 @@ const placeOrder = async (req, res) => {
   }
 };
 
+
 // REMOVING SINGLE CART ITEM
 
 const removeItemCart = async (req, res) => {
@@ -463,11 +442,11 @@ const removeItemCart = async (req, res) => {
     const user = await User.findOne({ email: email });
     const cart = await Cart.findOne({ userId: user._id });
 
-    // Find the item to be removed
+    
     const removedItem = cart.items.find(item => item.productId.toString() === id && item.size.trim() === size);
 
     if (!removedItem) {
-      // If item not found, return error or handle accordingly
+   
       return res.status(404).send("Item not found in cart.");
     }
 
@@ -478,10 +457,10 @@ const removeItemCart = async (req, res) => {
           items: { productId: removedItem.productId, size: size },
         },
         $inc: {
-          totalPrice: -removedItem.subTotal // Subtract the subtotal of removed item from totalPrice
+          totalPrice: -removedItem.subTotal 
         }
       },
-      { new: true } // Return updated document
+      { new: true } 
     );
 
     res.redirect("/cart");

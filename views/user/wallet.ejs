@@ -689,13 +689,15 @@
             <div class="row flex-row-reverse">
               <div class="col-lg-12">
                 <div class="myaccount-tab-menu nav" role="tablist">
-                  <a href="accountDetails" data-bs-toggle="">Dashboard</a>
-                  <a href="#" data-bs-toggle="">Orders</a>
-                  <a href="userAddress" data-bs-toggle="">Address</a>
-                  <a href="changePassword">Change Password</a>
-                  <a href="viewAccount">Account Details</a>
-                  <a href="coupon">Coupon</a>
-                  <a href="wallet" class="active" data-bs-toggle="tab"> My Wallet</a>
+                  <a href="accountDetails"  >
+                    Dashboard</a>
+                <a href="orders" data-bs-toggle=""> Orders</a>
+                <!-- <a href="#download" data-bs-toggle="tab"> Download</a> -->
+                <a href="userAddress" data-bs-toggle=""> Address</a>
+                <a href="changePassword" data-bs-toggle="">Change Password</a>
+                <a href="viewAccount" data-bs-toggle=""> Account Details</a>
+                <a href="coupons"> My coupon</a>
+                <a href="wallet" class="active" data-bs-toggle="tab"> My Wallet</a>
                 </div>
 
                 <!-- Orders Tab Pane Start -->
@@ -706,37 +708,13 @@
                         <div class="row">
                        
                           <div class="col-md-8">
-                            <div class="wallet-page" style=" align-items: center;">
-                                <div class="wallet-header">
-                                    <h1 style="text-align: start; font-family: poppins;font-size: 25px;"><b>Welcome to Your Wallet</b></h1>
-                                </div>
-                                <div class="card wallet-card" style="margin-top: 20px; border: 2px solid #000000;">
-                                    <div class="card-body wallet-content">
-                                        <table class="table" style="width: 100%; border-collapse: collapse;">
-                                            <thead style="background-color: black; color: white;">
-                                                <tr>
-                                                    <th style="padding: 10px;">Transaction ID</th>
-                                                    <th style="padding: 10px;">Amount</th>
-                                                    <th style="padding: 10px;">Date</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <% if (userWallet) { %>
-                                                    <% for (let i = userWallet.transactions.length - 1; i >= 0; i--) { %>
-                                                        <tr>
-                                                            <td><%= userWallet.transactions[i].id %></td>
-                                                            <td style="color: green;">₹<%= userWallet.transactions[i].amount %></td>
-                                                            <td><%= userWallet.transactions[i].date %></td>
-                                                        </tr>
-                                                    <% } %>
-                                                <% } else { %>
-                                                    <tr>
-                                                        <td colspan="3" class="text-center">No Transactions</td>
-                                                    </tr>
-                                                <% } %>
-                                            </tbody>
-                                        </table>
-                                        <div class="wallet-section" style="margin-top: 20px; border: 2px solid #000000; background-color: #f6f6f6; padding: 20px; border-radius: 10px; text-align: center;">
+                            <div class="wallet-page" style="align-items: center;">
+                              <div class="wallet-header">
+                                  <h1 style="text-align: start; font-family: poppins; font-size: 25px;"><b>Welcome to Your Wallet</b></h1>
+                              </div>
+                              <div class="card wallet-card" style="margin-top: 20px; border: 2px solid #000000;">
+                                  <div class="card-body wallet-content">
+                                      <div class="wallet-section" style="margin-top: 20px; border: 2px solid #000000; background-color: #f6f6f6; padding: 20px; border-radius: 10px; text-align: center;">
                                           <img src="assets/images/logo/public/assets/images/logo/Black & White Minimalist Business Logo (1).png" alt="Logo" style="width: 100px; height: 100px; margin-bottom: 20px;">
                                           <h2 style="color: #000000; font-size: 24px; margin-bottom: 10px;">Balance</h2>
                                           <% if (userWallet) { %>
@@ -746,20 +724,46 @@
                                           <% } %>
                                           <!-- Add any additional design elements or text here -->
                                       </div>
-                                      
-                                    </div>
-                                   
-                                    <div class="text-center" style="margin-top: 20px;padding-bottom: 20px;">
-                                        <label for="add-money" style="font-size: 18px;">Add Money to Wallet:</label>
-                                        <p class="text-danger" id="input" style="font-size: 18px; display: none;">Enter Your Amount</p>
-                                        <input type="number" id="add-money" name="add-money" style="padding: 8px; margin-left: 10px; border: 1px solid #ffffff; box-sizing: border-box; width: 100px;">
-                                        <button type="button" onclick="addMoney()" style="padding: 8px 15px; background-color: #000000; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Add</button>
-                                    </div>
-                                    <div class="card-footer wallet-footer" style="text-align: center; margin-top: 20px;background-color: #000000;">
+                                      <div class="transaction-table" style="max-height: 300px; overflow-y: auto; margin-top: 20px;">
+                                          <table class="table" style="width: 100%; border-collapse: collapse;">
+                                              <thead style="background-color: black; color: white;">
+                                                  <tr>
+                                                      <th style="padding: 10px;">Transaction ID</th>
+                                                      <th style="padding: 10px;">Amount</th>
+                                                      <th style="padding: 10px;">Date</th>
+                                                  </tr>
+                                              </thead>
+                                              <tbody>
+                                                  <% if (userWallet) { %>
+                                                      <% for (let i = userWallet.transactions.length - 1; i >= 0; i--) { %>
+                                                          <tr>
+                                                              <td><%= userWallet.transactions[i].id %></td>
+                                                              <td style="color: green;">₹<%= userWallet.transactions[i].amount %></td>
+                                                              <td><%= userWallet.transactions[i].date %></td>
+                                                          </tr>
+                                                      <% } %>
+                                                  <% } else { %>
+                                                      <tr>
+                                                          <td colspan="3" class="text-center">No Transactions</td>
+                                                      </tr>
+                                                  <% } %>
+                                              </tbody>
+                                          </table>
+                                      </div>
+                                  </div>
+                                  <div class="text-center" style="margin-top: 20px;padding-bottom: 20px;">
+                                      <label for="add-money" style="font-size: 18px;">Add Money to Wallet:</label>
+                                      <p class="text-danger" id="input" style="font-size: 18px; display: none;">Enter Your Amount</p>
+                                      <input type="number" id="add-money" name="add-money" style="padding: 8px; margin-left: 10px; border: 1px solid #ffffff; box-sizing: border-box; width: 100px;">
+                                      <button type="button" onclick="addMoney()" style="padding: 8px 15px; background-color: #000000; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Add</button>
+                                  </div>
+                                  <div class="card-footer wallet-footer" style="text-align: center; background-color: #000000;">
                                       <p style="color: #ffffff;">© 2024 My Wallet. All rights reserved.</p>
                                   </div>
-                                </div>
-                            </div>
+                              </div>
+                          </div>
+                          
+                          
                         </div>
                         
 

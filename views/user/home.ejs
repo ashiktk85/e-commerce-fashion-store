@@ -594,58 +594,55 @@
                             <div class="row">
                                 <% let productCount = 0; %>
                                 <% for (let i = 0; i < proData.length && productCount < 8; i++) { %>
-                                    <% if(proData[i].is_blocked == false) {%>
-                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
-                                    <div class="product-wrap mb-50">
-                                        <div class="product-img default-overlay mb-25">
-                                            
-                                                <a href="/productDetails?id=<%= proData[i]._id %>">
-                                                    <img class="hover-image"  src="/uploads/<%= proData[i].image[0] %>" alt="">
-                                                
-                                            </a>
-                                            <div class="product-action product-action-position-1">
-                                                <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i class="fa fa-eye"></i><span>Quick Shop</span></a>
-                                                <a title="Add to Wishlist" onclick="addWishList('<%= proData[i]._id %>')"><i class="fa fa-heart"></i><span>Add to Wishlist</span></a>
-                                                <!-- <a class="icon-blod" title="Add to Compare" href="#"><i class="dlicon arrows-4_compare"></i><span>Add to Compare</span></a> -->
-                                                <a title="Add to Cart" href="cart"><i class="fa fa-shopping-cart"></i><span>Add to Cart</span></a>
+                                    <% if(!proData[i].is_blocked) { %>
+                                        <% let outOfStock = proData[i].size.s.quantity === 0 && proData[i].size.m.quantity === 0 && proData[i].size.l.quantity === 0; %>
+                                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                            <div class="product-wrap mb-50">
+                                                <div class="product-img default-overlay mb-25">
+                                                    <a href="/productDetails?id=<%= proData[i]._id %>">
+                                                        <img class="hover-image" src="/uploads/<%= proData[i].image[0] %>" alt="">
+                                                        <% if(outOfStock) { %>
+                                                            <div style="background-color: rgb(189, 189, 189);">
+                                                                <h4 style="color: rgb(179, 0, 0);padding-left: 100px;"><b>Out of stock</b></h4>
+                                                            </div>
+                                                          
+                                                        <% } %>
+                                                    </a>
+                                                    <div class="product-action product-action-position-1">
+                                                        <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i class="fa fa-eye"></i><span>Quick Shop</span></a>
+                                                        <a title="Add to Wishlist" onclick="addWishList('<%= proData[i]._id %>')"><i class="fa fa-heart"></i><span>Add to Wishlist</span></a>
+                                                        <!-- <a class="icon-blod" title="Add to Compare" href="#"><i class="dlicon arrows-4_compare"></i><span>Add to Compare</span></a> -->
+                                                        <a title="Add to Cart" href="cart"><i class="fa fa-shopping-cart"></i><span>Add to Cart</span></a>
+                                                    </div>
+                                                </div>
+                                                <div class="product-content-2 title-font-width-400 text-center">
+                                                    <div class="product-content-wrap">
+                                                        <h4><a href="/productDetails?id=<%= proData[i]._id %>"><%= proData[i].name %></a></h4>
+                                                    </div>
+                                                    <div class="product-price">
+                                                        <% if (proData[i].offerPrice) { %>
+                                                            <span style="color: green;">₹<%= proData[i].offerPrice %> </span>
+                                                            <span class="old-price">₹<%= proData[i].regularPrice %></span>
+                                                            <% if (proData[i].regularPrice && proData[i].offerPrice) { %>
+                                                                <% var offerPercentage = ((proData[i].regularPrice - proData[i].offerPrice) / proData[i].regularPrice) * 100; %>
+                                                                <div class="rating-result" title="<%= offerPercentage.toFixed(2) %>%">
+                                                                    <span>
+                                                                        <span style="color: red;"><%= offerPercentage.toFixed(0) %>% off</span>
+                                                                    </span>
+                                                                </div>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <span>₹<%= proData[i].regularPrice %></span>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="product-content-2 title-font-width-400 text-center">
-                                            <div class="product-content-wrap">
-                                                <h4><a href="/productDetails"><%= proData[i].name %></a></h4>
-                                                
-                                              
-                                       
-                                                </div>
-                                                <div class="product-price">
-                                                    <% if (proData[i].offerPrice) { %>
-                                                        <span style="color: green;">₹<%= proData[i].offerPrice %> </span>
-                                                        <span class="old-price">₹<%= proData[i].regularPrice %></span>
-                                                        
-                                                        <% if (proData[i].regularPrice && proData[i].offerPrice) { %>
-                                                            <% var offerPercentage = ((proData[i].regularPrice - proData[i].offerPrice) / proData[i].regularPrice) * 100; %>
-                                                            <div class="rating-result" title="<%= offerPercentage.toFixed(2) %>%">
-                                                                <span>
-                                                                    <span style="color: red;"><%= offerPercentage.toFixed(0) %>% off</span>
-                                                                </span>
-                                                            </div>
-                                                        <% } %>
-                                                    <% } else { %>
-                                                        <span>₹<%= proData[i].regularPrice %></span>
-                                                    <% } %>
-                                                </div>
-                                                
-                                        </div>
-                                        
-                                    </div>
-                                    
-                                </div>
-                                <% } %>          
-        
+                                    <% } %>
                                 <% } %>
-                                
                             </div>
                         </div>
+                        
                             
                             </div>
                         </div>

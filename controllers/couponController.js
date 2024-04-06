@@ -97,7 +97,8 @@ const blockCoupon = async (req, res) => {
   try {
     const id = req.body.id;
     const findCoupon = await Coupon.findById({ _id: id });
-    // console.log("inside block coupon")
+    console.log(findCoupon);
+    console.log("inside block coupon")
     if (findCoupon.isActive === true) {
       const updateCoupon = await Coupon.findByIdAndUpdate(
         { _id: id },

@@ -811,9 +811,20 @@
 
                         </ul>
                       </div>
-                      <div class="grand-btn" id="proceed-btn">
-                        <a href="checkout">Proceed to checkout</a>
-                      </div>
+                      <% if (cartData && cartData.items.length > 0) { %>
+                        <div class="grand-btn" id="proceed-btn">
+                          <a href="checkout">Proceed to checkout</a>
+                        </div>
+                      <% } else { %>
+                        <div class="grand-btn" id="proceed-btn">
+                          <a href onclick="showAlert()">Proceed to checkout</a>
+                        </div>
+                      <% } %>
+                      <script>
+                        function showAlert() {
+                          alert("Please add items to your cart before proceeding to checkout.");
+                        }
+                      </script>
 
                     </div>
                   </div>
