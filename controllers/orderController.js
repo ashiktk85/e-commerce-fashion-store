@@ -23,23 +23,24 @@ var instance = new Razorpay({
 
 const loadOrder = async (req, res) => {
   try {
-      const page = parseInt(req.query.page) || 1;
-      const ordersPerPage = 5; 
-      const skip = (page - 1) * ordersPerPage;
+    const page = parseInt(req.query.page) || 1;
+    const ordersPerPage = 10; 
+    const skip = (page - 1) * ordersPerPage;
 
+    const orderData = await Order.find({})
+      .skip(skip)
+      .limit(ordersPerPage);
 
-      const orderData = await Order.find({})
+    const totalOrders = await Order.countDocuments({});
+    const totalPages = Math.ceil(totalOrders / ordersPerPage);
 
-   
-      const totalOrders = await Order.countDocuments({});
-      const totalPages = Math.ceil(totalOrders / ordersPerPage);
-
-      res.render("adminOrders", { orderData, totalPages, currentPage: page, ordersPerPage });
+    res.render("adminOrders", { orderData, totalPages, currentPage: page, ordersPerPage });
   } catch (error) {
-      console.log(`Error in loading orders: ${error}`);
-      res.status(500).send("Internal Server Error");
+    console.log(`Error in loading orders: ${error}`);
+    res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 

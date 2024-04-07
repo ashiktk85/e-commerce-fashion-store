@@ -3,6 +3,7 @@ const User = require('../models/userModel')
 const Order = require('../models/orderModel')
 const Product = require("../models/productModel")
 const Category = require('../models/categoryModel')
+const color = require('../controllers/colorGenerator');
 const adminEmail = process.env.adminEmail;
 const adminPassword = process.env.adminPassword;
 
@@ -189,7 +190,7 @@ const verifyAdmin = async (req, res) => {
             Category.find({}),
             Product.find({}),
             
-            Order.find({ status: { $nin: ["Ordered", "Shipped", "Cancelled"] } })
+            Order.find({ status: { $in: ["Delivered"] } })
         ]);
         let revenue = 0;
         for(let i=0 ; i< order.length ; i++){
@@ -213,7 +214,7 @@ const verifyAdmin = async (req, res) => {
         // Bar chart weekly revenew
         const revenewDayaArray = [0,0,0,0,0,0,0,0,0,0,0,0];
         for (let i = 0; i < orderData.length; i++) {
-            if(orderData[i].paymentMethod === "Cash on delivery"){
+            if(orderData[i].paymentMethod === "Cash on Delivery"){
                 if(orderData[i].status === "Delivered" || orderData[i].status === "Return order cancel" || orderData[i].status === "Return order cancel"){
                     let monthOfOrder = new Date(orderData[i].date);
                     monthOfOrder = monthOfOrder.getMonth();
@@ -221,7 +222,7 @@ const verifyAdmin = async (req, res) => {
                 }
             }
             if(orderData[i].paymentMethod === "Razorpay"){
-                if(orderData[i].status === "Ordered" || orderData[i].status === "Shipped" || orderData[i].status === "Delivered" || orderData[i].status === "Return order processing" || orderData[i].status === "Return order cancel"){
+                if(orderData[i].status === "Ordered" || orderData[i].status === "Shipped" || orderData[i].status === "Delivered" || orderData[i].status === "Return process" || orderData[i].status === "Return order cancel"){
                     let monthOfOrder = new Date(orderData[i].date);
                     monthOfOrder = monthOfOrder.getMonth();
                     revenewDayaArray[monthOfOrder] += orderData[i].total;
@@ -231,12 +232,16 @@ const verifyAdmin = async (req, res) => {
 
         // top 5 products
         const productCounts = await Order.aggregate([
-            { $unwind: "$product" },{ $group: { _id: "$product.name", count: { $sum: 1 } } },
-            { $sort: { count: -1 } }, { $limit: 5 },{ $project: { _id: 0, product: "$_id" } }
+            { $unwind: "$items" },
+            { $group: { _id: "$items.productId", count: { $sum: "$items.quantity" } } },
+            { $sort: { count: -1 } },
+            { $limit: 5 }
         ]);
-        const productList = productCounts.map(item => item.product);
-        const top5products = await Product.find({ name: { $in: productList } });
+        const productIds = productCounts.map(item => item._id);
 
+        const top5products = await Product.find({ _id: { $in: productIds } });
+
+        console.log(top5products);
         
 
         // top 5 category
@@ -261,19 +266,52 @@ const verifyAdmin = async (req, res) => {
         console.log(error);
     }
 }
+
+// CAREGORY CHART
+
+const CatChart = async (req, res) => {
+    try {
+        const category = await Category.find({});
+        const catNames = category.map(cat => cat.name);
+        const allOrders = await Order.aggregate([
+            { $unwind: "$product" },
+            { $group: { _id: "$product.categoryName", cartQty: { $sum: { $toInt: "$product.cartQty" } } } }
+        ]);
+        const cartQtyArray = catNames.map(catName => {
+            const order = allOrders.find(order => order._id === catName);
+            return order ? order.cartQty : 0;
+        });
+        chartColores = color(category.length);
+        res.json({status : "true" , catNames : catNames , chartColores: chartColores , cartQtyArray : cartQtyArray})
+    } catch (error) {
+        console.log(error);
+    }
+}
   
 
 // LOADING USER DETAILS PAGE 
 
 const userDetails = async (req, res) => {
     try {
-        const userDetails = await User.find({});
-        // console.log(userDetails);
-        res.render('userDetails', { userDetails })
+        const page = parseInt(req.query.page) || 1;
+        const usersPerPage = 10; // Number of users per page
+        const skip = (page - 1) * usersPerPage;
+
+        const totalUsers = await User.countDocuments({});
+        const totalPages = Math.ceil(totalUsers / usersPerPage);
+
+        const userDetails = await User.find({})
+            .skip(skip)
+            .limit(usersPerPage);
+
+        res.render('userDetails', { userDetails, totalPages, currentPage: page });
     } catch (error) {
-        console.log(`There was an error in loading user details : ${error}`);
+        console.log(`There was an error in loading user details: ${error}`);
+        res.status(500).send("Internal Server Error");
     }
-}
+};
+
+
 
 // BLOCKING USER
 
@@ -311,10 +349,15 @@ const unblockUser = async (req, res) => {
 
 const loadSalesreport = async (req, res) => {
     try {
-        
+        const page = parseInt(req.query.page) || 1;
+        const ordersPerPage = 10; // Number of orders per page
+        const skip = (page - 1) * ordersPerPage;
+
         const order = await Order.find({
-            status: { $in : ["Delivered"] },
-        });
+            status: { $in: ["Delivered"] },
+        })
+        .skip(skip)
+        .limit(ordersPerPage);
 
         const calculateOverallSummary = (order) => {
             let salesCount = 0;
@@ -334,14 +377,18 @@ const loadSalesreport = async (req, res) => {
             };
         };
 
-        
         const overallSummary = calculateOverallSummary(order);
 
-        res.render('salesReport', { order, overallSummary }); 
+        const totalOrders = await Order.countDocuments({ status: "Delivered" });
+        const totalPages = Math.ceil(totalOrders / ordersPerPage);
+
+        res.render('salesReport', { order, overallSummary, totalPages, currentPage: page }); 
     } catch (error) {
-        console.log(`error in loading sales report : ${error.message}`);
+        console.log(`Error in loading sales report: ${error.message}`);
+        res.status(500).send("Internal Server Error");
     }
-}
+};
+
 
 // DATE FILTER SALES REPORT
 
@@ -507,5 +554,6 @@ module.exports = {
     logout,
     loadSalesreport,
     sortDate,
-    dateFilter
+    dateFilter,
+    CatChart
 }

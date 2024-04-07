@@ -20,6 +20,7 @@ const isAdmin = require("../middleware/adminAuth");
 adminRoute.get('/', adminController.adminLogin)
 adminRoute.post('/adminLogin', adminController.verifyAdmin)
 adminRoute.get('/adminDashboard',isAdmin, adminController.adminHome);
+adminRoute.get("/CatChart" ,isAdmin, adminController.CatChart);
 adminRoute.get('/userDetails',isAdmin, adminController.userDetails)
 adminRoute.get("/block-user", isAdmin, adminController.blockUser);
 adminRoute.get("/unblock-user", isAdmin, adminController.unblockUser);
