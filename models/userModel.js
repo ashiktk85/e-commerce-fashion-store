@@ -21,6 +21,9 @@ const userSchema = new mongoose.Schema({
         type : String,
         require : true
     },
+    createdOn : {
+        type : String
+    },
     is_verified : {
         type : Boolean,
         require : true

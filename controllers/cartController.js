@@ -43,18 +43,18 @@ const cartPage = async (req, res) => {
         proData.push(await Product.findById(arr[i]));
       }
 
-      let total = 0; // Initialize total price to 0
+      let total = 0; 
 
       for (let i = 0; i < proData.length; i++) {
         if (proData[i].offerPrice * cartData.items[i].quantity !== cartData.items[i].subTotal) {
           cartData.items[i].subTotal = proData[i].offerPrice * cartData.items[i].quantity;
         }
         
-        total += cartData.items[i].subTotal; // Accumulate subtotal to calculate total
+        total += cartData.items[i].subTotal; 
       }
 
-      cartData.totalPrice = total; // Update totalPrice field
-      await cartData.save(); // Save the updated cart data
+      cartData.totalPrice = total;
+      await cartData.save(); 
     }
 
     res.render("cart", { proData, cartData, cart, wish });
@@ -88,7 +88,7 @@ const loadCart = async (req, res) => {
           return res.status(200).json({ status: "Out of stock" });
         }
 
-        let subtotal = price * 1; // Assuming quantity is always 1
+        let subtotal = price * 1; 
 
         if (userCart) {
           let proCart = false;
@@ -110,14 +110,14 @@ const loadCart = async (req, res) => {
               size: selectedSize,
             };
             
-            // Update or add the cart item
+           
             await Cart.findOneAndUpdate(
               { userId: userData._id },
               {
                 $push: { items: cartItem },
                 $inc: { totalPrice: subtotal },
               },
-              { upsert: true } // Create new cart if not exists
+              { upsert: true } 
             );
           }
         } else {
@@ -180,7 +180,7 @@ const increment = async (req, res) => {
 
       if (cart) {
         const stock = cart.items.find(val => val.productId.equals(proIdString) && val.size == sizee);
-        console.log(stock, "stocksss..........");
+        // console.log(stock, "stocksss..........");
 
         const productStock = product ? product.size[sizee] : 0;
         const proQuantity = parseInt(stock.quantity);
@@ -297,7 +297,8 @@ const placeOrder = async (req, res) => {
     if (!selectedAddress || !paymentMethod) {
       res.json({ status: "fill" });
       return;
-    } else if (paymentMethod == "Cash on Delivery") {
+    } else if (paymentMethod === "Cash on Delivery") {
+      console.log("sdmsadjkfgvbzdjk;fgbsk;ldjghls;ad;kkkkkkkkkkk");
       const userData = await User.findOne({ email: req.session.email });
       const cartData = await Cart.findOne({ userId: userData._id });
 
@@ -309,14 +310,21 @@ const placeOrder = async (req, res) => {
         const selectedSize = proData[i].size.toLowerCase();
 
         const product = await Product.findById(proId);
-        const offerPrice = product.offerPrice || product.regularPrice;
 
+        if (!product.size[selectedSize] || product.size[selectedSize].quantity < quantity) {
+          return res.json({ status: "sizeErr", message: `Not enough quantity available for ${product.name} - ${selectedSize.toUpperCase()}` });
+        }
+
+        // Decrement the product quantity
+        product.size[selectedSize].quantity -= quantity;
+        await product.save();
+
+        const offerPrice = product.offerPrice || product.regularPrice;
         const subtotal = offerPrice * quantity;
         proData[i].subTotal = subtotal;
       }
 
       const newTotal = proData.reduce((acc, item) => acc + item.subTotal, 0);
-
       const orderNum = generateOrder.generateOrder();
       console.log(orderNum);
 
@@ -344,7 +352,7 @@ const placeOrder = async (req, res) => {
         orderData.save();
 
         const updateCoupon = await Coupon.findByIdAndUpdate(
-          { _id: findCoupon._id },
+          findCoupon._id,
           {
             $push: {
               users: userData._id,
@@ -369,23 +377,22 @@ const placeOrder = async (req, res) => {
 
       res.json({ status: true });
       const deleteCart = await Cart.findByIdAndDelete({ _id: cartData._id });
-    } else if (paymentMethod == "Razorpay") {
+    }  else if (paymentMethod == "Razorpay") {
       const userData = await User.findOne({ email: req.session.email });
       const cartData = await Cart.findOne({ userId: userData._id });
 
-      const proData = [];
-      for (let i = 0; i < cartData.items.length; i++) {
-        proData.push(cartData.items[i]);
-      }
+      const proData = cartData.items;
 
-      const quantity = [];
       for (let i = 0; i < proData.length; i++) {
-        quantity.push(proData[i].quantity);
-      }
+        const proId = proData[i].productId;
+        const quantity = proData[i].quantity;
+        const selectedSize = proData[i].size.toLowerCase();
 
-      const proId = [];
-      for (let i = 0; i < proData.length; i++) {
-        proId.push(proData[i].productId);
+        const product = await Product.findById(proId);
+
+        if (!product.size[selectedSize] || product.size[selectedSize].quantity < quantity) {
+          return res.json({ status: "sizeErr", message: `Not enough quantity available for ${product.name} - ${selectedSize.toUpperCase()}` });
+        }
       }
 
       const orderNum = generateOrder.generateOrder();

@@ -4,100 +4,100 @@ const order_schema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
-        require: true,
+        required: true,
     },
     userEmail: {
         type: String,
-        require: true
+        required: true
     },
     orderNumber: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     items: [{
         productId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Products',
-            require: true,
+            required: true,
         },
         quantity: {
             type: Number
         },
         subTotal: {
             type: Number,
-            require: true,
+            required: true,
         },
         size: {
             type: String,
             required: true
         }
     }],
-
     totalAmount: {
         type: Number,
-        require: true
+        required: true
     },
     orderType: {
         type: String,
-        require: true
+        required: true
     },
     orderDate: {
         type: String,
-        require: true
-
+        required: true
     },
     status: {
         type: String,
-        require: true
+        required: true
     },
     shippingAddress: {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'users',
+            required: true
+        },
         name: {
             type: String,
-            require: true
+            required: true,
         },
         mobile: {
             type: Number,
-            require: true
+            required: true,
         },
-        pinCode: {
+        pincode: {
             type: String,
-            require: true
+            required: true,
         },
-        city: {
-            type: String,
-            require: true
+        locality: {
+            type: String
         },
         address: {
             type: String,
-            require: true
+            required: true
         },
-        district: {
+        city: {
             type: String,
-            require: true
+            required: true
         },
         state: {
             type: String,
-            require: true
+            required: true
         },
-        addressType: {
-            type: String,
-            require: true
+        country: {
+            type: String
         },
-        altrenateMobile: {
-            type: Number,
-
-        },
-
+        createdAt: {
+            type: Date,
+            default: Date.now()
+        }
     },
-    coupon:{
-        type:String,
+    coupon: {
+        type: String,
     },
-    discount:{
-        type:Number,
+    discount: {
+        type: Number,
     }
-
 }, { versionKey: false });
+
 
 const order = mongoose.model("order", order_schema)
 module.exports = order

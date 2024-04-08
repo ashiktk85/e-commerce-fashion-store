@@ -33,6 +33,9 @@
   <link rel="stylesheet" href="assets/css/plugins/jquery-ui.css" />
   <link rel="stylesheet" href="assets/css/plugins/select2.min.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
+ 
+
+  </style>
 
  
 </head>
@@ -682,7 +685,7 @@
             /* Your styles here */
           }
         </style>
-     <div class="wishlist-main-area pt-100 pb-100">
+    <div class="wishlist-main-area pt-100 pb-100">
       <div class="container">
           <div class="row">
               <div class="col-lg-12 col-md-12 col-sm-12 col-12">
@@ -693,64 +696,49 @@
                                   <table>
                                       <thead>
                                           <tr>
-                                              <th ></th>
                                               <th></th>
-                                              <th><b style="font-family: poppins;color: black;">Product</b></th>
-                                              <th><b style="font-family: poppins;color: black;">Price</b></th>
-                                              <th><b style="font-family: poppins;color: black;">Stock Status</b> </th>
-                                              
+                                              <th></th>
+                                              <th><b style="font-family: poppins;color: rgb(255, 255, 255);">Product</b></th>
+                                              <th><b style="font-family: poppins;color: rgb(255, 255, 255);">Price</b></th>
+                                              <th><b style="font-family: poppins;color: rgb(255, 255, 255);">Stock Status</b></th>
                                               <th class="wishlist-cart-none"><span><b>Add to cart</b></span></th>
                                           </tr>
                                       </thead>
                                       <tbody>
-                                        <% if (!proData.length <= 0) { %>
-                                         <% for( let i = 0; i < proData.length; i++ ) { %>
-                                         
-                                        
-                                       
+                                          <% if (!proData.length <= 0) { %>
+                                          <% for( let i = 0; i < proData.length; i++ ) { %>
                                           <tr>
                                               <td class="wishlist-remove">
                                                   <a onclick="removeWish('<%= proData[i]._id %>')"><i class="dlicon ui-1_simple-remove"></i></a>
                                               </td>
                                               <td class="wishlist-img">
-                                                  <a href="#" ><img src="/uploads/<%= proData[i].image[1] %>" alt="" style="height: 100px;width: 100px;"></a>
+                                                  <a href="#"><img src="/uploads/<%= proData[i].image[1] %>" alt="" style="height: 100px;width: 100px;"></a>
                                               </td>
-                                              <td class="wishlist-name" style="font-family: poppins;color: black;" >
-                                                  <a href="#" ><%= proData[i].name %></a>
+                                              <td class="wishlist-name" style="font-family: poppins;color: black;">
+                                                  <a href="#"><%= proData[i].name %></a>
                                               </td>
-                                              
                                               <% if (proData[i].offerPrice) { %>
-                                                <td class="wishlist-price" data-title="Price">₹<span id="offerPrice<%=i%>">
-                                                    <%= proData[i].offerPrice %>
-                                                </span></td>
-                                            <% }else{ %>
-                                                <td class="wishlist-price" data-title="Price">₹<span id="offerPrice<%=i%>">
-                                                    <%= proData[i].regularPrice %>
-                                                </span></td>
-                                                <% } %>
-
+                                              <td class="wishlist-price" data-title="Price">₹<span id="offerPrice<%=i%>"><%= proData[i].offerPrice %></span></td>
+                                              <% }else{ %>
+                                              <td class="wishlist-price" data-title="Price">₹<span id="offerPrice<%=i%>"><%= proData[i].regularPrice %></span></td>
+                                              <% } %>
                                               <td class="wishlist-stock">
-                                                <% if (proData[i].size.s.quantity<=0 && proData[i].size.m.quantity<=0 && proData[i].size.l.quantity<=0 ) { %>
+                                                  <% if (proData[i].size.s.quantity<=0 && proData[i].size.m.quantity<=0 && proData[i].size.l.quantity<=0 ) { %>
                                                   <span class="color3 font-weight-bold">Out Stock</span>
-
                                                   <% }else{ %>
-                                                      <span class="color3 font-weight-bold">In Stock</span>
-                                                      <% } %>
+                                                  <span class="color3 font-weight-bold">In Stock</span>
+                                                  <% } %>
                                               </td>
-                                              
                                               <td class="wishlist-cart">
                                                   <a href="/productDetails?id=<%= proData[i]._id %>">View</a>
                                               </td>
                                           </tr>
                                           <% } %>
                                           <% } else { %>
-                                            <tr>
-                                              <td style="margin-left: 50%;font-size: 20px;"><strong>Wishlist is empty</strong></td>
-                                            </tr>
-
+                                          <tr>
+                                              <td colspan="6" style="text-align: center; font-size: 20px;"><strong>Wishlist is empty</strong></td>
+                                          </tr>
                                           <% } %>
-                                          
-                                          
                                       </tbody>
                                   </table>
                               </div>
@@ -761,6 +749,26 @@
           </div>
       </div>
   </div>
+  
+  <style>
+      .wishlist-table-content {
+          max-height: 600px;
+          overflow-y: auto;
+      }
+  
+      .wishlist-table-content table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+  
+      .wishlist-table-content thead th {
+          position: sticky;
+          top: 0;
+          background-color: #000000;
+          color: #ffffff; /* Change to your desired background color */
+      }
+  </style>
+  
     
     
         </div>

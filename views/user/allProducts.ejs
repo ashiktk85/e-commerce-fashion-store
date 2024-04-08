@@ -446,47 +446,7 @@
             </div>
         </div>
         <!-- mini cart start -->
-        <div class="sidebar-cart-active">
-            <div class="sidebar-cart-all">
-                <a class="cart-close" href="#"><i class="dlicon ui-1_simple-remove"></i></a>
-                <div class="cart-content">
-                    <h3>Shopping Cart</h3>
-                    <ul>
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="#"><img src="assets/images/cart/cart-1.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="#">Bejewelled velvet sandals</a></h4>
-                                <span> 1 × $49.00 </span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#">×</a>
-                            </div>
-                        </li>
-                        <li class="single-product-cart">
-                            <div class="cart-img">
-                                <a href="#"><img src="assets/images/cart/cart-2.jpg" alt=""></a>
-                            </div>
-                            <div class="cart-title">
-                                <h4><a href="#">Contrast faux fur jacket</a></h4>
-                                <span> 1 × $49.00 </span>
-                            </div>
-                            <div class="cart-delete">
-                                <a href="#">×</a>
-                            </div>
-                        </li>
-                    </ul>
-                    <div class="cart-total">
-                        <h4>Subtotal: <span>$170.00</span></h4>
-                    </div>
-                    <div class="cart-checkout-btn">
-                        <a class="btn-hover cart-btn-style" href="cart.html">view cart</a>
-                        <a class="no-mrg btn-hover cart-btn-style" href="checkout.html">checkout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
         <!-- aside start -->
         <div class="header-aside-active">
             <div class="header-aside-wrap">
@@ -741,10 +701,10 @@
                                         class="fa fa-angle-up angle-up"></i></span>
                                 <ul>
                                     <li class="active"><a href="#">Default sorting</a></li>
-                                    <li><a href="/allProducts?sort=lowToHigh">Price: Low to High</a></li>
-                                    <li><a href="/allProducts?sort=highToLow">Price: High to Low</a></li>
-                                    <li><a href="/allProducts?sort=aA-zZ">aA-zZ</a></li>
-                                    <li><a href="/allProducts?sort=zZ-aA">zZ-aA</a></li>
+                                    <li><a href="/allProducts?category=<%= categoryName %>&sort=lowToHigh">Price: Low to High</a></li>
+                                    <li><a href="/allProducts?category=<%= categoryName %>&sort=highToLow">Price: High to Low</a></li>
+                                    <li><a href="/allProducts?category=<%= categoryName %>&sort=aA-zZ">aA-zZ</a></li>
+                                    <li><a href="/allProducts?category=<%= categoryName %>&sort=zZ-aA">zZ-aA</a></li>
                                     <li><a href="#">Avg. Rating</a></li>
                                 </ul>
                             </div>
@@ -810,10 +770,9 @@
                                         <div class="product-action product-action-position-3 action-inc-width-height">
                                             <a data-bs-toggle="modal" data-bs-target="#exampleModal" href="#"><i
                                                     class="fa fa-eye"></i><span>Quick Shop</span></a>
-                                            <a title="Add to Wishlist" href="#"><i class="fa fa-heart"></i><span>Add to
-                                                    Wishlist</span></a>
+                                                    <a title="Add to Wishlist" onclick="addWishList('<%= proData[i]._id %>')"><i class="fa fa-heart"></i><span>Add to Wishlist</span></a>
                                             <!-- <a class="icon-blod" title="Add to Compare" href="#"><i class="dlicon arrows-4_compare"></i><span>Add to Compare</span></a> -->
-                                            <a title="Add to Cart" href="#"><i class="fa fa-shopping-cart"></i><span>Add
+                                            <a title="Add to Cart" href="/productDetails?id=<%= proData[i]._id %>"><i class="fa fa-shopping-cart"></i><span>Add
                                                     to Cart</span></a>
                                         </div>
                                         <div class="product-content-5">
@@ -1337,6 +1296,75 @@
 
 
         <script>
+
+function addWishList(id) {
+      
+      $.ajax({
+          url: '/addWishlist',
+          method: 'post',
+          data: {
+              id
+          },
+          success: (response) => {
+              if (response.status == true) {
+
+                  const Toast = Swal.mixin({
+                      toast: true,
+                      position: "center",
+                      showConfirmButton: false,
+                      timer: 1500,
+                      // timerProgressBar: true,
+                      didOpen: (toast) => {
+                          toast.onmouseenter = Swal.stopTimer;
+                          toast.onmouseleave = Swal.resumeTimer;
+                      }
+                  });
+                  Toast.fire({
+                      icon: "success",
+                      title: "Add to wishlist"
+                  }).then((result) => {
+                      document.getElementById("addWishlist").style.display = "none"
+                      document.getElementById("removeWish").style.display = "inline-block"
+                      //    alert('hello')
+                  })
+      } else if (response.status == "login") {
+          Swal.fire({
+
+              text: "You want to login the page?!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#000000",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Go to login!"
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  window.location.href = "/login"
+              }
+          })
+      } else if (response.status == "already") {
+          Swal.fire({
+title: "This product already added to wishlist.",
+confirmButtonColor : "#000000",
+showClass: {
+  popup: `
+    animate__animated
+    animate__fadeInUp
+    animate__faster
+  `
+},
+hideClass: {
+  popup: `
+    animate__animated
+    animate__fadeOutDown
+    animate__faster
+  `
+}
+});
+      }
+  }
+      })
+  }
+
             const inputElement = document.getElementById('input');
             let timeoutId;
 

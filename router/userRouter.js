@@ -21,7 +21,7 @@ userRoute.get('/register',userAuth.isLogOut,userController.userSignup)
 userRoute.post("/register",userAuth.isLogOut ,userController.userSignupPost)
 userRoute.get('/otpVerification',userAuth.isLogOut , userAuth.isLogOut,userController.loadOtp)
 userRoute.post('/otpVerification', userAuth.isLogOut,userAuth.isLogOut, userController.verifyOtp)
-userRoute.get('/resendOtp',userAuth.isLogOut, userController.resendOtp);
+userRoute.post('/resendOtp',userAuth.isLogOut, userController.resendOtp);
 userRoute.get('/forgotPassword',userAuth.isLogOut , userController.forgotPassword)
 userRoute.post('/sendOtp',userAuth.isLogOut , userController.sendOtpForgotpass)
 userRoute.post('/forgotOtp-post',userAuth.isLogOut , userController.PostForgotpass);
@@ -81,7 +81,7 @@ userRoute.post("/addCash",userAuth.isBlocked,userAuth.isLogin,walletController.a
 userRoute.post("/addAmount",userAuth.isBlocked,userAuth.isLogin,walletController.addCash)
 
 // all products
-userRoute.get('/allProducts',userAuth.isBlocked,userAuth.isLogin,userController.allProducts)
+userRoute.get('/allProducts',userAuth.isBlocked,userController.allProducts)
 userRoute.post("/search",userController.searchProducts)
 // userRoute.get("/next-page",userController.nextPage)
 

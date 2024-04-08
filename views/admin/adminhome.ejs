@@ -43,7 +43,7 @@
             <ul class="menu-aside">
                 <li class="" style="background-color: black;border-radius: 5px;">
                     <a class="menu-link" href="/admin/adminDashboard"> <i class="icon material-icons md-home"></i>
-                        <span class="text" style="color: #ffffff;">Dashboard</span>
+                        <span class="text" style="color: #ffffff;padding-left: 10px;">Dashboard</span>
                     </a>
                 </li>
                 <li class="">
@@ -70,7 +70,7 @@
                 <li class="">
                     <!-- <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i> -->
                     <a class="menu-link" href="/admin/adminOrders"> <i
-                            class="text-success material-icons md-local_shipping" style="color: black;"></i>
+                            class="text-dark material-icons md-local_shipping" style="color: black;"></i>
 
                         <span class="text" style="padding-left: 10px;">Orders</span>
                     </a>
@@ -87,7 +87,7 @@
 
                 <li class="">
                     <a class="menu-link" href="/admin/salesReport"> <i class="icon material-icons md-comment"></i>
-                        <span class="text">Sales Report</span>
+                        <span class="text" style="padding-left: 10px;">Sales Report</span>
                     </a>
 
                 </li>
@@ -405,6 +405,11 @@
 
 </body>
 <script>
+
+
+
+const  UserdayArray = "<%= JSON.stringify(UserdayArray) %>"
+console.log(UserdayArray)
     // Sample data for the chart
     const x2Values = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const revenewDayaArray = '<%= JSON.stringify(revenewDayaArray) %>';
@@ -514,37 +519,7 @@
     document.getElementById("returnbtn").style.border = "1px solid black";
  }
 
-function replyEmail(id , index){
-    const replyMessage = document.getElementById("input"+index).value;
-    if(replyMessage.trim() === ""){
-        document.getElementById("error" + index).style.display="block";
-        setTimeout(() => {
-            document.getElementById("error" + index).style.display="none";
-        }, 2000);
-    } else{
-        $.ajax({
-            url: "/admin/replayToUser",
-            method: "post",
-            data : {
-                id,
-                replyMessage
-            },
-            success: (response) => {
-                if (response.status === "okay") {
-                    Swal.fire({
-						text: "Reply sent successfully via email.",
-						showConfirmButton: false,
-						position : "bottom",
-						timer: 1000
-					});
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 1000);
-                }
-            }
-        })
-    }
-}
+
 </script>
 
 

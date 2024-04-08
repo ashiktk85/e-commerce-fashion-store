@@ -191,7 +191,7 @@ const detailedPro = async (req, res) => {
     try {
        
         const id = req.query.id;
-        console.log(id);
+        console.log(id);    
         const proData = await Product.findById({ _id: id })
         const Cat = await Category.findOne({ _id: proData.category })
         res.render('detailedProduct', { proData, catName: Cat.name })

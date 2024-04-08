@@ -625,7 +625,7 @@
                                         <!-- Orders Tab Pane Start -->
                                         <div class="tab-pane fade show active" id="orders" role="tabpanel" style="margin-top: 30px;">
                                             <div class="myaccount-content">
-                                                <div class="myaccount-table table-responsive text-center">
+                                                <div class="myaccount-table table-responsive text-center" style="overflow-y: auto; max-height: 400px;">
                                                     <table class="table table-bordered">
                                                         <thead class="thead-light">
                                                             <tr>
@@ -640,7 +640,7 @@
                                                         <tbody>
                                                             <% for( let i = 0; i < orderData.length; i++ ) { %>
                                                                 <tr>
-                                                                    <td><%= orderData[i].orderNumber%></td>
+                                                                    <td><%= orderData[i].orderNumber %></td>
                                                                     <td><%= orderData[i].orderDate + 1 %></td>
                                                                     <td><%= orderData[i].orderType %></td>
                                                                     <td style="color: green;"><%= orderData[i].status %></td>
@@ -648,13 +648,13 @@
                                                                     <td><a href="/orderView?id=<%= orderData[i]._id %>" class="check-btn sqr-btn">View</a></td>
                                                                 </tr>
                                                             <% } %>
-                                                      
                                                             <!-- Add more rows as needed -->
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         <!-- Orders Tab Pane End -->
                     
                                        

@@ -47,7 +47,10 @@ const home = async (req, res) => {
   try {
     const catData = await Category.find({});
 
-    const proData = await Product.find().sort({ is_blocked: 1 }).limit(8);
+    const proData = await Product.find({is_blocked : false }).limit(8);
+
+    console.log(proData);
+
 
 
 
@@ -55,7 +58,7 @@ const home = async (req, res) => {
 
     const isAuthenticated = req.session.email;
 
-    res.render("home", { catData, proData, isAuthenticated, cartData });
+    res.render("home", { catData, proData, isAuthenticated, cartData, });
   } catch (error) {
     console.log(error);
   }
@@ -192,7 +195,7 @@ const resendOtp = async (req, res) => {
       });
     }
 
-    res.render("otpVerification", { resendmsg: "OTP was send again" });
+    res.json({status : true });
   } catch (error) {
     console.log(error.message);
   }
@@ -205,119 +208,113 @@ const verifyOtp = async (req, res) => {
     const getOtp = req.body.otp;
     console.log(getOtp);
     const date = generateDate();
-    const Tid= generateTransaction()
+    const Tid = generateTransaction();
 
     if (req.session.Data) {
       const storedOtpData = req.session.Data.otp.otp;
       const otpTime = req.session.Data.otpTime;
-      console.log("lxnvklsbv", storedOtpData, otpTime);
+      console.log("Stored OTP Data:", storedOtpData, "OTP Time:", otpTime);
 
       const currentTime = Date.now();
       const otpExpiryDuration = 60000;
 
-      if (getOtp === storedOtpData) {
-        if (currentTime - otpTime < otpExpiryDuration) {
-          // OTP verification successful
-          // Proceed with user registration
-          const refferal=referralCode(8)
-        console.log(refferal, "referral")
-          const securePass = await passwordHashing(req.session.Data.password);
-          const user = new User({
-            name: req.session.Data.name,
-            email: req.session.Data.email,
-            mobile: req.session.Data.mobile,
-            password: securePass,
-            referralCode:refferal
-          });
+      if (getOtp == storedOtpData) {
+        // OTP verification successful
+        // Proceed with user registration
+        const referral = referralCode(8);
+        console.log(referral, "referral");
 
-          const userData = await user.save();
-          console.log(userData);
-
-          if (req.session.Data.reffer) {
-            const findUser=await User.findOne({referralCode:req.session.Data.reffer})
-            const findUserWallet=await Wallet.findOne({userId:findUser._id})
-            if(findUserWallet){
-              const updateWallet=await Wallet.findOneAndUpdate({userId:findUser._id},
-                {
-                  $inc:{
-                    balance:200
-                  },
-                  $push:{
-                    transactions:{
-                      id:Tid,
-                      date:date,
-                      amount:200
-                    }
-                  }
-                })
-  
-                const newUser=await User.findOne({email:req.session.Data.email})
-                const forNewWallet =new Wallet({
-                  userId:newUser._id,
-                  balance:100,
-                  transactions:[{
-                    id:Tid,
-                    date:date,
-                    amount:100
-                  }]
-                })
-                await forNewWallet.save()
-  
-            }else{
-              console.log("else worked");
-              const createWallet=new Wallet({
-                userId:findUser._id,
-                balance:200,
-                transactions:[{
-                  id:Tid,
-                  date:date,
-                  amount:200
-                }]
-              })
-  
-              await createWallet.save()
-              const newUser=await User.findOne({email:req.session.Data.email})
-              const forNewWallet =new Wallet({
-                userId:newUser._id,
-                balance:100,
-                transactions:[{
-                  id:Tid,
-                  date:date,
-                  amount:100
-                }]
-              })
-              await forNewWallet.save()
-            }
-            }
-
-          // Delete user registration data from session
-          delete req.session.Data;
-
-          return res.render("login", {
-            success: "OTP verified. You can now log in.",
-          });
-        } else {
-          return res.render("otpVerification", {
-            message: "OTP expired, please resend OTP.",
-          });
-        }
-      } else {
-        return res.render("otpVerification", {
-          message: "Wrong OTP, please try again.",
+        const securePass = await passwordHashing(req.session.Data.password);
+        const user = new User({
+          name: req.session.Data.name,
+          email: req.session.Data.email,
+          mobile: req.session.Data.mobile,
+          password: securePass,
+          referralCode: referral,
+          createdOn : date
         });
+
+        const userData = await user.save();
+        console.log("User Data:", userData);
+
+        if (req.session.Data.reffer) {
+          const findUser = await User.findOne({ referralCode: req.session.Data.reffer });
+          const findUserWallet = await Wallet.findOne({ userId: findUser._id });
+
+          if (findUserWallet) {
+            const updateWallet = await Wallet.findOneAndUpdate(
+              { userId: findUser._id },
+              {
+                $inc: {
+                  balance: 200
+                },
+                $push: {
+                  transactions: {
+                    id: Tid,
+                    date: date,
+                    amount: 200
+                  }
+                }
+              }
+            );
+
+            const newUser = await User.findOne({ email: req.session.Data.email });
+            const forNewWallet = new Wallet({
+              userId: newUser._id,
+              balance: 100,
+              transactions: [{
+                id: Tid,
+                date: date,
+                amount: 100
+              }]
+            });
+
+            await forNewWallet.save();
+          } else {
+            console.log("else worked");
+            const createWallet = new Wallet({
+              userId: findUser._id,
+              balance: 200,
+              transactions: [{
+                id: Tid,
+                date: date,
+                amount: 200
+              }]
+            });
+
+            await createWallet.save();
+
+            const newUser = await User.findOne({ email: req.session.Data.email });
+            const forNewWallet = new Wallet({
+              userId: newUser._id,
+              balance: 100,
+              transactions: [{
+                id: Tid,
+                date: date,
+                amount: 100
+              }]
+            });
+
+            await forNewWallet.save();
+          }
+        }
+
+        delete req.session.otpData;
+
+        return res.status(200).json({ status: true, message: "OTP verification successful" });
+      } else {
+        return res.status(400).json({ status: false, message: "Incorrect OTP. Please try again." });
       }
     } else {
-      return res.render("otpVerification", {
-        message: "OTP expired, please resend OTP.",
-      });
+      return res.status(400).json({ status: false, message: "Session expired. Please request a new OTP." });
     }
   } catch (error) {
     console.error(`Error in OTP verification: ${error}`);
-    return res.render("otpVerification", {
-      message: "An error occurred. Please try again later.",
-    });
+    return res.status(500).json({ success: false, message: "An error occurred. Please try again later." });
   }
 };
+
+
 
 // USER LOGIN
 
@@ -822,7 +819,7 @@ const allProducts = async (req, res) => {
     const cart = req.session.cart;
     const wish = req.session.wish;
    
-    const page = req.query.next || 1; // Default page is 1
+    const page = req.query.next || 1; 
     const pre = req.query.pre || 0;
 
     let number = 0;
@@ -831,7 +828,7 @@ const allProducts = async (req, res) => {
     } else if (pre != 0) {
       number = parseInt(pre) - 2;
     }
-    const skip = (number - 1) * 8; // Assuming 12 items per page
+    const skip = (number - 1) * 8; 
 
     console.log("PAGE", page);
     console.log("SKIP", skip);
@@ -851,15 +848,15 @@ const allProducts = async (req, res) => {
       totalProducts = await Product.countDocuments({ category: category._id });
 
       if (sort == "lowToHigh") {
-        proData = await Product.find({ category: category._id }).sort({ offerPrice: 1 }).skip(skip).limit(8);
+        proData = await Product.find({ category: category._id }).sort({ offerPrice: 1 }).skip(skip).limit(12);
       } else if (sort == "highToLow") {
-        proData = await Product.find({ category: category._id }).sort({ offerPrice: -1 }).skip(skip).limit(8);
+        proData = await Product.find({ category: category._id }).sort({ offerPrice: -1 }).skip(skip).limit(12);
       } else if (sort == "aA-zZ") {
-        proData = await Product.find({ category: category._id }).sort({ name: 1 }).skip(skip).limit(8);
+        proData = await Product.find({ category: category._id }).sort({ name: 1 }).skip(skip).limit(12);
       } else if (sort == "zZ-aA") {
-        proData = await Product.find({ category: category._id }).sort({ name: -1 }).skip(skip).limit(8);
+        proData = await Product.find({ category: category._id }).sort({ name: -1 }).skip(skip).limit(12);
       } else {
-        proData = await Product.find({ category: category._id }).skip(skip).limit(8);
+        proData = await Product.find({ category: category._id }).skip(skip).limit(12);
       }
     } else {
       totalProducts = await Product.countDocuments({});
@@ -920,7 +917,7 @@ const whishlist = async (req, res) => {
     const user = await User.findOne({ email: req.session.email });
     const wishData = await Wishlist.findOne({ user_id: user._id });
 
-    if (!wishData || wishData.products.length === 0) {
+    if (!wishData || wishData.products.length === 0  ) {
       return res.render("wishlist", { wishData, proData: [] });
     }
 
@@ -933,7 +930,10 @@ const whishlist = async (req, res) => {
     let proData = [];
 
     for (let i = 0; i < proId.length; i++) {
-      proData.push(await Product.findById({ _id: proId[i] }));
+      const product = await Product.findOne({ _id: proId[i], is_blocked: false });
+      if (product) {
+        proData.push(product);
+      }
     }
 
     console.log(proData);

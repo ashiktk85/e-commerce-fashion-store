@@ -262,9 +262,9 @@ const orderSuccess = async (req, res) => {
 const verifyPayment = async (req, res) => {
   try {
     console.log("getting to razor verifyyyyy....");
-    const { payment, order, selectedSize, order_id, amount, couponCode } =
+    const { payment, order, selectedSize, order_id, amount, couponCode,selectedAddress } =
       req.body;
-    console.log(req.body);
+    console.log(payment, order,"size :", selectedSize, order_id, amount, couponCode ,"selected add", selectedAddress);
     const findCoupon = await Coupon.findOne({ couponCode: couponCode });
 
     console.log("start");
@@ -338,7 +338,8 @@ const verifyPayment = async (req, res) => {
       // const orderNum = generateOrder.generateOrder();
 
       if (findCoupon) {
-        const addressData = await Address.findOne({ _id: selectedSize });
+        const addressData = await Address.findOne({ _id:selectedAddress});
+        console.log("order address : ", addressData);
         const date = generateDate();
         const orderData = new Order({
           userId: userData._id,
@@ -365,7 +366,8 @@ const verifyPayment = async (req, res) => {
           }
         );
       } else {
-        const addressData = await Address.findOne({ _id: selectedSize });
+        const addressData = await Address.findOne({ _id: selectedAddress });
+        console.log("addresss . . . . .",addressData);
         const date = generateDate();
         const orderData = new Order({
           userId: userData._id,

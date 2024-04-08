@@ -46,158 +46,24 @@ const verifyAdmin = async (req, res) => {
 
 // LOADING ADMIN HOME
 
-// const adminHome = async (req, res) => {
-//     try {
-//       const yValues = [0, 0, 0, 0, 0, 0, 0];
-//       const order = await Order.find({
-//         status: { $nin: ["Ordered", "Processing", "Canceled", "Shipped"] },
-//       });
-  
-//       const productQuantityMap = new Map();
-  
-//       order.forEach((order) => {
-//         order.items.forEach((item) => {
-//           const productId = item.productId.valueOf();
-//           const quantity = item.quantity;
-//           productQuantityMap.set(
-//             productId,
-//             (productQuantityMap.get(productId) || 0) + quantity
-//           );
-//         });
-//       });
-  
-//       const productQuantityArray = [...productQuantityMap.entries()].map(
-//         ([productId, quantity]) => ({ productId, quantity })
-//       );
-  
-//       productQuantityArray.sort((a, b) => b.quantity - a.quantity);
-  
-//       const allData = await Category.find({});
-//       const sales = new Array(allData.length).fill(0);
-//       const allName = allData.map((x) => x.name);
-  
-//       let productId = [];
-//       let quantity = [];
-  
-//       for (let i = 0; i < order.length; i++) {
-//         for (let j = 0; j < order[i].items.length; j++) {
-//           productId.push(order[i].items[j].productId);
-//           quantity.push(order[i].items[j].quantity);
-//         }
-//       }
-  
-//       const productData = [];
-//       for (let i = 0; i < productId.length; i++) {
-//         productData.push(await Product.findById(productId[i]));
-//       }
-  
-//       for (let i = 0; i < productData.length; i++) {
-//         for (let j = 0; j < allData.length; j++) {
-//           if (allData[j]._id.toString() === productData[i].category.toString()) {
-//             sales[j] += quantity[i];
-//           }
-//         }
-//       }
-  
-//       const topProduct = [];
-  
-//       const month = await Order.aggregate([
-//         {
-//           $project: {
-//             _id: { $dateToString: { format: "%m-%Y", date: "$createdAt" } },
-//             totalAmount: 1,
-//           },
-//         },
-//         {
-//           $group: {
-//             _id: "$_id",
-//             totalEarnings: { $sum: "$totalAmount" },
-//           },
-//         },
-//         {
-//           $sort: { _id: 1 },
-//         },
-//       ]);
-  
-//       let array = new Array(12).fill(0);
-//       const months = [
-//         "01-2024", "02-2024", "03-2024", "04-2024", "05-2024", "06-2024",
-//         "07-2024", "08-2024", "09-2024", "10-2024", "11-2024", "12-2024",
-//       ];
-  
-//       for (let i = 0; i < array.length; i++) {
-//         for (let j = 0; j < month.length; j++) {
-//           if (month[j]._id === months[i]) {
-//             array[i] += month[j].totalEarnings;
-//           }
-//         }
-//       }
-  
-//       const orderData = await Order.find({ status: "Delivered" });
-//       let sum = orderData.reduce((acc, curr) => acc + curr.totalAmount, 0);
-//       const product = await Product.find({});
-//       const category = await Category.find({});
-  
-//       if (order.length > 0) {
-//         const proLength = product.length;
-//         const catLength = category.length;
-//         const orderLength = order.length;
-//         res.render("adminhome", {
-//           sum,
-//           proLength,
-//           catLength,
-//           orderLength,
-//           month,
-//           yValues,
-//           allName,
-//           sales,
-//           productData,
-//           productQuantityArray,
-//           topProduct,
-//           array,
-//         });
-//       } else {
-//         const proLength = product.length;
-//         const catLength = category.length;
-//         const orderLength = order.length;
-//         const month = null;
-//         res.render("adminDash", {
-//           sum,
-//           proLength,
-//           catLength,
-//           orderLength,
-//           month,
-//           yValues,
-//           allName,
-//           sales,
-//           productData,
-//           productQuantityArray,
-//           topProduct,
-//           array,
-//         });
-//       }
-//     } catch (error) {
-//       console.log(error.message);
-//       res.status(500).send("Internal Server Error");
-//     }
-//   };
-  
 
-  const adminHome = async (req, res) => {
+
+
+const adminHome = async (req, res) => {
     try {
         const [user, category, product, order] = await Promise.all([
             User.find({}),
             Category.find({}),
             Product.find({}),
-            
+
             Order.find({ status: { $in: ["Delivered"] } })
         ]);
         let revenue = 0;
-        for(let i=0 ; i< order.length ; i++){
+        for (let i = 0; i < order.length; i++) {
             revenue += order[i].totalAmount
         }
         // line chart user line
-        const UserdayArray = [0,0,0,0,0,0,0];
+        const UserdayArray = [0, 0, 0, 0, 0, 0, 0];
         for (let i = 0; i < user.length; i++) {
             let createddate = new Date(user[i].createdOn);
             createddate = createddate.getDay(); // [sun monday , tue]
@@ -205,30 +71,34 @@ const verifyAdmin = async (req, res) => {
         };
         // line chart order counting each day
         const orderData = await Order.find({});
-        const orderdayArray = [0,0,0,0,0,0,0];
+        const orderdayArray = [0, 0, 0, 0, 0, 0, 0];
         for (let i = 0; i < orderData.length; i++) {
-            let dateOfOrder = new Date(orderData[i].date);
+            let dateOfOrder = new Date(orderData[i].orderDate);
             dateOfOrder = dateOfOrder.getDay();
             orderdayArray[dateOfOrder] += 1
         };
         // Bar chart weekly revenew
-        const revenewDayaArray = [0,0,0,0,0,0,0,0,0,0,0,0];
+        const revenewDayaArray = new Array(12).fill(0);
+
         for (let i = 0; i < orderData.length; i++) {
-            if(orderData[i].paymentMethod === "Cash on Delivery"){
-                if(orderData[i].status === "Delivered" || orderData[i].status === "Return order cancel" || orderData[i].status === "Return order cancel"){
-                    let monthOfOrder = new Date(orderData[i].date);
-                    monthOfOrder = monthOfOrder.getMonth();
-                    revenewDayaArray[monthOfOrder] += orderData[i].total;
-                }
+            const order = orderData[i];
+            const monthOfOrder = new Date(order.
+                orderDate).getMonth();
+
+            if (order.orderType === "Cash on Delivery" &&
+                (order.status === "Delivered")) {
+                    console.log(order.totalAmount);
+                revenewDayaArray[monthOfOrder] += order.totalAmount;
             }
-            if(orderData[i].paymentMethod === "Razorpay"){
-                if(orderData[i].status === "Ordered" || orderData[i].status === "Shipped" || orderData[i].status === "Delivered" || orderData[i].status === "Return process" || orderData[i].status === "Return order cancel"){
-                    let monthOfOrder = new Date(orderData[i].date);
-                    monthOfOrder = monthOfOrder.getMonth();
-                    revenewDayaArray[monthOfOrder] += orderData[i].total;
-                }
+
+            if (order.orderType === "Razorpay" &&
+                (order.status === "Ordered" || order.status === "Shipped" || order.status === "Delivered" ||
+                    order.status === "Return process")) {
+                        console.log(order.totalAmount);
+                revenewDayaArray[monthOfOrder] += order.totalAmount;
             }
         }
+        console.log("revenue array : ", revenewDayaArray);
 
         // top 5 products
         const productCounts = await Order.aggregate([
@@ -241,8 +111,8 @@ const verifyAdmin = async (req, res) => {
 
         const top5products = await Product.find({ _id: { $in: productIds } });
 
-        console.log(top5products);
         
+
 
         // top 5 category
         const productCategoryCounts = await Order.aggregate([
@@ -260,8 +130,8 @@ const verifyAdmin = async (req, res) => {
             }
         }
 
-        
-        res.render("adminHome" , {user , category , product , order , revenue , UserdayArray , orderdayArray , revenewDayaArray , top5products , productcatList })
+
+        res.render("adminHome", { user, category, product, order, revenue, UserdayArray, orderdayArray, revenewDayaArray, top5products, productcatList })
     } catch (error) {
         console.log(error);
     }
@@ -271,23 +141,37 @@ const verifyAdmin = async (req, res) => {
 
 const CatChart = async (req, res) => {
     try {
-        const category = await Category.find({});
-        const catNames = category.map(cat => cat.name);
         const allOrders = await Order.aggregate([
+            { $unwind: "$items" },  
+            { $lookup: { 
+              from: "products",
+              localField: "items.productId",
+              foreignField: "_id",
+              as: "product"
+            }},
             { $unwind: "$product" },
-            { $group: { _id: "$product.categoryName", cartQty: { $sum: { $toInt: "$product.cartQty" } } } }
-        ]);
-        const cartQtyArray = catNames.map(catName => {
-            const order = allOrders.find(order => order._id === catName);
-            return order ? order.cartQty : 0;
-        });
-        chartColores = color(category.length);
-        res.json({status : "true" , catNames : catNames , chartColores: chartColores , cartQtyArray : cartQtyArray})
+            { $addFields: { "items.categoryName": "$product.categoryName" } }, // Add the categoryName to each item
+            { $group: { 
+              _id: "$items.categoryName",
+              cartQty: { $sum: "$items.quantity" }
+            }}
+          ]);
+          console.log(allOrders);
+      
+        const catNames = allOrders.map(order => order.name);
+        console.log(catNames,"catnams")
+        
+        const cartQtyArray = allOrders.map(order => order.cartQty);
+        console.log(cartQtyArray, "cat arrya");
+
+        res.json({ status: "true", catNames: catNames, cartQtyArray: cartQtyArray })
     } catch (error) {
         console.log(error);
+        res.json({ status: "error", message: error.message });
     }
 }
-  
+
+
 
 // LOADING USER DETAILS PAGE 
 
@@ -356,8 +240,8 @@ const loadSalesreport = async (req, res) => {
         const order = await Order.find({
             status: { $in: ["Delivered"] },
         })
-        .skip(skip)
-        .limit(ordersPerPage);
+            .skip(skip)
+            .limit(ordersPerPage);
 
         const calculateOverallSummary = (order) => {
             let salesCount = 0;
@@ -382,7 +266,7 @@ const loadSalesreport = async (req, res) => {
         const totalOrders = await Order.countDocuments({ status: "Delivered" });
         const totalPages = Math.ceil(totalOrders / ordersPerPage);
 
-        res.render('salesReport', { order, overallSummary, totalPages, currentPage: page }); 
+        res.render('salesReport', { order, overallSummary, totalPages, currentPage: page });
     } catch (error) {
         console.log(`Error in loading sales report: ${error.message}`);
         res.status(500).send("Internal Server Error");
@@ -390,10 +274,14 @@ const loadSalesreport = async (req, res) => {
 };
 
 
-// DATE FILTER SALES REPORT
 
+// DATE FILTER SALES REPORT
 const dateFilter = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const ordersPerPage = 10;
+        const skip = (page - 1) * ordersPerPage;
+
         const date = req.query.value;
         const date2 = req.query.value1;
         console.log(date, "                 ", date2)
@@ -413,94 +301,14 @@ const dateFilter = async (req, res) => {
         // console.log(rotatedDate)
 
         const order = await Order.find({
-            status: { $nin: ["Ordered", "Canceled", "Shipped"] },
+            status: { $in: ["Delivered"] },
             orderDate: {
                 $gte: rotatedDate,
                 $lte: rotatedDate1
             }
-        });
-        const calculateOverallSummary = (orders) => {
-            let salesCount = 0;
-            let totalOrderAmount = 0;
-            let totalDiscount = 0;
-
-            orders.forEach((order) => {
-                salesCount++;
-                totalOrderAmount += order.totalAmount;
-                totalDiscount += order.discount || 0; 
-            });
-
-            return {
-                salesCount,
-                totalOrderAmount,
-                totalDiscount,
-            };
-        };
-
-       
-        const orders = await Order.find({});
-
-        
-        const overallSummary = calculateOverallSummary(orders);
-
-        res.render('salesReport', { order ,overallSummary })
-    } catch (error) {
-        console.log(error.message);
-    }
-};
-
-
-// SORT DATE SALES REPORT
-
-const sortDate = async (req, res) => {
-    try {
-        const sort = req.query.value;
-        let orderDateQuery = {};
-
-        
-        const currentDate = new Date();
-
-        
-        const currentDateString = `${currentDate.getDate()}-${currentDate.getMonth() + 1
-            }-${currentDate.getFullYear()}`;
-
-     
-        if (sort === "Day") {
-         
-            orderDateQuery = currentDateString;
-        } else if (sort === "Week") {
- 
-            const firstDayOfWeek = new Date(currentDate);
-            firstDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); 
-            const lastDayOfWeek = new Date(currentDate);
-            lastDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 6); 
-            const firstDayOfWeekString = `${firstDayOfWeek.getDate()}-${firstDayOfWeek.getMonth() + 1
-                }-${firstDayOfWeek.getFullYear()}`;
-            const lastDayOfWeekString = `${lastDayOfWeek.getDate()}-${lastDayOfWeek.getMonth() + 1
-                }-${lastDayOfWeek.getFullYear()}`;
-            orderDateQuery = {
-                $gte: firstDayOfWeekString,
-                $lte: lastDayOfWeekString,
-            };
-        } else if (sort === "Month") {
-           
-            orderDateQuery = {
-                $regex: `-${currentDate.getMonth() + 1}-`,
-            };
-        } else if (sort === "Year") {
-           
-            orderDateQuery = {
-                $regex: `-${currentDate.getFullYear()}$`,
-            };
-        }
-
-        console.log(orderDateQuery);
-
-        
-        const order = await Order.find({
-            status: { $nin: ["Ordered", "Canceled", "Shipped"] },
-            orderDate: orderDateQuery,
-        });
+        })
+            .skip(skip)
+            .limit(ordersPerPage);
 
         const calculateOverallSummary = (orders) => {
             let salesCount = 0;
@@ -520,17 +328,111 @@ const sortDate = async (req, res) => {
             };
         };
 
-        
         const orders = await Order.find({});
 
-      
         const overallSummary = calculateOverallSummary(orders);
 
-        res.render('salesReport', { order ,overallSummary })
+        const totalOrders = await Order.countDocuments({
+            status: { $in: ["Delivered"] },
+            orderDate: {
+                $gte: rotatedDate,
+                $lte: rotatedDate1
+            }
+        });
+        const totalPages = Math.ceil(totalOrders / ordersPerPage);
+
+        res.render('salesReport', { order, overallSummary, totalPages, currentPage: page });
     } catch (error) {
         console.log(error.message);
     }
 };
+
+
+// SORT DATE SALES REPORT
+const sortDate = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const ordersPerPage = 10;
+        const skip = (page - 1) * ordersPerPage;
+
+        const sort = req.query.value;
+        let orderDateQuery = {};
+
+        const currentDate = new Date();
+
+        const currentDateString = `${currentDate.getDate()}-${currentDate.getMonth() + 1
+            }-${currentDate.getFullYear()}`;
+
+        if (sort === "Day") {
+            orderDateQuery = currentDateString;
+        } else if (sort === "Week") {
+            const firstDayOfWeek = new Date(currentDate);
+            firstDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+            const lastDayOfWeek = new Date(currentDate);
+            lastDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 6);
+            const firstDayOfWeekString = `${firstDayOfWeek.getDate()}-${firstDayOfWeek.getMonth() + 1
+                }-${firstDayOfWeek.getFullYear()}`;
+            const lastDayOfWeekString = `${lastDayOfWeek.getDate()}-${lastDayOfWeek.getMonth() + 1
+                }-${lastDayOfWeek.getFullYear()}`;
+            orderDateQuery = {
+                $gte: firstDayOfWeekString,
+                $lte: lastDayOfWeekString,
+            };
+        } else if (sort === "Month") {
+            orderDateQuery = {
+                $regex: `-${currentDate.getMonth() + 1}-`,
+            };
+        } else if (sort === "Year") {
+            orderDateQuery = {
+                $regex: `-${currentDate.getFullYear()}$`,
+            };
+        }
+
+        console.log(orderDateQuery);
+
+        const order = await Order.find({
+            status: { $in: ["Delivered"] },
+            orderDate: orderDateQuery,
+        })
+            .skip(skip)
+            .limit(ordersPerPage);
+
+        const calculateOverallSummary = (orders) => {
+            let salesCount = 0;
+            let totalOrderAmount = 0;
+            let totalDiscount = 0;
+
+            orders.forEach((order) => {
+                salesCount++;
+                totalOrderAmount += order.totalAmount;
+                totalDiscount += order.discount || 0;
+            });
+
+            return {
+                salesCount,
+                totalOrderAmount,
+                totalDiscount,
+            };
+        };
+
+        const orders = await Order.find({});
+
+        const overallSummary = calculateOverallSummary(orders);
+
+        const totalOrders = await Order.countDocuments({
+            status: { $in: ["Delivered"] },
+            orderDate: orderDateQuery,
+        });
+        const totalPages = Math.ceil(totalOrders / ordersPerPage);
+
+        res.render('salesReport', { order, overallSummary, totalPages, currentPage: page });
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+
+
 
 // ADMIN LOGOUT 
 
