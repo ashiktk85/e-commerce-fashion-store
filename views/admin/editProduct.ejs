@@ -750,7 +750,7 @@
         
             if (name === '' && dis === '' && rp === '' && op === '' && small === '' && medium === '' && large === '') {
                 // If all fields are empty, redirect to adminProduct page
-                window.location.href = "http://localhost:7777/admin/adminProduct";
+                window.location.href = "/admin/adminProduct";
             } else {
                 // If any field is not empty, show a confirmation modal
                 alert("khhkjfkhc")
@@ -771,7 +771,7 @@
                             text: "Your data has been discarded.",
                             icon: "success"
                         }).then(() => {
-                            window.location.href = "http://localhost:7777/admin/addProduct";
+                            window.location.href = "/admin/addProduct";
                         });
                     }
                 });

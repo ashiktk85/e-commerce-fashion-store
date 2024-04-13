@@ -1264,7 +1264,7 @@ function addCart() {
                     showConfirmButton: false,
                     timer: 1500
                 }).then((result) => {
-                    window.location.href = "http://localhost:7777/cart";
+                    window.location.href = "/cart";
                 });
             } else if (response.status == "Out of stock") {
                 Swal.fire({
@@ -1274,7 +1274,7 @@ function addCart() {
 
             });
             } else if (response.status == "viewCart") {
-                window.location.href = "http://localhost:7777/cart";
+                window.location.href = "/cart";
             } else if (response.status == "alreadyInCart") {
                 Swal.fire({
                     icon: "warning",
