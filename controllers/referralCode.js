@@ -8,5 +8,5 @@ function generateReferralCode(length) {
     return referralCode;
 }
 
-// Export the generateReferralCode function
+
 module.exports = generateReferralCode;

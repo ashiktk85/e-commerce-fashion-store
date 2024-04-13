@@ -122,6 +122,7 @@ const adminHome = async (req, res) => {
             { $limit: 5 },
             { $project: { _id: 0, category: "$_id", count: 1 } }
         ]);
+        console.log("kghiguyg",productCategoryCounts);
         let productcatList = productCategoryCounts.map(item => item.category);
         for (const categoryItem of category) {
             if (productcatList.length >= 5) break;
@@ -139,37 +140,7 @@ const adminHome = async (req, res) => {
 
 // CAREGORY CHART
 
-const CatChart = async (req, res) => {
-    try {
-        const allOrders = await Order.aggregate([
-            { $unwind: "$items" },  
-            { $lookup: { 
-              from: "products",
-              localField: "items.productId",
-              foreignField: "_id",
-              as: "product"
-            }},
-            { $unwind: "$product" },
-            { $addFields: { "items.categoryName": "$product.categoryName" } }, // Add the categoryName to each item
-            { $group: { 
-              _id: "$items.categoryName",
-              cartQty: { $sum: "$items.quantity" }
-            }}
-          ]);
-          console.log(allOrders);
-      
-        const catNames = allOrders.map(order => order.name);
-        console.log(catNames,"catnams")
-        
-        const cartQtyArray = allOrders.map(order => order.cartQty);
-        console.log(cartQtyArray, "cat arrya");
 
-        res.json({ status: "true", catNames: catNames, cartQtyArray: cartQtyArray })
-    } catch (error) {
-        console.log(error);
-        res.json({ status: "error", message: error.message });
-    }
-}
 
 
 
@@ -178,7 +149,7 @@ const CatChart = async (req, res) => {
 const userDetails = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const usersPerPage = 10; // Number of users per page
+        const usersPerPage = 10; 
         const skip = (page - 1) * usersPerPage;
 
         const totalUsers = await User.countDocuments({});
@@ -234,7 +205,7 @@ const unblockUser = async (req, res) => {
 const loadSalesreport = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const ordersPerPage = 10; // Number of orders per page
+        const ordersPerPage = 10; 
         const skip = (page - 1) * ordersPerPage;
 
         const order = await Order.find({
@@ -328,9 +299,9 @@ const dateFilter = async (req, res) => {
             };
         };
 
-        const orders = await Order.find({});
+        
 
-        const overallSummary = calculateOverallSummary(orders);
+        const overallSummary = calculateOverallSummary(order);
 
         const totalOrders = await Order.countDocuments({
             status: { $in: ["Delivered"] },
@@ -340,6 +311,7 @@ const dateFilter = async (req, res) => {
             }
         });
         const totalPages = Math.ceil(totalOrders / ordersPerPage);
+        
 
         res.render('salesReport', { order, overallSummary, totalPages, currentPage: page });
     } catch (error) {
@@ -415,9 +387,9 @@ const sortDate = async (req, res) => {
             };
         };
 
-        const orders = await Order.find({});
+       
 
-        const overallSummary = calculateOverallSummary(orders);
+        const overallSummary = calculateOverallSummary(order);
 
         const totalOrders = await Order.countDocuments({
             status: { $in: ["Delivered"] },
@@ -457,5 +429,5 @@ module.exports = {
     loadSalesreport,
     sortDate,
     dateFilter,
-    CatChart
+    
 }
