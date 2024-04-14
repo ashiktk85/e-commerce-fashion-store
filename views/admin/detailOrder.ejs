@@ -61,7 +61,7 @@
                         <a href="page-categories.html">Categories</a>
                     </div> -->
                 </li>
-                <li class="menu-item active">
+                <li class="">
                     <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text" style="padding-left: 10px;">Catagory</span>
                     </a>
@@ -386,6 +386,15 @@
                                                 </article>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <% if(findOrder.reason) { %>
+                                                <dl class="dlist">
+                                                    <dt>Return reason:</dt>
+                                                    <dd> <b class="h5"><%= findOrder.reason %></b></dd>
+                                                </dl>
+                                           <%  } %>
+                                        </tr>
+                                       
                                     </tbody>
                                 </table>
                                 
