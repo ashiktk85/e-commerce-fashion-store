@@ -157,6 +157,7 @@ const returnRequest = async (req, res) => {
     }
 
     findOrder.status = "Return process";
+    findOrder.reason = reason;
     await findOrder.save();
 
     for (const item of findOrder.items) {
