@@ -383,16 +383,14 @@
                                                             </span>
                                                         </dd>
                                                     </dl>
+                                                    <% if(findOrder.reason) { %>
+                                                        <dl class="dlist">
+                                                            <dt>Return reason:</dt>
+                                                            <dd> <b class="h5"><%= findOrder.reason %></b></dd>
+                                                        </dl>
+                                                   <%  } %>
                                                 </article>
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <% if(findOrder.reason) { %>
-                                                <dl class="dlist">
-                                                    <dt>Return reason:</dt>
-                                                    <dd> <b class="h5"><%= findOrder.reason %></b></dd>
-                                                </dl>
-                                           <%  } %>
                                         </tr>
                                        
                                     </tbody>
