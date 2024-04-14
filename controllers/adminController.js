@@ -132,7 +132,7 @@ const adminHome = async (req, res) => {
         }
 
 
-        res.render("adminHome", { user, category, product, order, revenue, UserdayArray, orderdayArray, revenewDayaArray, top5products, productcatList })
+        res.render("adminhome", { user, category, product, order, revenue, UserdayArray, orderdayArray, revenewDayaArray, top5products, productcatList })
     } catch (error) {
         console.log(error);
     }
