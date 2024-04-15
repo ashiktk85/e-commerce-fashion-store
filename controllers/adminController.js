@@ -82,13 +82,19 @@ const adminHome = async (req, res) => {
 
         for (let i = 0; i < orderData.length; i++) {
             const order = orderData[i];
-            const monthOfOrder = new Date(order.
-                orderDate).getMonth();
+            // Split the date string into parts
+            const dateParts = order.orderDate.split('-');
+            // Create a new Date object with the parts in the correct order (year, month, day)
+            const orderDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+            // Get the month from the date object
+            const monthOfOrder = orderDate.getMonth();
+            console.log("monthdate", monthOfOrder); 
+        
 
             if (order.orderType === "Cash on Delivery" &&
                 (order.status === "Delivered")) {
                     console.log(order.totalAmount);
-                revenewDayaArray[monthOfOrder] += order.totalAmount;
+                revenewDayaArray[monthOfOrder] += order.totalAmount; 
             }
 
             if (order.orderType === "Razorpay" &&
@@ -97,7 +103,7 @@ const adminHome = async (req, res) => {
                         console.log(order.totalAmount);
                 revenewDayaArray[monthOfOrder] += order.totalAmount;
             }
-        }
+        } 
         console.log("revenue array : ", revenewDayaArray);
 
         // top 5 products
@@ -124,7 +130,7 @@ const adminHome = async (req, res) => {
         ]);
         
         console.log("kghiguyg",productCategoryCounts);
-          console.log("kghiguyg", "u" ,user, "c",category,"p", product,"o", order,"r", revenue,"o" , orderdayArray, "rv",revenewDayaArray,"t5", top5products, "prctl",productcatList );
+          console.log("kghiguyg", "u" ,user, "c",category,"p", product,"o", order,"r", revenue,"o" , orderdayArray, "rv",revenewDayaArray,"t5", top5products, "prctl" );
         
 
         let productcatList = productCategoryCounts.map(item => item.category);

@@ -119,7 +119,7 @@ const cancelOrder = async (req, res) => {
         });
       }
 
-      if (findOrder.orderType === "Razorpay" || findOrder.orderType === "Cash on Delivery" ) {
+      if (findOrder.orderType === "Razorpay"  ) {
         const userWallet = await Wallet.findOneAndUpdate(
           { userId: userData._id },
           {
