@@ -132,7 +132,7 @@ const adminHome = async (req, res) => {
                 productcatList.push(categoryItem.name);
             }
         }
-        console.log(order)
+        console.log(order,"lguyfuyfuydfuyrdurduyrduydurdturdtr")
 
 
         res.render("adminhome", { user, category, product, order, revenue, UserdayArray, orderdayArray, revenewDayaArray, top5products, productcatList })
