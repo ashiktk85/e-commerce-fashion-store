@@ -122,7 +122,9 @@ const adminHome = async (req, res) => {
             { $limit: 5 },
             { $project: { _id: 0, category: "$_id", count: 1 } }
         ]);
+        
         console.log("kghiguyg",productCategoryCounts);
+
         let productcatList = productCategoryCounts.map(item => item.category);
         for (const categoryItem of category) {
             if (productcatList.length >= 5) break;
@@ -130,6 +132,7 @@ const adminHome = async (req, res) => {
                 productcatList.push(categoryItem.name);
             }
         }
+        console.log(order)
 
 
         res.render("adminhome", { user, category, product, order, revenue, UserdayArray, orderdayArray, revenewDayaArray, top5products, productcatList })

@@ -119,7 +119,7 @@ const cancelOrder = async (req, res) => {
         });
       }
 
-      if (findOrder.orderType === "Razorpay") {
+      if (findOrder.orderType === "Razorpay" || findOrder.orderType === "Cash on Delivery" ) {
         const userWallet = await Wallet.findOneAndUpdate(
           { userId: userData._id },
           {
@@ -299,14 +299,6 @@ const verifyPayment = async (req, res) => {
       }
 
       for (let i = 0; i < proId.length; i++) {
-        // const product = await Product.findByIdAndUpdate(
-        //   { _id: proId[i] },
-        //   {
-        //     $inc: {
-        //       stock: -quantity[i],
-        //     },
-        //   }
-        // );
         const proId = proData[i].productId;
         const quantity = proData[i].quantity;
         const selectedSize = proData[i].size.toLowerCase();
