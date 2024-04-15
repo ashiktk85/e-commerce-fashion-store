@@ -124,6 +124,8 @@ const adminHome = async (req, res) => {
         ]);
         
         console.log("kghiguyg",productCategoryCounts);
+          console.log("kghiguyg", "u" ,user, "c",category,"p", product,"o", order,"r", revenue,"o" , orderdayArray, "rv",revenewDayaArray,"t5", top5products, "prctl",productcatList );
+        
 
         let productcatList = productCategoryCounts.map(item => item.category);
         for (const categoryItem of category) {
