@@ -27,7 +27,24 @@ const loadOrder = async (req, res) => {
     const ordersPerPage = 10; 
     const skip = (page - 1) * ordersPerPage;
 
-    const orderData = await Order.find({})
+    const orderData = await Order.aggregate([
+      {
+        $addFields: {
+          sortOrder: {
+            $cond: {
+              if: { $eq: ["$status", "Return process"] },
+              then: 0,
+              else: 1
+            }
+          }
+        }
+      },
+      {
+        $sort: { sortOrder: 1 }
+      }
+    ])
+    
+    
       .skip(skip)
       .limit(ordersPerPage);
 
@@ -35,14 +52,14 @@ const loadOrder = async (req, res) => {
     const totalPages = Math.ceil(totalOrders / ordersPerPage);
 
     res.render("adminOrders", { orderData, totalPages, currentPage: page, ordersPerPage });
-  } catch (error) {
+  } catch (error) {  
     console.log(`Error in loading orders: ${error}`);
     res.status(500).send("Internal Server Error");
-  }
-};
-
-
-
+  }                    
+};  
+                          
+                 
+ 
 
 //ADMIN DETAIL ORDER
 
@@ -206,11 +223,11 @@ const cancelReturn = async (req, res) => {
 
 // SAVING ORDER
 
-const saveOrder = async (req, res) => {
+const saveOrder = async (req, res) => { 
   try {
     console.log("getting here");
-    const { status, id } = req.body;
-
+    const { status, id } = req.body; 
+                      
     console.log(id, status);
 
     const order = await Order.findById(id);

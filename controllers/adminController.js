@@ -6,15 +6,15 @@ const Category = require('../models/categoryModel')
 const color = require('../controllers/colorGenerator');
 const adminEmail = process.env.adminEmail;
 const adminPassword = process.env.adminPassword;
-
+ 
 // ADMIN LOGIN
-
+ 
 const adminLogin = async (req, res) => {
     try {
         if (req.session.admin) {
-            res.render('adminhome')
+            res.redirect('/admin/adminDashboard')
         } else {
-            res.render('adminLogin')
+            res.render('adminLogin') 
         }
     } catch (error) {
         console.log(`There was an error in rendering admin login page : ${error}`);
@@ -62,36 +62,47 @@ const adminHome = async (req, res) => {
         for (let i = 0; i < order.length; i++) {
             revenue += order[i].totalAmount
         }
-        // line chart user line
         const UserdayArray = [0, 0, 0, 0, 0, 0, 0];
-        for (let i = 0; i < user.length; i++) {
-            let createddate = new Date(user[i].createdOn);
-            createddate = createddate.getDay(); // [sun monday , tue]
-            UserdayArray[createddate] += 1;
-        };
-        // line chart order counting each day
-        const orderData = await Order.find({});
-        const orderdayArray = [0, 0, 0, 0, 0, 0, 0];
-        for (let i = 0; i < orderData.length; i++) {
-            let dateOfOrder = new Date(orderData[i].orderDate);
-            dateOfOrder = dateOfOrder.getDay();
-            orderdayArray[dateOfOrder] += 1
-        };
+for (let i = 0; i < user.length; i++) {
+    let createddate = new Date(user[i].createdOn);
+    if (!isNaN(createddate.getTime())) {
+        let dayOfWeek = createddate.getDay(); 
+        UserdayArray[dayOfWeek] += 1;
+    } else {
+        console.log("Invalid date format:", user[i].createdOn);
+    }
+}
+
+// line chart order counting each day
+const orderData = await Order.find({});
+const orderdayArray = [0, 0, 0, 0, 0, 0, 0];
+for (let i = 0; i < orderData.length; i++) {
+    let orderDateComponents = orderData[i].orderDate.split("-"); 
+    
+    let dateOfOrder = new Date(orderDateComponents[2], orderDateComponents[1] - 1, orderDateComponents[0]);
+    if (!isNaN(dateOfOrder.getTime())) {
+        let dayOfWeek = dateOfOrder.getDay();
+        orderdayArray[dayOfWeek] += 1;
+    } else {
+        console.log("Invalid date format:", orderData[i].orderDate);
+    }  
+}
+
         // Bar chart weekly revenew
         const revenewDayaArray = new Array(12).fill(0);
 
         for (let i = 0; i < orderData.length; i++) {
-            const order = orderData[i];
-            // Split the date string into parts
+            const order = orderData[i]; 
+           
             const dateParts = order.orderDate.split('-');
-            // Create a new Date object with the parts in the correct order (year, month, day)
+           
             const orderDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
-            // Get the month from the date object
+           
             const monthOfOrder = orderDate.getMonth();
             console.log("monthdate", monthOfOrder); 
         
 
-            if (order.orderType === "Cash on Delivery" &&
+            if (order.orderType === "Cash on Delivery" && 
                 (order.status === "Delivered")) {
                     console.log(order.totalAmount);
                 revenewDayaArray[monthOfOrder] += order.totalAmount; 
@@ -168,7 +179,7 @@ const userDetails = async (req, res) => {
 
         const userDetails = await User.find({})
             .skip(skip)
-            .limit(usersPerPage);
+            .limit(usersPerPage);  
 
         res.render('userDetails', { userDetails, totalPages, currentPage: page });
     } catch (error) {
@@ -178,10 +189,10 @@ const userDetails = async (req, res) => {
 };
 
 
-
+ 
 // BLOCKING USER
 
-const blockUser = async (req, res) => {
+const blockUser = async (req, res) => {  
     try {
         const id = req.query.id;
         const findUser = await User.findById({ _id: id });

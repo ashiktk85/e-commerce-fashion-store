@@ -10,6 +10,6 @@ const generateOrder = (length = 4) => {
     return otp;
   };
 
- 
+  
 // Export the function
 module.exports = generateOrder;

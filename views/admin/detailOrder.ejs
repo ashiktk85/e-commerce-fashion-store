@@ -373,7 +373,7 @@
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Grand total:</dt>
-                                                        <dd> <b class="h5">₹<%= findOrder.totalAmount %></b></dd>
+                                                        <dd> <b id = "total"class="h5"><%= findOrder.totalAmount %></b></dd>
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt class="text-muted">Status:</dt>
@@ -452,6 +452,8 @@
         
         function save(id) {
             const status = document.getElementById("status").value
+            const total = document.getElementById('total').innerHTML
+           
    
             
 
@@ -473,7 +475,8 @@
                         method: "post",
                         data: {
                             status,
-                            id
+                            id,
+                            total
                         },
                         success: (response) => {
                             if (response.status == true) {
