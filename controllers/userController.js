@@ -76,9 +76,9 @@ const userSignupPost = async (req, res) => {
     const reffer = req.body.reffer;
     console.log(req.body, "bodyyyyy");
 
-    const otp = generateOTP.otpGnerator(); // Generate OTP
+    const otp = generateOTP.otpGnerator(); 
     console.log(otp);
-    const otpTime = Date.now(); // Record current time as OTP creation time
+    const otpTime = Date.now(); 
 
     const existsEmail = await User.findOne({ email: email });
     const existsMobile = await User.findOne({ mobile: mobile });
@@ -99,7 +99,7 @@ const userSignupPost = async (req, res) => {
             confirm,
             reffer,
             otp,
-            otpTime, // Store OTP creation time in session data
+            otpTime, 
           };
 
           req.session.Data = data;
@@ -173,7 +173,7 @@ const resendOtp = async (req, res) => {
 
     const resendOtpGen = generateOTP.otpGnerator();
 
-    // Update the session data with the new OTP
+    
     req.session.Data.otp = resendOtpGen;
     req.session.save();
 
@@ -219,8 +219,7 @@ const verifyOtp = async (req, res) => {
       const otpExpiryDuration = 60000;
 
       if (getOtp == storedOtpData) {
-        // OTP verification successful
-        // Proceed with user registration
+       
         const referral = referralCode(8);
         console.log(referral, "referral");
 
@@ -869,17 +868,17 @@ const allProducts = async (req, res) => {
         proData = await Product.find({}).sort({ name: 1 }).skip(skip).limit(12);
       } else if (sort == "zZ-aA") {
         proData = await Product.find({}).sort({ name: -1 }).skip(skip).limit(12);
-      } else {
+      } else { 
         proData = await Product.find({}).skip(skip).limit(12);
       }
-    }
+    }  
 
     const categories = await Category.find({});
     const newPro = await Product.find({}).sort({ _id: -1 }).limit(3);
 
     let previous = skip > 0;
     let nextPage = (skip + 8) < totalProducts;
-    let newNum = number + 1;
+    let newNum = number;
 
     res.render("allProducts", { cart, wish, categories, proData, newPro, newNum, previous, nextPage, sort, categoryName });
   } catch (error) {
@@ -889,7 +888,7 @@ const allProducts = async (req, res) => {
 };
 
 
-
+  
 // SEARCH PRODUCTS
 
 const searchProducts = async (req, res) => {

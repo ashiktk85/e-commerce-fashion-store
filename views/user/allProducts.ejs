@@ -380,7 +380,7 @@
                     <div class="col-xl-2 col-lg-2">
                         <div class="header-right-wrap header-right-flex">
                             <div class="same-style header-wishlist">
-                                <a href="wishlist.html"><i class="fa fa-heart-o"></i></a>
+                                <a href="wishlist"><i class="fa fa-heart-o"></i></a>
                             </div>
                             <div class="same-style cart-wrap">
                                 <a href="#" class="cart-active">
@@ -601,9 +601,9 @@
                                         class="fa fa-angle-down"></i></a>
                                 <div class="lang-curr-dropdown account-dropdown-active">
                                     <ul>
-                                        <li><a href="#">Login</a></li>
-                                        <li><a href="#">Creat Account</a></li>
-                                        <li><a href="my-account.html">My Account</a></li>
+                                        <li><a href="login">Login</a></li>
+                                        <li><a href="register">Creat Account</a></li>
+                                        <li><a href="accountDetails.ejs">My Account</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -686,7 +686,7 @@
                                     placeholder="Search" onkeyup="SearchProduct()">
                             </div>
                             <div class="search-result"
-                                style="position: absolute; top: 100%; left: 0; z-index: 999; background-color: rgb(255, 255, 255);color: #ffffff;width: 300px;padding-left: 30px;">
+                                style="position: absolute; top: 100%; left: 0; z-index: 999; background-color: rgb(38, 38, 38);color: #ffffff;width: 300px;padding-left: 30px;">
                                 <div id="searchResultsContainer"></div>
                             </div>
                         </div>
@@ -734,7 +734,7 @@
                                     <h5>Categories</h5>
                                     <div class="category-links">
                                         <div class="category-link">
-                                            <a href="/allProducts">All Products</a>
+                                            <a href="/allProducts">ALL PRODUCTS</a>
                                         </div>
                                         <% categories.forEach(category=> { %>
                                             <div class="category-link">
@@ -759,6 +759,7 @@
             <div class="tab-content jump-3 pt-30">
                 <div id="shop-1" class="tab-pane active">
                     <div class="row g-0 grid-3"> <!-- Change grid-2 to grid-3 -->
+                        <% if(proData.length > 0) { %>
                         <% for( let i=0; i < proData.length; i++ ) { %>
                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 grid-item-3"> <!-- Adjust columns -->
                                 <div class="product-wrap">
@@ -785,6 +786,9 @@
                                 </div>
                             </div>
                             <% } %>
+                            <% } else { %>
+                                <h4 style="font-family: poppins;text-align: center;padding-top: 50px;"><b>No Products available</b></h4>
+                           <%  } %>
                     </div>
 
                 </div>
@@ -1427,8 +1431,8 @@ hideClass: {
                                             <img src="/uploads/${element.image[0]}" alt="product">
                                         </div>
                                         <div class="product-info">
-                                            <p style="color: black;">${element.name}</p>
-                                            <p style="color: black;">₹${element.offerPrice}</p>
+                                            <p style="color: white;">${element.name}</p>
+                                            <p style="color: white3;">₹${element.offerPrice}</p>
                                         </div>
                                     </div>
                                 </a>

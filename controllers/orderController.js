@@ -24,7 +24,7 @@ var instance = new Razorpay({
 const loadOrder = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const ordersPerPage = 10; 
+    const ordersPerPage = 10;
     const skip = (page - 1) * ordersPerPage;
 
     const orderData = await Order.aggregate([
@@ -32,35 +32,42 @@ const loadOrder = async (req, res) => {
         $addFields: {
           sortOrder: {
             $cond: {
-              if: { $eq: ["$status", "Return process"] },
-              then: 0,
-              else: 1
-            }
-          }
-        }
+              if: {
+                $or: [
+                  { $eq: ["$status", "Return process"] },
+                  { $eq: ["$status", "Processing"] }
+                ]
+              },
+              then: 0, 
+              else: 1,  
+            },
+          },
+        },   
       },
       {
-        $sort: { sortOrder: 1 }
-      }
-    ])
+        $sort: { sortOrder: 1 },     
+      },
+    ])   
     
-    
+
       .skip(skip)
       .limit(ordersPerPage);
 
     const totalOrders = await Order.countDocuments({});
     const totalPages = Math.ceil(totalOrders / ordersPerPage);
 
-    res.render("adminOrders", { orderData, totalPages, currentPage: page, ordersPerPage });
-  } catch (error) {  
+    res.render("adminOrders", {
+      orderData,
+      totalPages,
+      currentPage: page,
+      ordersPerPage,
+    });
+  } catch (error) {
     console.log(`Error in loading orders: ${error}`);
     res.status(500).send("Internal Server Error");
-  }                    
-};  
-                          
-                 
- 
-
+  }
+};
+   
 //ADMIN DETAIL ORDER
 
 const loadOrderDetail = async (req, res) => {
@@ -136,7 +143,7 @@ const cancelOrder = async (req, res) => {
         });
       }
 
-      if (findOrder.orderType === "Razorpay"  ) {
+      if (findOrder.orderType === "Razorpay") {
         const userWallet = await Wallet.findOneAndUpdate(
           { userId: userData._id },
           {
@@ -203,7 +210,7 @@ const cancelReturn = async (req, res) => {
       return res.json({ status: false, message: "Order not found" });
     }
 
-    findOrder.status = "Delivered";
+    findOrder.status = "Delivered"; 
     await findOrder.save();
 
     for (const item of findOrder.items) {
@@ -223,13 +230,9 @@ const cancelReturn = async (req, res) => {
 
 // SAVING ORDER
 
-const saveOrder = async (req, res) => { 
+const saveOrder = async (req, res) => {
   try {
-    console.log("getting here");
-    const { status, id } = req.body; 
-                      
-    console.log(id, status);
-
+    const { status, id } = req.body;
     const order = await Order.findById(id);
     const prosize = order.items[0].size;
     const size = prosize.toLowerCase();
@@ -246,16 +249,34 @@ const saveOrder = async (req, res) => {
 
     await Order.findByIdAndUpdate(id, { $set: { status: status } });
 
-    if (status === "Canceled") {
-      if (order.orderType === "COD") {
-        const proId = order.items.map((item) => item.productId);
+    if (status === "Returned") {
+      const proId = order.items.map((item) => item.productId);
 
-        for (let i = 0; i < proId.length; i++) {
-          await Product.findByIdAndUpdate(proId[i], {
-            $inc: { size: size.quantity },
-          });
-        }
+      for (let i = 0; i < proId.length; i++) {
+        await Product.findByIdAndUpdate(proId[i], {
+          $inc: { size: size.quantity },
+        });
       }
+
+      let wallet = await Wallet.findOne({ userId: order.userId });
+
+      if (!wallet) {
+        wallet = new Wallet({
+          userId: order.userId,
+          balance: 0,
+          transactions: [],
+        });
+      }
+
+      const newTransaction = {
+        id: generateTransaction(),
+        date: generateDate(),
+        amount: order.totalAmount,
+      };
+
+      wallet.transactions.push(newTransaction);
+      wallet.balance += order.totalAmount;
+      await wallet.save();
     }
 
     res.json({ status: true });
@@ -265,7 +286,7 @@ const saveOrder = async (req, res) => {
   }
 };
 
-// ORDER SUCCESS PAGE
+// ORDER SUCCESS PAGE 
 
 const orderSuccess = async (req, res) => {
   try {
@@ -280,9 +301,26 @@ const orderSuccess = async (req, res) => {
 const verifyPayment = async (req, res) => {
   try {
     console.log("getting to razor verifyyyyy....");
-    const { payment, order, selectedSize, order_id, amount, couponCode,selectedAddress } =
-      req.body;
-    console.log(payment, order,"size :", selectedSize, order_id, amount, couponCode ,"selected add", selectedAddress);
+    const {
+      payment,
+      order,
+      selectedSize,
+      order_id,
+      amount,
+      couponCode,
+      selectedAddress,
+    } = req.body;
+    console.log(
+      payment,
+      order,
+      "size :",
+      selectedSize,
+      order_id,
+      amount,
+      couponCode,
+      "selected add",
+      selectedAddress
+    );
     const findCoupon = await Coupon.findOne({ couponCode: couponCode });
 
     console.log("start");
@@ -348,7 +386,7 @@ const verifyPayment = async (req, res) => {
       // const orderNum = generateOrder.generateOrder();
 
       if (findCoupon) {
-        const addressData = await Address.findOne({ _id:selectedAddress});
+        const addressData = await Address.findOne({ _id: selectedAddress });
         console.log("order address : ", addressData);
         const date = generateDate();
         const orderData = new Order({
@@ -377,7 +415,7 @@ const verifyPayment = async (req, res) => {
         );
       } else {
         const addressData = await Address.findOne({ _id: selectedAddress });
-        console.log("addresss . . . . .",addressData);
+        console.log("addresss . . . . .", addressData);
         const date = generateDate();
         const orderData = new Order({
           userId: userData._id,
@@ -479,12 +517,10 @@ const continuePayment = async (req, res) => {
       const currentQuantity = products[i].size[size].quantity;
       const orderedQuantity = quantity[i];
       if (currentQuantity < orderedQuantity) {
-        return res
-          .status(400)
-          .json({
-            status: false,
-            message: `Not enough stock for product ${products[i].name}`,
-          });
+        return res.status(400).json({
+          status: false,
+          message: `Not enough stock for product ${products[i].name}`,
+        });
       }
       products[i].size[size].quantity -= orderedQuantity;
       await products[i].save();
@@ -562,7 +598,7 @@ const invoice = async (req, res) => {
     console.log(id);
     const findOrder = await Order.findById({ _id: id });
 
-    const userData = await User.findById({ _id : findOrder.userId })
+    const userData = await User.findById({ _id: findOrder.userId });
     console.log(userData);
 
     const proId = [];
@@ -577,10 +613,10 @@ const invoice = async (req, res) => {
       proData.push(await Product.findById({ _id: proId[i] }));
     }
 
-    console.log("productssssssssss.s.s.s..s.s.s.s.", proData)
-    console.log(findOrder)
+    console.log("productssssssssss.s.s.s..s.s.s.s.", proData);
+    console.log(findOrder);
 
-    res.render("invoice", { proData, findOrder , userData});
+    res.render("invoice", { proData, findOrder, userData });
   } catch (error) {
     console.log(`error in invoice ${error.message}`);
   }

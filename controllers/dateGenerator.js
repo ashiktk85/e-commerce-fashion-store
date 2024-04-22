@@ -6,7 +6,6 @@ const generateDate = () => {
     const formateDate = `${day}-${month}-${year}`;
 
     return formateDate;
-}
+} 
 
-
-module.exports=generateDate
+module.exports=generateDate   
